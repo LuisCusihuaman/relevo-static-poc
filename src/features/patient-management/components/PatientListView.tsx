@@ -55,19 +55,10 @@ export function PatientListView({ onPatientSelect }: PatientListViewProps) {
 
   // Show collaborative handover if patient selected
   if (handoverPatient) {
-    const patient = mockPatients.find(p => p.id === handoverPatient);
     return (
       <div className="relative min-h-screen bg-background">
-        <Button
-          variant="outline"
-          onClick={() => setHandoverPatient(null)}
-          className="fixed top-4 right-4 z-50"
-        >
-          ← Back to Patient List
-        </Button>
         <HandoverApp 
-          patientId={handoverPatient} 
-          patientName={patient?.name || 'Unknown Patient'} 
+          onBack={() => setHandoverPatient(null)}
         />
       </div>
     );

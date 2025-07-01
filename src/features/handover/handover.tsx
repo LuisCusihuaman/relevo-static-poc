@@ -17,15 +17,12 @@ import {
   SidebarInset,
 } from '@/components/ui/sidebar';
 import { 
-  Tooltip,
-  TooltipContent,
   TooltipProvider,
-  TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useHandoverSession } from '.';
 import { useSyncStatus } from '@/hooks/useSyncStatus';
-import { currentUser, patientData, activeCollaborators } from '@/common/constants';
+import { currentUser, patientData } from '@/common/constants';
 import type { FullscreenEditingState, ExpandedSections } from '@/common/types';
 import { X } from 'lucide-react';
 
@@ -49,7 +46,7 @@ export default function App({ onBack }: HandoverProps = {}) {
   const [currentSaveFunction, setCurrentSaveFunction] = useState<(() => void) | null>(null);
 
   // Layout and content state
-  const [layoutMode, setLayoutMode] = useState<'single' | 'columns'>('columns');
+  const [layoutMode] = useState<'single' | 'columns'>('columns');
   const [expandedSections, setExpandedSections] = useState<ExpandedSections>({
     illness: true,      // Start with first section open
     patient: false,
@@ -174,7 +171,7 @@ export default function App({ onBack }: HandoverProps = {}) {
           />
 
           {/* Main Content */}
-          <div className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+          <div className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-24">
             <MainContent
               focusMode={focusMode}
               layoutMode={layoutMode}
