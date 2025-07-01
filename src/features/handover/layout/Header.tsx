@@ -15,7 +15,6 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { currentlyPresent, patientData, activeCollaborators } from '@/common/constants';
-import type { User } from '@/common/types';
 
 interface HeaderProps {
   focusMode: boolean;
@@ -30,7 +29,6 @@ interface HeaderProps {
   getSyncStatusDisplay: () => { icon: React.ReactNode; text: string; color: string };
   getTimeUntilHandover: () => string;
   getSessionDuration: () => string;
-  currentUser: User;
 }
 
 export function Header({
@@ -45,8 +43,7 @@ export function Header({
   showHistory,
   getSyncStatusDisplay,
   getTimeUntilHandover,
-  getSessionDuration,
-  currentUser
+  getSessionDuration
 }: HeaderProps) {
   const activeUsers = activeCollaborators.filter(user => user.status === 'active' || user.status === 'viewing');
 
@@ -185,7 +182,7 @@ export function Header({
           {/* Right Section - Controls */}
           <div className="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
             {/* Sync status indicator */}
-            <div className="hidden sm:flex items-center space-x-2 text-xs text-gray-600">
+            <div className="hidden md:flex items-center space-x-2 text-xs text-gray-600">
               {getSyncStatusDisplay().icon}
               <span className={getSyncStatusDisplay().color}>{getSyncStatusDisplay().text}</span>
             </div>
@@ -208,13 +205,13 @@ export function Header({
               variant="ghost"
               size="sm"
               onClick={() => setShowMobileMenu(true)}
-              className="sm:hidden h-8 w-8 p-0 hover:bg-gray-100"
+              className="md:hidden h-8 w-8 p-0 hover:bg-gray-100"
             >
               <MoreHorizontal className="w-4 h-4" />
             </Button>
 
             {/* Desktop Controls */}
-            <div className="hidden sm:flex items-center space-x-2">
+            <div className="hidden md:flex items-center space-x-2">
               {/* Focus Toggle */}
               <Button
                 variant="ghost"

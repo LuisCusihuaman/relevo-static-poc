@@ -166,7 +166,6 @@ export default function App() {
             getSyncStatusDisplay={getSyncStatusDisplay}
             getTimeUntilHandover={getTimeUntilHandover}
             getSessionDuration={getSessionDuration}
-            currentUser={currentUser}
           />
 
           {/* Main Content */}
