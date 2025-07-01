@@ -136,147 +136,6 @@ relevo-workspace/
 - EMR data synchronization (hospital-sdk)
 - Laboratory result integration (Mock API simulation)
 - Vital signs monitoring (Future real API integration)
-
-## Enhanced Cache Strategy Completion
-
-```typescript
-// Continuing from the cut-off point...
-    this.logger.debug(`🔄 Updated cached alert ${updatedAlert.id} for patient ${patientId}`);
-  }
-
-  private determineAlertSource(alerts: HospitalAlert[]): string {
-    if (alerts.length === 0) return 'none';
-    const firstAlert = alerts[0];
-    return firstAlert.creationDetails.source.includes('Mock') ? 'mock' : 'hospital';
-  }
-
-  // ============================================================================
-  // COLLABORATION CACHING (existing functionality enhanced)
-  // ============================================================================
-
-  async cacheCollaborationSession(documentId: string, userId: string, sessionData: any) {
-    const cacheKey = `collab:${documentId}:${userId}`;
-    await this.cacheManager.set(cacheKey, sessionData, 300);
-  }
-
-  async getActiveCollaborators(documentId: string): Promise<any[]> {
-    // Implementation would use Redis SCAN for pattern matching in production
-    return [];
-  }
-
-  // ============================================================================
-  // HOSPITAL API HEALTH CACHING
-  // ============================================================================
-
-  async cacheHospitalApiHealth(endpoint: string, health: any, ttl: number = 60) {
-    const cacheKey = `hospital:health:${endpoint}`;
-    await this.cacheManager.set(cacheKey, health, ttl);
-  }
-
-  async getHospitalApiHealth(endpoint: string): Promise<any> {
-    const cacheKey = `hospital:health:${endpoint}`;
-    return await this.cacheManager.get(cacheKey);
-  }
-
-  // ============================================================================
-  // ENHANCED CACHE INVALIDATION
-  // ============================================================================
-
-  async invalidatePatientCache(patientId: number) {
-    const patterns = [
-      `patient:${patientId}`,
-      `alerts:patient:${patientId}`,
-      `ipass:${patientId}:*`,
-      `activity:${patientId}`,
-      `presence:${patientId}:*`,
-    ];
-
-    // In production with Redis, use SCAN pattern matching
-    // For memory cache, track keys manually
-    this.logger.log(`🗑️ Cache invalidation requested for patient ${patientId}`);
-  }
-
-  // ============================================================================
-  // CACHE METRICS
-  // ============================================================================
-
-  async getCacheMetrics(): Promise<any> {
-    return {
-      totalSize: 0, // Would be implemented based on cache store
-      alertsCached: 0,
-      collaborationSessions: 0,
-      hitRate: 0.85,
-      memoryUsage: process.memoryUsage(),
-    };
-  }
-}
-```
-
-## NX Development Workflow
-
-### Development Commands
-
-```bash
-# Start all services for development
-npm run dev:all
-
-# Start specific services
-npm run dev:frontend     # React app (port 3001)
-npm run dev:nestjs       # NestJS service (ports 3000, 3002)
-npm run dev:mock         # Hospital mock API (port 3003)
-
-# Build commands
-npm run build:all
-nx build relevo-frontend
-nx build relevo-nestjs
-nx build hospital-mock-api
-
-# Testing
-nx test hospital-sdk
-nx test relevo-nestjs
-nx test hospital-mock-api
-
-# Linting
-nx lint relevo-frontend
-nx lint relevo-nestjs
-```
-
-### Environment Configuration
-
-```typescript
-// Development (.env.local)
-HOSPITAL_API_URL=http://localhost:3003
-USE_MOCK_HOSPITAL_API=true
-CSHARP_API_URL=http://localhost:5000
-HOCUSPOCUS_PORT=3002
-
-// Production (.env.production)
-HOSPITAL_API_URL=https://real-hospital-api.com
-HOSPITAL_API_KEY=your-real-api-key
-USE_MOCK_HOSPITAL_API=false
-```
-
-### Migration to Real Hospital API
-
-When real hospital endpoints become available:
-
-1. **Update Environment Variables**:
-
-   ```bash
-   HOSPITAL_API_URL=https://real-hospital-api.com
-   HOSPITAL_API_KEY=your-real-api-key
-   USE_MOCK_HOSPITAL_API=false
-   ```
-
-2. **Update Types** (if needed) in `libs/shared/types`
-
-3. **Enhanced Authentication** in `libs/hospital-sdk`
-
-4. **Remove Mock Service** when no longer needed:
-   ```bash
-   nx remove hospital-mock-api
-   ```
-
 ## Security & Compliance
 
 ### Enhanced HIPAA Compliance Framework
@@ -329,57 +188,6 @@ compliance_endpoints:
 ```
 
 ## Deployment & Infrastructure
-
-### NX Monorepo Deployment
-
-```yaml
-# docker-compose.dev.yml (NX Development)
-version: '3.8'
-services:
-  postgres:
-    image: postgres:15
-    ports: ["5432:5432"]
-    environment:
-      POSTGRES_DB: relevo
-      POSTGRES_USER: relevo
-      POSTGRES_PASSWORD: dev_password
-
-  hospital-mock-api:
-    build:
-      context: .
-      dockerfile: apps/hospital-mock-api/Dockerfile
-    ports: ["3003:3003"]
-    environment:
-      NODE_ENV: development
-
-  relevo-nestjs:
-    build:
-      context: .
-      dockerfile: apps/relevo-nestjs/Dockerfile
-    ports: ["3000:3000", "3002:3002"]
-    environment:
-      HOSPITAL_API_URL: http://hospital-mock-api:3003
-      USE_MOCK_HOSPITAL_API: true
-      CSHARP_API_URL: http://host.docker.internal:5000
-    depends_on: [postgres, hospital-mock-api]
-
-volumes:
-  postgres_data:
-```
-
-### Production Deployment Commands
-
-```bash
-# Build all applications for production
-nx run-many --target=build --projects=relevo-nestjs,hospital-mock-api --configuration=production
-
-# Docker build
-nx run relevo-nestjs:docker-build
-nx run hospital-mock-api:docker-build
-
-# Deploy with environment-specific configurations
-NODE_ENV=production nx serve relevo-nestjs
-```
 
 ## Implementation Roadmap
 
@@ -1258,787 +1066,7 @@ paths:
           description: Invalid token
 ```
 
-## NestJS Service Specifications
 
-### Integrated Service Architecture
-
-```typescript
-// NestJS Service with Hocuspocus and External API Integration
-import { Module } from "@nestjs/common";
-import { CacheModule } from "@nestjs/cache-manager";
-import { HttpModule } from "@nestjs/axios";
-import { ScheduleModule } from "@nestjs/schedule";
-
-@Module({
-  imports: [
-    CacheModule.register({
-      store: "memory",
-      ttl: 300, // 5 minutes default TTL
-      max: 1000, // maximum number of items in cache
-    }),
-    HttpModule,
-    ScheduleModule.forRoot(),
-  ],
-  controllers: [
-    WebhookController,
-    CollaborationController,
-    NotificationController,
-    IntegrationController,
-    HocuspocusController,
-    AlertController,
-  ],
-  providers: [
-    WebhookService,
-    CollaborationService,
-    NotificationService,
-    EMRIntegrationService,
-    CacheService,
-    HocuspocusService,
-    AlertSyncService,
-    HospitalApiService,
-  ],
-})
-export class AppModule {}
-
-// Bootstrap both HTTP server and Hocuspocus server
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-
-  // Start HTTP server
-  await app.listen(3000);
-
-  // Start Hocuspocus server
-  const hocuspocusService = app.get(HocuspocusService);
-  await hocuspocusService.start();
-
-  // Start alert synchronization
-  const alertSyncService = app.get(AlertSyncService);
-  await alertSyncService.startScheduledSync();
-
-  console.log("NestJS HTTP server running on port 3000");
-  console.log(
-    "Hocuspocus WebSocket server running on port 3002",
-  );
-  console.log("Alert synchronization service started");
-}
-bootstrap();
-```
-
-## External Hospital API Integration
-
-### Hospital API Service
-
-```typescript
-// Hospital API Service for Alert Integration
-import { Injectable, Logger } from "@nestjs/common";
-import { HttpService } from "@nestjs/axios";
-import { ConfigService } from "@nestjs/config";
-import { firstValueFrom } from "rxjs";
-
-export interface HospitalAlert {
-  id: string;
-  patientId: string;
-  type:
-    | "INFECTION_CONTROL"
-    | "MEDICATION"
-    | "VITAL_SIGNS"
-    | "LAB_RESULTS"
-    | "PROCEDURE"
-    | "GENERAL";
-  alertCatalogItem: {
-    code: string;
-    description: string;
-  };
-  observations?: string;
-  level: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
-  status: "ACTIVE" | "RESOLVED" | "EXPIRED";
-  startDate: string;
-  endDate?: string | null;
-  creationDetails: {
-    author: string;
-    timestamp: string;
-    source: string;
-  };
-}
-
-@Injectable()
-export class HospitalApiService {
-  private readonly logger = new Logger(HospitalApiService.name);
-
-  constructor(
-    private readonly httpService: HttpService,
-    private readonly configService: ConfigService,
-  ) {}
-
-  async fetchPatientAlerts(
-    hospitalPatientId: string,
-  ): Promise<HospitalAlert[]> {
-    const hospitalApiUrl = this.configService.get<string>(
-      "HOSPITAL_API_URL",
-    );
-    const apiKey = this.configService.get<string>(
-      "HOSPITAL_API_KEY",
-    );
-
-    if (!hospitalApiUrl) {
-      // Return mock data for development
-      return this.getMockAlerts(hospitalPatientId);
-    }
-
-    try {
-      const response = await firstValueFrom(
-        this.httpService.get(
-          `${hospitalApiUrl}/patients/${hospitalPatientId}/alerts`,
-          {
-            headers: {
-              Authorization: `Bearer ${apiKey}`,
-              "Content-Type": "application/json",
-            },
-            timeout: 10000, // 10 second timeout
-          },
-        ),
-      );
-
-      return response.data.alerts || [];
-    } catch (error) {
-      this.logger.error(
-        `Failed to fetch alerts for patient ${hospitalPatientId}:`,
-        error,
-      );
-
-      // Fallback to mock data in case of API failure
-      return this.getMockAlerts(hospitalPatientId);
-    }
-  }
-
-  async fetchAllActiveAlerts(): Promise<HospitalAlert[]> {
-    const hospitalApiUrl = this.configService.get<string>(
-      "HOSPITAL_API_URL",
-    );
-    const apiKey = this.configService.get<string>(
-      "HOSPITAL_API_KEY",
-    );
-
-    if (!hospitalApiUrl) {
-      return this.getAllMockAlerts();
-    }
-
-    try {
-      const response = await firstValueFrom(
-        this.httpService.get(
-          `${hospitalApiUrl}/alerts/active`,
-          {
-            headers: {
-              Authorization: `Bearer ${apiKey}`,
-              "Content-Type": "application/json",
-            },
-            timeout: 30000, // 30 second timeout for bulk fetch
-          },
-        ),
-      );
-
-      return response.data.alerts || [];
-    } catch (error) {
-      this.logger.error(
-        "Failed to fetch all active alerts:",
-        error,
-      );
-      return this.getAllMockAlerts();
-    }
-  }
-
-  // Mock data for development/testing
-  private getMockAlerts(
-    hospitalPatientId: string,
-  ): HospitalAlert[] {
-    const mockAlerts: HospitalAlert[] = [
-      {
-        id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-        patientId: hospitalPatientId,
-        type: "INFECTION_CONTROL",
-        alertCatalogItem: {
-          code: "70",
-          description: "Germen Multi Resistente",
-        },
-        observations: "OXA48/163",
-        level: "MEDIUM",
-        status: "ACTIVE",
-        startDate: "2025-06-09",
-        endDate: null,
-        creationDetails: {
-          author: "lab_auto",
-          timestamp: "2025-06-09T10:00:00Z",
-          source: "Laboratory System",
-        },
-      },
-      {
-        id: "b2c3d4e5-f6g7-8901-2345-678901bcdefg",
-        patientId: hospitalPatientId,
-        type: "MEDICATION",
-        alertCatalogItem: {
-          code: "45",
-          description: "Medication Allergy Alert",
-        },
-        observations: "Penicillin allergy documented",
-        level: "HIGH",
-        status: "ACTIVE",
-        startDate: "2025-06-08",
-        endDate: null,
-        creationDetails: {
-          author: "dr_martinez",
-          timestamp: "2025-06-08T15:30:00Z",
-          source: "Clinical System",
-        },
-      },
-      {
-        id: "c3d4e5f6-g7h8-9012-3456-789012cdefgh",
-        patientId: hospitalPatientId,
-        type: "LAB_RESULTS",
-        alertCatalogItem: {
-          code: "12",
-          description: "Critical Lab Value",
-        },
-        observations: "Elevated WBC count: 18,000",
-        level: "CRITICAL",
-        status: "ACTIVE",
-        startDate: "2025-06-10",
-        endDate: null,
-        creationDetails: {
-          author: "lab_system",
-          timestamp: "2025-06-10T09:15:00Z",
-          source: "Laboratory Information System",
-        },
-      },
-    ];
-
-    // Filter by patient ID in real scenario
-    return mockAlerts.filter(
-      (alert) => alert.patientId === hospitalPatientId,
-    );
-  }
-
-  private getAllMockAlerts(): HospitalAlert[] {
-    // Return mock alerts for multiple patients
-    const patientIds = ["81891", "81892", "81893", "81894"];
-    const allMockAlerts: HospitalAlert[] = [];
-
-    patientIds.forEach((patientId) => {
-      allMockAlerts.push(...this.getMockAlerts(patientId));
-    });
-
-    return allMockAlerts;
-  }
-
-  // Health check for hospital API
-  async checkHospitalApiHealth(): Promise<boolean> {
-    const hospitalApiUrl = this.configService.get<string>(
-      "HOSPITAL_API_URL",
-    );
-
-    if (!hospitalApiUrl) {
-      this.logger.warn(
-        "Hospital API URL not configured, using mock data",
-      );
-      return true; // Mock service is always "healthy"
-    }
-
-    try {
-      const response = await firstValueFrom(
-        this.httpService.get(`${hospitalApiUrl}/health`, {
-          timeout: 5000,
-        }),
-      );
-
-      return response.status === 200;
-    } catch (error) {
-      this.logger.error(
-        "Hospital API health check failed:",
-        error,
-      );
-      return false;
-    }
-  }
-}
-```
-
-## Alert Management System
-
-### Alert Synchronization Service
-
-```typescript
-// Alert Synchronization Service
-import { Injectable, Logger } from "@nestjs/common";
-import { Cron, CronExpression } from "@nestjs/schedule";
-import { HttpService } from "@nestjs/axios";
-import { HospitalApiService } from "./hospital-api.service";
-
-@Injectable()
-export class AlertSyncService {
-  private readonly logger = new Logger(AlertSyncService.name);
-  private syncInProgress = false;
-
-  constructor(
-    private readonly hospitalApiService: HospitalApiService,
-    private readonly httpService: HttpService,
-  ) {}
-
-  async startScheduledSync() {
-    this.logger.log("Alert synchronization service started");
-    // Perform initial sync on startup
-    await this.syncAllAlerts();
-  }
-
-  // Sync alerts every 5 minutes
-  @Cron(CronExpression.EVERY_5_MINUTES)
-  async scheduledAlertSync() {
-    if (this.syncInProgress) {
-      this.logger.warn(
-        "Alert sync already in progress, skipping scheduled sync",
-      );
-      return;
-    }
-
-    await this.syncAllAlerts();
-  }
-
-  async syncAllAlerts(): Promise<void> {
-    if (this.syncInProgress) {
-      this.logger.warn("Alert sync already in progress");
-      return;
-    }
-
-    this.syncInProgress = true;
-    this.logger.log("Starting alert synchronization");
-
-    try {
-      // Check hospital API health first
-      const isHealthy =
-        await this.hospitalApiService.checkHospitalApiHealth();
-      if (!isHealthy) {
-        this.logger.warn(
-          "Hospital API is not healthy, skipping sync",
-        );
-        return;
-      }
-
-      // Fetch all active alerts from hospital system
-      const hospitalAlerts =
-        await this.hospitalApiService.fetchAllActiveAlerts();
-      this.logger.log(
-        `Fetched ${hospitalAlerts.length} alerts from hospital system`,
-      );
-
-      // Process each alert
-      for (const alert of hospitalAlerts) {
-        await this.processAlert(alert);
-      }
-
-      // Update sync status
-      await this.updateSyncStatus(
-        "completed",
-        hospitalAlerts.length,
-      );
-
-      this.logger.log(
-        "Alert synchronization completed successfully",
-      );
-    } catch (error) {
-      this.logger.error("Alert synchronization failed:", error);
-      await this.updateSyncStatus("failed", 0, error.message);
-    } finally {
-      this.syncInProgress = false;
-    }
-  }
-
-  async syncPatientAlerts(
-    hospitalPatientId: string,
-  ): Promise<void> {
-    this.logger.log(
-      `Syncing alerts for patient: ${hospitalPatientId}`,
-    );
-
-    try {
-      const alerts =
-        await this.hospitalApiService.fetchPatientAlerts(
-          hospitalPatientId,
-        );
-
-      for (const alert of alerts) {
-        await this.processAlert(alert);
-      }
-
-      this.logger.log(
-        `Synced ${alerts.length} alerts for patient ${hospitalPatientId}`,
-      );
-    } catch (error) {
-      this.logger.error(
-        `Failed to sync alerts for patient ${hospitalPatientId}:`,
-        error,
-      );
-      throw error;
-    }
-  }
-
-  private async processAlert(
-    hospitalAlert: HospitalAlert,
-  ): Promise<void> {
-    try {
-      // Send alert to C# backend for storage/processing
-      await this.httpService
-        .post(
-          `${process.env.CSHARP_API_URL}/alerts/sync`,
-          {
-            alert: hospitalAlert,
-            syncedAt: new Date().toISOString(),
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${process.env.SERVICE_TOKEN}`,
-              "Content-Type": "application/json",
-            },
-          },
-        )
-        .toPromise();
-
-      // Trigger webhook for alert processing
-      await this.httpService
-        .post("http://localhost:3000/webhooks/alert/synced", {
-          alertId: hospitalAlert.id,
-          patientId: hospitalAlert.patientId,
-          type: hospitalAlert.type,
-          level: hospitalAlert.level,
-          status: hospitalAlert.status,
-          timestamp: new Date().toISOString(),
-        })
-        .toPromise();
-    } catch (error) {
-      this.logger.error(
-        `Failed to process alert ${hospitalAlert.id}:`,
-        error,
-      );
-    }
-  }
-
-  private async updateSyncStatus(
-    status: string,
-    alertCount: number,
-    error?: string,
-  ): Promise<void> {
-    try {
-      await this.httpService
-        .post(
-          `${process.env.CSHARP_API_URL}/alerts/sync-status`,
-          {
-            status,
-            alertCount,
-            timestamp: new Date().toISOString(),
-            error,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${process.env.SERVICE_TOKEN}`,
-              "Content-Type": "application/json",
-            },
-          },
-        )
-        .toPromise();
-    } catch (error) {
-      this.logger.error("Failed to update sync status:", error);
-    }
-  }
-
-  // Manual sync trigger
-  async triggerManualSync(patientId?: string): Promise<string> {
-    const syncJobId = `sync_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-
-    this.logger.log(
-      `Manual sync triggered with job ID: ${syncJobId}`,
-    );
-
-    // Run sync in background
-    setTimeout(async () => {
-      if (patientId) {
-        await this.syncPatientAlerts(patientId);
-      } else {
-        await this.syncAllAlerts();
-      }
-    }, 0);
-
-    return syncJobId;
-  }
-}
-```
-
-### Alert Controller
-
-```typescript
-// Alert Controller for NestJS Service
-import {
-  Controller,
-  Get,
-  Post,
-  Param,
-  Query,
-  Body,
-} from "@nestjs/common";
-import { AlertSyncService } from "./alert-sync.service";
-import { HospitalApiService } from "./hospital-api.service";
-
-@Controller("alerts")
-export class AlertController {
-  constructor(
-    private readonly alertSyncService: AlertSyncService,
-    private readonly hospitalApiService: HospitalApiService,
-  ) {}
-
-  @Post("sync")
-  async triggerSync(@Query("patientId") patientId?: string) {
-    const syncJobId =
-      await this.alertSyncService.triggerManualSync(patientId);
-
-    return {
-      message: "Alert synchronization initiated",
-      syncJobId,
-      timestamp: new Date().toISOString(),
-    };
-  }
-
-  @Get("hospital/health")
-  async checkHospitalApiHealth() {
-    const isHealthy =
-      await this.hospitalApiService.checkHospitalApiHealth();
-
-    return {
-      healthy: isHealthy,
-      timestamp: new Date().toISOString(),
-      service: "Hospital Alert API",
-    };
-  }
-
-  @Get("mock/:patientId")
-  async getMockAlerts(@Param("patientId") patientId: string) {
-    // For testing purposes - get mock alerts
-    const alerts =
-      await this.hospitalApiService.fetchPatientAlerts(
-        patientId,
-      );
-
-    return {
-      alerts,
-      patientId,
-      isMockData: !process.env.HOSPITAL_API_URL,
-      timestamp: new Date().toISOString(),
-    };
-  }
-}
-```
-
-## Hocuspocus Integration
-
-### Hocuspocus Service Integration
-
-```typescript
-// Hocuspocus Service within NestJS (existing code with alert integration)
-import { Injectable } from "@nestjs/common";
-import { Server } from "@hocuspocus/server";
-import { Database } from "@hocuspocus/extension-database";
-import { Logger } from "@hocuspocus/extension-logger";
-import { Throttle } from "@hocuspocus/extension-throttle";
-import { HttpService } from "@nestjs/axios";
-import { ConfigService } from "@nestjs/config";
-
-@Injectable()
-export class HocuspocusService {
-  private server: Server;
-
-  constructor(
-    private readonly httpService: HttpService,
-    private readonly configService: ConfigService,
-  ) {
-    this.initializeServer();
-  }
-
-  private initializeServer() {
-    this.server = Server.configure({
-      port: 3002,
-
-      extensions: [
-        new Logger(),
-        new Throttle({
-          throttle: 100, // Allow 100 requests per minute
-        }),
-        new Database({
-          fetch: async ({ documentName }) => {
-            try {
-              // Fetch document from C# backend
-              const response =
-                await this.httpService.axiosRef.get(
-                  `${this.configService.get("CSHARP_API_URL")}/documents/${documentName}`,
-                  {
-                    headers: {
-                      Authorization: `Bearer ${this.configService.get("SERVICE_TOKEN")}`,
-                    },
-                  },
-                );
-
-              if (
-                response.status === 200 &&
-                response.data.content
-              ) {
-                return new Uint8Array(response.data.content);
-              }
-            } catch (error) {
-              console.error("Failed to fetch document:", error);
-            }
-            return null;
-          },
-
-          store: async ({ documentName, state }) => {
-            try {
-              // Store document to C# backend
-              await this.httpService.axiosRef.put(
-                `${this.configService.get("CSHARP_API_URL")}/documents/${documentName}`,
-                {
-                  content: Array.from(state),
-                  lastModified: new Date().toISOString(),
-                },
-                {
-                  headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${this.configService.get("SERVICE_TOKEN")}`,
-                  },
-                },
-              );
-            } catch (error) {
-              console.error("Failed to store document:", error);
-            }
-          },
-        }),
-      ],
-
-      async onAuthenticate({ token }) {
-        // Verify JWT token with C# backend
-        try {
-          const response = await this.httpService.axiosRef.post(
-            `${this.configService.get("CSHARP_API_URL")}/auth/verify`,
-            {},
-            {
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-            },
-          );
-
-          if (response.status === 200) {
-            return { user: response.data };
-          }
-        } catch (error) {
-          console.error("Authentication failed:", error);
-        }
-
-        throw new Error("Authentication failed");
-      },
-
-      async onConnect({ documentName, context }) {
-        // Log connection and update presence
-        console.log(
-          `User ${context.user.id} connected to document ${documentName}`,
-        );
-
-        // Update presence in cache or trigger webhook
-        await this.updateUserPresence(
-          documentName,
-          context.user,
-          "connected",
-        );
-      },
-
-      async onDisconnect({ documentName, context }) {
-        // Log disconnection and update presence
-        console.log(
-          `User ${context.user.id} disconnected from document ${documentName}`,
-        );
-
-        // Update presence in cache or trigger webhook
-        await this.updateUserPresence(
-          documentName,
-          context.user,
-          "disconnected",
-        );
-      },
-
-      async onChange({ documentName, context, document }) {
-        // Notify about document changes
-        await this.notifyDocumentChange(
-          documentName,
-          context.user,
-          document,
-        );
-      },
-    });
-  }
-
-  async start() {
-    this.server.listen();
-  }
-
-  async stop() {
-    await this.server.destroy();
-  }
-
-  private async updateUserPresence(
-    documentName: string,
-    user: any,
-    action: string,
-  ) {
-    // Extract patient ID and section from document name
-    const [, patientId, section] = documentName.split(":");
-
-    // Trigger internal webhook for presence update
-    try {
-      await this.httpService.axiosRef.post(
-        "http://localhost:3000/webhooks/collaboration/presence-updated",
-        {
-          patientId: parseInt(patientId),
-          section,
-          userId: user.id,
-          userName: user.name,
-          action,
-          timestamp: new Date().toISOString(),
-        },
-      );
-    } catch (error) {
-      console.error("Failed to update presence:", error);
-    }
-  }
-
-  private async notifyDocumentChange(
-    documentName: string,
-    user: any,
-    document: any,
-  ) {
-    // Extract patient ID and section from document name
-    const [, patientId, section] = documentName.split(":");
-
-    // Trigger internal webhook for document change
-    try {
-      await this.httpService.axiosRef.post(
-        "http://localhost:3000/webhooks/collaboration/document-changed",
-        {
-          patientId: parseInt(patientId),
-          section,
-          userId: user.id,
-          documentLength: document.getText().length,
-          timestamp: new Date().toISOString(),
-        },
-      );
-    } catch (error) {
-      console.error("Failed to notify document change:", error);
-    }
-  }
-}
-```
 
 ## Webhook Specifications
 
@@ -2252,387 +1280,6 @@ webhook_events:
         patientId: string (optional)
         timestamp: datetime
 ```
-
-### Enhanced Webhook Controller
-
-```typescript
-// Enhanced Webhook Controller with Alert Integration
-@Controller("webhooks")
-export class WebhookController {
-  constructor(
-    private readonly webhookService: WebhookService,
-    private readonly cacheService: CacheService,
-    private readonly collaborationService: CollaborationService,
-    private readonly alertSyncService: AlertSyncService,
-  ) {}
-
-  // Existing webhook handlers...
-  @Post("patient/updated")
-  @HttpCode(200)
-  async handlePatientUpdated(
-    @Body() payload: PatientUpdatedPayload,
-  ) {
-    // Process patient update
-    await this.webhookService.processPatientUpdate(payload);
-
-    // Clear related cache
-    await this.cacheService.clearPatientCache(
-      payload.patientId,
-    );
-
-    // Trigger alert sync for updated patient
-    await this.alertSyncService.syncPatientAlerts(
-      payload.hospitalPatientId,
-    );
-
-    // Emit real-time event
-    this.webhookService.emitRealTimeEvent(
-      "patient.updated",
-      payload,
-    );
-
-    return { status: "processed" };
-  }
-
-  // New alert-specific webhooks
-  @Post("alert/synced")
-  @HttpCode(200)
-  async handleAlertSynced(@Body() payload: AlertSyncedPayload) {
-    // Process synced alert
-    await this.webhookService.processAlertSync(payload);
-
-    // Update patient alert cache
-    await this.cacheService.updatePatientAlerts(
-      payload.internalPatientId,
-      payload,
-    );
-
-    // Add activity feed entry
-    await this.collaborationService.addActivityItem(
-      payload.internalPatientId,
-      {
-        id: generateId(),
-        type: "alert_updated",
-        userId: "system",
-        section: null,
-        details: {
-          alertType: payload.type,
-          alertLevel: payload.level,
-          alertStatus: payload.status,
-        },
-        timestamp: new Date(payload.timestamp),
-      },
-    );
-
-    return { status: "processed" };
-  }
-
-  @Post("alert/sync/requested")
-  @HttpCode(200)
-  async handleAlertSyncRequested(
-    @Body() payload: AlertSyncRequestPayload,
-  ) {
-    // Log sync request
-    await this.webhookService.logAlertSyncRequest(payload);
-
-    // Update sync status cache
-    await this.cacheService.updateSyncStatus(
-      payload.syncJobId,
-      "in_progress",
-    );
-
-    return { status: "processed" };
-  }
-
-  @Post("alert/sync/completed")
-  @HttpCode(200)
-  async handleAlertSyncCompleted(
-    @Body() payload: AlertSyncCompletedPayload,
-  ) {
-    // Process sync completion
-    await this.webhookService.processAlertSyncCompletion(
-      payload,
-    );
-
-    // Update sync status cache
-    await this.cacheService.updateSyncStatus(
-      payload.syncJobId,
-      "completed",
-    );
-
-    // Emit completion event
-    this.webhookService.emitRealTimeEvent(
-      "alert.sync.completed",
-      payload,
-    );
-
-    return { status: "processed" };
-  }
-
-  @Post("hospital/api/error")
-  @HttpCode(200)
-  async handleHospitalApiError(
-    @Body() payload: HospitalApiErrorPayload,
-  ) {
-    // Log hospital API error
-    await this.webhookService.logHospitalApiError(payload);
-
-    // If critical error, switch to mock data mode temporarily
-    if (payload.errorCode >= 500) {
-      await this.webhookService.activateTemporaryMockMode(
-        payload.endpoint,
-      );
-    }
-
-    return { status: "processed" };
-  }
-
-  // Existing collaboration and other webhooks remain the same...
-}
-```
-
-## Caching Strategy
-
-### Enhanced Cache Strategy with Alert Management
-
-```typescript
-// Enhanced Cache Strategy Service with Alert Support
-@Injectable()
-export class CacheStrategyService {
-  constructor(
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
-  ) {}
-
-  // Alert Caching
-  async cachePatientAlerts(
-    patientId: number,
-    alerts: Alert[],
-    ttl: number = 300,
-  ) {
-    const cacheKey = `alerts:${patientId}`;
-    await this.cacheManager.set(cacheKey, alerts, ttl);
-  }
-
-  async getPatientAlerts(
-    patientId: number,
-  ): Promise<Alert[] | null> {
-    const cacheKey = `alerts:${patientId}`;
-    return await this.cacheManager.get<Alert[]>(cacheKey);
-  }
-
-  async updatePatientAlerts(
-    patientId: number,
-    newAlert: Alert,
-  ) {
-    const cacheKey = `alerts:${patientId}`;
-    const existingAlerts =
-      (await this.cacheManager.get<Alert[]>(cacheKey)) || [];
-
-    // Update or add the alert
-    const alertIndex = existingAlerts.findIndex(
-      (alert) => alert.id === newAlert.id,
-    );
-    if (alertIndex >= 0) {
-      existingAlerts[alertIndex] = newAlert;
-    } else {
-      existingAlerts.push(newAlert);
-    }
-
-    // Sort by creation timestamp (newest first)
-    existingAlerts.sort(
-      (a, b) =>
-        new Date(b.creationDetails.timestamp).getTime() -
-        new Date(a.creationDetails.timestamp).getTime(),
-    );
-
-    await this.cacheManager.set(cacheKey, existingAlerts, 300);
-  }
-
-  // Alert Sync Status Caching
-  async cacheSyncStatus(
-    syncJobId: string,
-    status: any,
-    ttl: number = 1800,
-  ) {
-    const cacheKey = `sync:${syncJobId}`;
-    await this.cacheManager.set(cacheKey, status, ttl);
-  }
-
-  async getSyncStatus(syncJobId: string): Promise<any> {
-    const cacheKey = `sync:${syncJobId}`;
-    return await this.cacheManager.get(cacheKey);
-  }
-
-  async updateSyncStatus(syncJobId: string, status: string) {
-    const cacheKey = `sync:${syncJobId}`;
-    const existingStatus =
-      (await this.cacheManager.get(cacheKey)) || {};
-
-    const updatedStatus = {
-      ...existingStatus,
-      status,
-      lastUpdated: new Date().toISOString(),
-    };
-
-    await this.cacheManager.set(cacheKey, updatedStatus, 1800); // 30 minutes TTL
-  }
-
-  // Hospital API Health Caching
-  async cacheHospitalApiHealth(
-    endpoint: string,
-    health: any,
-    ttl: number = 60,
-  ) {
-    const cacheKey = `hospital:health:${endpoint}`;
-    await this.cacheManager.set(cacheKey, health, ttl);
-  }
-
-  async getHospitalApiHealth(endpoint: string): Promise<any> {
-    const cacheKey = `hospital:health:${endpoint}`;
-    return await this.cacheManager.get(cacheKey);
-  }
-
-  // Enhanced Patient Data Caching with Alerts
-  async getPatientWithCache(
-    patientId: number,
-  ): Promise<PatientWithAlerts> {
-    const cacheKey = `patient:${patientId}`;
-
-    let patient =
-      await this.cacheManager.get<PatientWithAlerts>(cacheKey);
-
-    if (!patient) {
-      // Fetch patient from backend
-      patient = await this.fetchPatientFromBackend(patientId);
-
-      // Fetch alerts separately and combine
-      const alerts = await this.getPatientAlerts(patientId);
-      if (alerts) {
-        patient.alerts = alerts;
-      }
-
-      await this.cacheManager.set(cacheKey, patient, 300);
-    }
-
-    return patient;
-  }
-
-  // Enhanced cache invalidation for alert features
-  async invalidatePatientCache(patientId: number) {
-    const patterns = [
-      `patient:${patientId}`,
-      `alerts:${patientId}`,
-      `ipass:${patientId}:*`,
-      `activity:${patientId}`,
-      `presence:${patientId}:*`,
-      `document:ipass:${patientId}:*`,
-      `collab:ipass:${patientId}:*`,
-    ];
-
-    const keysToDelete =
-      await this.getKeysForPatterns(patterns);
-    await Promise.all(
-      keysToDelete.map((key) => this.cacheManager.del(key)),
-    );
-  }
-
-  // Cache metrics including alert features
-  async getCacheMetrics(): Promise<EnhancedCacheMetrics> {
-    const store = this.cacheManager.store as any;
-
-    // Count different types of cached items
-    const allKeys = await this.getAllKeys();
-    const documentKeys = allKeys.filter((key) =>
-      key.startsWith("document:"),
-    );
-    const collaborationKeys = allKeys.filter((key) =>
-      key.startsWith("collab:"),
-    );
-    const presenceKeys = allKeys.filter((key) =>
-      key.startsWith("presence:"),
-    );
-    const alertKeys = allKeys.filter((key) =>
-      key.startsWith("alerts:"),
-    );
-    const syncKeys = allKeys.filter((key) =>
-      key.startsWith("sync:"),
-    );
-    const hospitalHealthKeys = allKeys.filter((key) =>
-      key.startsWith("hospital:health:"),
-    );
-
-    return {
-      totalSize: store.size || 0,
-      maxSize: store.max || 0,
-      documentsCached: documentKeys.length,
-      activeCollaborations: collaborationKeys.length,
-      activePresence: presenceKeys.length,
-      cachedAlerts: alertKeys.length,
-      activeSyncJobs: syncKeys.length,
-      hospitalHealthChecks: hospitalHealthKeys.length,
-      hitRate: await this.calculateHitRate(),
-      memoryUsage: process.memoryUsage(),
-    };
-  }
-
-  // Helper methods remain the same...
-  private async getKeysMatchingPattern(
-    pattern: string,
-  ): Promise<string[]> {
-    const allKeys = await this.getAllKeys();
-    const regex = new RegExp(pattern.replace("*", ".*"));
-    return allKeys.filter((key) => regex.test(key));
-  }
-
-  private async getAllKeys(): Promise<string[]> {
-    // This would need to be implemented based on the cache store
-    return [];
-  }
-
-  private async getKeysForPatterns(
-    patterns: string[],
-  ): Promise<string[]> {
-    const allKeys: string[] = [];
-    for (const pattern of patterns) {
-      const keys = await this.getKeysMatchingPattern(pattern);
-      allKeys.push(...keys);
-    }
-    return [...new Set(allKeys)];
-  }
-
-  private async calculateHitRate(): Promise<number> {
-    return 0.85; // 85% hit rate example
-  }
-
-  private async fetchPatientFromBackend(
-    patientId: number,
-  ): Promise<PatientWithAlerts> {
-    const response = await fetch(
-      `${process.env.CSHARP_API_URL}/patients/${patientId}?includeAlerts=true`,
-    );
-    return response.json();
-  }
-}
-
-interface PatientWithAlerts extends Patient {
-  alerts: Alert[];
-}
-
-interface EnhancedCacheMetrics {
-  totalSize: number;
-  maxSize: number;
-  documentsCached: number;
-  activeCollaborations: number;
-  activePresence: number;
-  cachedAlerts: number;
-  activeSyncJobs: number;
-  hospitalHealthChecks: number;
-  hitRate: number;
-  memoryUsage: NodeJS.MemoryUsage;
-}
-```
-
-## Security & Compliance
 
 ### Enhanced HIPAA Compliance Framework
 
@@ -2972,4 +1619,350 @@ spec:
   - Hospital API monitoring and alerting
   - Alert synchronization performance tracking
 
-This updated backend documentation provides a complete architecture specification with proper external hospital API integration for alerts, eliminating the confusion about real-time vital signs while maintaining all collaborative functionality and supporting the transition from static to real-time features with proper external system integration.
+# RELEVO - Backend Architecture & API Specifications
+
+## Overview
+This document outlines the complete backend architecture for RELEVO, the digital medical handover platform for Hospital Garrahan. The system uses a **C# main backend** with an **NX monorepo** containing a **NestJS microservice** (with integrated Hocuspocus collaborative editing) and **mock hospital systems** that can be easily replaced with real hospital integrations.
+
+---
+
+## 🏗️ SYSTEM ARCHITECTURE
+
+### High-Level Architecture with NX Monorepo
+
+```mermaid
+graph TB
+    subgraph "Client Layer"
+        WEB[React CSR Application]
+        MOBILE[Mobile Apps]
+        TABLET[Tablet Interface]
+    end
+    
+    subgraph "API Gateway"
+        GATEWAY[API Gateway / Load Balancer]
+        AUTH[Authentication Middleware]
+        RATE[Rate Limiting]
+    end
+    
+    subgraph "Backend Services"
+        CSHARP[C# Main Backend API]
+        NX_MONO[NX Monorepo]
+    end
+    
+    subgraph "NX Monorepo Structure"
+        NESTJS_APP[NestJS Service App]
+        MOCK_HOSPITAL[Mock Hospital Systems App]
+        SHARED_LIBS[Shared Libraries]
+        
+        subgraph "NestJS Applications"
+            NESTJS_MAIN[Main NestJS Service]
+            HOCUS_INTEGRATED[Integrated Hocuspocus]
+        end
+        
+        subgraph "Mock Hospital Applications"
+            MOCK_ALERTS[Mock Alert Service]
+            MOCK_EMR[Mock EMR Service]
+            MOCK_LAB[Mock Laboratory Service]
+            MOCK_ADMIN[Mock Admin Service]
+        end
+        
+        subgraph "Shared Libraries"
+            SHARED_TYPES[Shared Types]
+            SHARED_CONFIG[Configuration]
+            SHARED_UTILS[Utilities]
+            HOSPITAL_CONTRACTS[Hospital API Contracts]
+        end
+    end
+    
+    subgraph "C# Backend Components"
+        USER_SVC[User Management]
+        PATIENT_SVC[Patient Service]
+        HANDOVER_SVC[Handover Service]
+        CLINICAL_SVC[Clinical Documentation]
+        ALERT_SVC[Hospital Alert Integration]
+        AUDIT_SVC[Audit & Compliance]
+        SEARCH_SVC[Search Service]
+    end
+    
+    subgraph "Data Layer"
+        PRIMARY_DB[(PostgreSQL Database)]
+        FILE_STORAGE[File Storage]
+        SEARCH_INDEX[Search Index]
+    end
+    
+    subgraph "External Integrations (Future)"
+        HOSPITAL_ALERTS[Hospital Alert REST API]
+        EMR[EMR Systems]
+        LAB_SYSTEMS[Laboratory Systems]
+        EMAIL[Email Services]
+        SMS[SMS Services]
+    end
+    
+    WEB --> GATEWAY
+    MOBILE --> GATEWAY
+    TABLET --> GATEWAY
+    WEB -.-> NX_MONO
+    
+    GATEWAY --> AUTH
+    GATEWAY --> CSHARP
+    GATEWAY --> NX_MONO
+    
+    NX_MONO --> NESTJS_APP
+    NX_MONO --> MOCK_HOSPITAL
+    NX_MONO --> SHARED_LIBS
+    
+    NESTJS_APP --> NESTJS_MAIN
+    NESTJS_APP --> HOCUS_INTEGRATED
+    
+    MOCK_HOSPITAL --> MOCK_ALERTS
+    MOCK_HOSPITAL --> MOCK_EMR
+    MOCK_HOSPITAL --> MOCK_LAB
+    MOCK_HOSPITAL --> MOCK_ADMIN
+    
+    CSHARP --> USER_SVC
+    CSHARP --> PATIENT_SVC
+    CSHARP --> HANDOVER_SVC
+    CSHARP --> CLINICAL_SVC
+    CSHARP --> ALERT_SVC
+    CSHARP --> AUDIT_SVC
+    CSHARP --> SEARCH_SVC
+    
+    USER_SVC --> PRIMARY_DB
+    PATIENT_SVC --> PRIMARY_DB
+    HANDOVER_SVC --> PRIMARY_DB
+    CLINICAL_SVC --> PRIMARY_DB
+    ALERT_SVC --> PRIMARY_DB
+    AUDIT_SVC --> PRIMARY_DB
+    
+    NESTJS_MAIN --> PRIMARY_DB
+    HOCUS_INTEGRATED --> PRIMARY_DB
+    
+    ALERT_SVC -.-> MOCK_ALERTS
+    ALERT_SVC -.-> HOSPITAL_ALERTS
+    
+    MOCK_ALERTS -.-> HOSPITAL_ALERTS
+    MOCK_EMR -.-> EMR
+    MOCK_LAB -.-> LAB_SYSTEMS
+```
+
+### NX Workspace Structure
+
+```
+relevo-backend-nx/
+├── apps/
+│   ├── nestjs-service/                    # Main NestJS service
+│   │   ├── src/
+│   │   │   ├── app/
+│   │   │   │   ├── webhooks/
+│   │   │   │   ├── notifications/
+│   │   │   │   ├── realtime/
+│   │   │   │   ├── collaboration/         # Hocuspocus integration
+│   │   │   │   └── cache/
+│   │   │   ├── main.ts
+│   │   │   └── hocuspocus.ts             # Integrated Hocuspocus server
+│   │   ├── project.json
+│   │   └── tsconfig.app.json
+│   │
+│   ├── mock-hospital-alerts/              # Mock Hospital Alert System
+│   │   ├── src/
+│   │   │   ├── app/
+│   │   │   │   ├── alerts/
+│   │   │   │   ├── patients/
+│   │   │   │   └── webhooks/
+│   │   │   └── main.ts
+│   │   ├── project.json
+│   │   └── tsconfig.app.json
+│   │
+│   ├── mock-emr-system/                   # Mock EMR System
+│   │   ├── src/
+│   │   │   ├── app/
+│   │   │   │   ├── patients/
+│   │   │   │   ├── admissions/
+│   │   │   │   ├── vitals/
+│   │   │   │   └── webhooks/
+│   │   │   └── main.ts
+│   │   ├── project.json
+│   │   └── tsconfig.app.json
+│   │
+│   ├── mock-lab-system/                   # Mock Laboratory System
+│   │   ├── src/
+│   │   │   ├── app/
+│   │   │   │   ├── results/
+│   │   │   │   ├── orders/
+│   │   │   │   └── alerts/
+│   │   │   └── main.ts
+│   │   ├── project.json
+│   │   └── tsconfig.app.json
+│   │
+│   └── mock-admin-portal/                 # Mock Hospital Admin Portal
+│       ├── src/
+│       │   ├── app/
+│       │   │   ├── dashboard/
+│       │   │   ├── system-status/
+│       │   │   └── configuration/
+│       │   └── main.ts
+│       ├── project.json
+│       └── tsconfig.app.json
+│
+├── libs/
+│   ├── shared-types/                      # Shared TypeScript types
+│   │   ├── src/
+│   │   │   ├── hospital-api/
+│   │   │   ├── patient/
+│   │   │   ├── alert/
+│   │   │   └── common/
+│   │   └── project.json
+│   │
+│   ├── hospital-contracts/                # Hospital API contracts
+│   │   ├── src/
+│   │   │   ├── alert-service.contract.ts
+│   │   │   ├── emr-service.contract.ts
+│   │   │   ├── lab-service.contract.ts
+│   │   │   └── webhook.contract.ts
+│   │   └── project.json
+│   │
+│   ├── shared-config/                     # Configuration management
+│   │   ├── src/
+│   │   │   ├── database.config.ts
+│   │   │   ├── redis.config.ts           # If needed later
+│   │   │   ├── hospital-endpoints.config.ts
+│   │   │   └── environment.config.ts
+│   │   └── project.json
+│   │
+│   ├── shared-utils/                      # Shared utilities
+│   │   ├── src/
+│   │   │   ├── validation/
+│   │   │   ├── encryption/
+│   │   │   ├── logging/
+│   │   │   └── http-client/
+│   │   └── project.json
+│   │
+│   └── shared-database/                   # Database utilities and models
+│       ├── src/
+│       │   ├── entities/
+│       │   ├── migrations/
+│       │   └── repositories/
+│       └── project.json
+│
+├── tools/
+│   ├── scripts/
+│   │   ├── start-dev-environment.sh
+│   │   ├── deploy-production.sh
+│   │   └── switch-to-real-apis.sh
+│   └── docker/
+│       ├── docker-compose.dev.yml
+│       ├── docker-compose.prod.yml
+│       └── Dockerfile.nestjs
+│
+├── nx.json
+├── package.json
+├── tsconfig.base.json
+└── README.md
+```
+
+### Technology Stack
+
+**C# Main Backend:**
+- **Runtime**: .NET 8+ with ASP.NET Core
+- **Database**: Entity Framework Core with PostgreSQL
+- **Authentication**: JWT with ASP.NET Core Identity
+- **API**: RESTful APIs with OpenAPI/Swagger
+- **Validation**: FluentValidation
+- **Logging**: Serilog with structured logging
+- **HTTP Client**: HttpClient for hospital API integration
+
+**NX Monorepo (Node.js Ecosystem):**
+- **Build System**: NX with TypeScript
+- **Package Manager**: npm/yarn with workspace support
+- **Main Service**: NestJS Framework with integrated Hocuspocus
+- **Mock Services**: Express.js or NestJS for hospital system mocks
+- **Shared Libraries**: TypeScript libraries for contracts and utilities
+- **Development Tools**: Hot reload, testing, linting across all apps
+
+**NestJS Integrated Service:**
+- **Runtime**: Node.js 20+ with NestJS Framework
+- **Cache**: @nestjs/cache-manager with in-memory caching
+- **Real-time**: WebSocket with @nestjs/websockets
+- **Collaborative Editing**: Hocuspocus integrated with Tiptap
+- **Webhooks**: HTTP endpoints for external integrations
+- **Queue**: Bull Queue with in-memory storage
+- **Notifications**: Nodemailer, Twilio integration
+- **HTTP Client**: Axios for external API calls
+
+**Mock Hospital Services:**
+- **Alert Service**: NestJS application simulating hospital alert API
+- **EMR Service**: Express.js application simulating EMR system
+
+**Database & Storage:**
+- **Database**: PostgreSQL 15+ (single instance)
+- **File Storage**: Local file system or S3-compatible storage
+- **Search**: PostgreSQL full-text search + optional Elasticsearch
+
+**Security & Compliance:**
+- **Authentication**: JWT with refresh tokens
+- **Authorization**: RBAC with unit-based permissions
+- **Encryption**: Data protection APIs (.NET) + bcrypt
+- **Audit**: Comprehensive logging with retention policies
+- **Compliance**: HIPAA, SOC 2 Type II compliance
+
+---
+
+## 🔐 AUTHENTICATION & AUTHORIZATION
+
+### Authentication Flow (C# Backend)
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant C# API
+    participant Database
+    participant NestJS Service
+    
+    Client->>C# API: POST /auth/login
+    C# API->>Database: Validate credentials
+    Database-->>C# API: User + permissions
+    C# API->>C# API: Generate JWT + Refresh Token
+    C# API-->>Client: JWT + Refresh Token + User Profile
+    
+    Note over Client: Store tokens securely
+    
+    Client->>C# API: API Request with JWT
+    C# API->>C# API: Validate JWT
+    C# API-->>Client: Authorized request proceeds
+    
+    Client->>NestJS Service: WebSocket with JWT
+    NestJS Service->>C# API: Validate JWT (internal)
+    C# API-->>NestJS Service: JWT validation result
+    NestJS Service-->>Client: WebSocket connection established
+    
+    Client->>NestJS Service: Hocuspocus WebSocket with JWT
+    NestJS Service->>C# API: Validate JWT for document access
+    C# API-->>NestJS Service: JWT + document permissions
+    NestJS Service-->>Client: Collaborative session established
+```
+
+---
+
+
+**🎯 Key Medical Workflow Support:**
+
+**✅ I-PASS Handover Methodology:**
+- Complete handover session tracking with timing, quality scores, feedback
+- Structured I-PASS data storage (Identity, Illness, Patient Summary, Action List, Situation Awareness, Synthesis)
+- Quality metrics and performance analytics
+
+**✅ Hospital Alert Integration:**
+- External alert system synchronization with hospital APIs
+- Alert acknowledgment, escalation, and resolution tracking
+- Mock/real hospital system switching capability
+
+**✅ Clinical Documentation:**
+- Collaborative document editing with Hocuspocus integration
+- Version control, approval workflows, peer review
+- Template system and standardization support
+
+**✅ Patient Safety & Quality:**
+- Comprehensive patient records with risk assessments
+- Fall risk, pressure ulcer risk, and safety alert tracking
+- Data completeness scoring and quality metrics
+  

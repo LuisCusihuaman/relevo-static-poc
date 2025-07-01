@@ -860,6 +860,131 @@ COMMENT ON TABLE users IS 'RELEVO Medical Handover Platform - Comprehensive Orac
 ```
 
 ---
+**📊 Comprehensive Database Schema Restored:**
 
+**🗄️ Complete Table Structure:**
+- **13 Core Tables** with full medical domain modeling
+- **Users & Authentication** - Complete user management with roles, permissions, sessions
+- **Medical Units & Shifts** - Hospital organizational structure
+- **Patients** - Comprehensive medical records with 50+ fields
+- **Hospital Alerts** - Full alert system with hospital API integration
+- **Handover Sessions** - Complete I-PASS methodology implementation  
+- **Clinical Documentation** - Collaborative documents with Hocuspocus integration
+- **Notifications** - Multi-channel notification system
+- **Audit Logs** - HIPAA-compliant comprehensive audit trail
 
-</rewritten_file>
+**🔗 Complete Database Relations:**
+```mermaid
+USERS (1) ←→ (M) PATIENT_ALERTS (acknowledged_by)
+USERS (1) ←→ (M) HANDOVER_SESSIONS (sender/receiver)
+PATIENTS (1) ←→ (M) CLINICAL_DOCUMENTS (patient_id)
+MEDICAL_UNITS (1) ←→ (M) PATIENTS (current_unit_id)
+HANDOVER_SESSIONS (1) ←→ (M) AUDIT_LOGS (handover_id)
+```
+
+**📈 Performance Optimization Complete:**
+- **50+ Strategic Indexes** - Covering all query patterns
+- **Composite Indexes** - Multi-column indexes for complex queries
+- **GIN/GIST Indexes** - For JSON fields, arrays, and full-text search
+- **Partial Indexes** - Conditional indexes for active records only
+- **Concurrent Index Creation** - Zero-downtime index deployment
+
+**🔍 Advanced Search Capabilities:**
+```sql
+-- Full-text search across patients
+CREATE INDEX CONCURRENTLY idx_patients_search_vector ON patients USING GIN (search_vector);
+
+-- Medical diagnosis search
+CREATE INDEX CONCURRENTLY idx_patients_diagnosis_search ON patients USING GIN (
+    to_tsvector('english', primary_diagnosis || ' ' || secondary_diagnoses)
+);
+
+-- Alert content search  
+CREATE INDEX CONCURRENTLY idx_patient_alerts_search ON patient_alerts USING GIN (
+    to_tsvector('english', alert_catalog_description || ' ' || observations)
+);
+```
+
+**⚡ Specialized Medical Indexes:**
+
+**Patient Care Optimization:**
+```sql
+-- Active patients by unit and severity
+CREATE INDEX CONCURRENTLY idx_patients_unit_status_severity 
+    ON patients (current_unit_id, status, illness_severity);
+
+-- Critical alerts requiring immediate attention  
+CREATE INDEX CONCURRENTLY idx_patient_alerts_critical_active 
+    ON patient_alerts (patient_id, alert_level, alert_status, start_date DESC) 
+    WHERE alert_level = 'CRITICAL' AND alert_status = 'ACTIVE';
+
+-- Handover quality analytics
+CREATE INDEX CONCURRENTLY idx_handover_sessions_sender_quality 
+    ON handover_sessions (sender_id, quality_score DESC, completed_at DESC);
+```
+
+**🔧 Database Functions & Triggers:**
+
+**Automated Data Management:**
+- **Search Vector Updates** - Auto-update full-text search on data changes
+- **Alert Status Calculation** - Auto-expire alerts based on end dates
+- **Data Quality Scoring** - Auto-calculate patient record completeness
+- **Timestamp Management** - Universal updated_at triggers
+- **Access Tracking** - Patient and document access logging
+
+**🛡️ HIPAA Compliance Features:**
+
+**Comprehensive Audit System:**
+```sql
+CREATE TABLE audit_logs (
+    -- Complete audit trail with 25+ fields
+    user_id UUID REFERENCES users(id),
+    patient_id UUID REFERENCES patients(id),
+    phi_accessed BOOLEAN DEFAULT false,
+    phi_fields_accessed TEXT[],
+    ip_address INET,
+    user_agent TEXT,
+    action VARCHAR(100) NOT NULL,
+    old_values JSONB,
+    new_values JSONB,
+    -- 7-year retention for HIPAA compliance
+    retention_period INTEGER DEFAULT 2557
+);
+```
+
+**Security & Access Control:**
+- **Row-Level Security** preparation for multi-tenant scenarios
+- **Database Roles** - Application, read-only, and analytics roles
+- **Encrypted PHI Fields** - Patient health information protection
+- **Tamper Evidence** - Content hashing and digital signatures
+
+**📊 Analytics & Reporting:**
+
+**Materialized Views for Performance:**
+```sql
+-- Daily patient census by unit
+CREATE MATERIALIZED VIEW mv_daily_patient_census AS
+SELECT census_date, current_unit_id, patient_count, critical_count...
+
+-- Weekly handover quality metrics  
+CREATE MATERIALIZED VIEW mv_weekly_handover_quality AS
+SELECT week_start, avg_quality_score, avg_duration...
+
+-- Monthly alert effectiveness
+CREATE MATERIALIZED VIEW mv_monthly_alert_effectiveness AS  
+SELECT month_start, alert_type, avg_effectiveness_score...
+```
+
+**🔄 Maintenance & Cleanup:**
+
+**Automated Maintenance Procedures:**
+```sql
+-- Clean expired tokens
+CREATE OR REPLACE FUNCTION cleanup_expired_tokens() RETURNS INTEGER;
+
+-- Archive old audit logs  
+CREATE OR REPLACE FUNCTION archive_old_audit_logs() RETURNS INTEGER;
+
+-- Cleanup old notifications
+CREATE OR REPLACE FUNCTION cleanup_old_notifications() RETURNS INTEGER;
+```

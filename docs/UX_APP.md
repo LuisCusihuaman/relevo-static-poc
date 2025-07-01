@@ -48,48 +48,6 @@ RELEVO Application
     └── ⌨️ Keyboard Shortcuts & Accessibility [🔵 Static Event Handlers]
 ```
 
-### Core Data Models
-
-#### Patient Data Structure
-```typescript
-// 🔵 Static Data - Currently from data/constants.ts
-interface Patient {
-  id: number;
-  name: string;
-  age: number;
-  mrn: string;        // Medical Record Number
-  room: string;
-  unit: string;       // PICU, NICU, General, etc.
-  assignedTo: string; // Doctor assignment
-  illnessSeverity: 'stable' | 'guarded' | 'unstable' | 'critical';
-  diagnosis: string;
-  status: string;
-  lastUpdate: string; // 🟡 Mock timestamp, not real-time updated
-  collaborators: number; // 🔵 Static count
-  alerts: Alert[];
-  admissionDate: string;
-  priority: 'low' | 'medium' | 'high' | 'critical';
-  ipassEntries: IPassEntry[];
-}
-```
-
-#### Daily Setup Configuration
-```typescript
-// 🔵 Static Local State - Managed in DailyWorkflow component
-interface DailySetupData {
-  doctorName: string;          // 🔵 Static form input
-  unit: string;               // 🔵 Static dropdown selection
-  shift: string;              // 🔵 Static dropdown selection
-  selectedPatients: number[]; // 🔵 Static multi-select
-  date: string;              // 🔵 Static date
-  preferences: {             // 🔵 Static user preferences
-    notifications: boolean;
-    autoSave: boolean;
-    collaborativeMode: boolean;
-  };
-}
-```
-
 ## 🗺️ COMPREHENSIVE FEATURE RELATIONSHIP MAP
 
 ### Feature Interconnection Matrix
@@ -884,32 +842,6 @@ flowchart TD
     end
 ```
 
-### Audit Trail Implementation
-
-```typescript
-// 🔵 Static/Frontend Audit Implementation
-interface AuditLogEntry {
-  userId: string;              // 🔵 From static currentUser
-  action: 'view' | 'edit' | 'handover' | 'documentation' | 'access' | 'export';
-  patientId: number;           // 🔵 From static patientData
-  sectionAccessed?: string;    // 🔵 From local state tracking
-  timestamp: Date;             // 🔴 Real-time timestamp
-  sessionId: string;           // 🔴 Real-time session from hooks
-  ipAddress: string;           // 🟡 Mock - not actually captured
-  userAgent: string;           // 🔴 Real browser userAgent
-  dataAccessed: string[];      // 🔵 Frontend tracking only
-  changesMade?: {              // 🔵 Local change tracking
-    field: string;
-    oldValue: any;
-    newValue: any;
-  }[];
-  medicalContext: {            // 🔵 Static from setup
-    unit: string;
-    shift: string;
-    shiftPhase: 'handover' | 'routine' | 'emergency';
-  };
-}
-
 // 🔵 Frontend-only audit logging for critical medical actions
 const auditActions = {
   // 🔵 Console logging only - no backend persistence
@@ -1014,112 +946,6 @@ flowchart TD
     end
 ```
 
-### Memory Management
-
-```typescript
-// 🔵 Local component cleanup patterns for memory optimization
-useEffect(() => {
-  // 🔵 Cleanup function for main App component - local state only
-  return () => {
-    // 🔵 Clear local patient selection state to prevent memory leaks
-    setFullscreenEditing(null);
-    setCurrentSaveFunction(null);
-    
-    // 🔵 Clear local UI state
-    setShowHistory(false);
-    setShowComments(false);
-    setShowActivityFeed(false);
-    setShowCollaborators(false);
-    setShowShareMenu(false);
-    setShowMobileMenu(false);
-    
-    // 🔵 Clear local layout state
-    setExpandedSections({
-      illness: true,
-      patient: false,
-      actions: false,
-      awareness: false,
-      synthesis: false
-    });
-  };
-}, []);
-
-// 🔴 Real-time auto-save interval management
-const useAutoSave = (saveFunction: () => void, interval: number = 30000) => {
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  
-  useEffect(() => {
-    // 🔴 Set up real-time auto-save interval
-    intervalRef.current = setInterval(saveFunction, interval);
-    
-    // 🔴 Cleanup interval on unmount
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-    };
-  }, [saveFunction, interval]);
-  
-  // 🔴 Manual cleanup function for real-time intervals
-  const clearAutoSave = () => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-  };
-  
-  return { clearAutoSave };
-};
-
-// 🔵 Static event listener cleanup
-const useEventCleanup = () => {
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      // 🔵 Static keyboard event handling (Escape for focus mode, etc.)
-    };
-    
-    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      // 🔵 Local cleanup before page unload
-      event.preventDefault();
-      return 'Are you sure you want to leave? Unsaved changes may be lost.';
-    };
-    
-    document.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
-  }, []);
-};
-
-// 🔵 Memory-efficient static data structures
-const useOptimizedPatientData = (patientData: Patient[]) => {
-  // 🔵 Memoize expensive computations on static data
-  const processedPatients = useMemo(() => {
-    return patientData.map(patient => ({
-      ...patient,
-      // 🔵 Only include necessary fields for display
-      displayData: {
-        id: patient.id,
-        name: patient.name,
-        severity: patient.illnessSeverity,
-        unit: patient.unit,
-        lastUpdate: patient.lastUpdate // 🟡 Mock timestamp, not real-time
-      }
-    }));
-  }, [patientData]);
-  
-  // 🔵 Use callback to prevent re-renders on static data
-  const getPatientById = useCallback((id: number) => {
-    return processedPatients.find(p => p.id === id);
-  }, [processedPatients]);
-  
-  return { processedPatients, getPatientById };
-};
-```
 
 ## 🧪 TESTING STRATEGY
 
@@ -1207,151 +1033,6 @@ flowchart TD
         PRESENCE_MOCK --> MOCK_INDICATOR_TESTS[🟡 Mock Presence Indicator Tests]
     end
 ```
-
-### Test Scenarios by Feature
-
-#### Daily Setup Flow Testing
-```typescript
-describe('🔵 Daily Setup Flow (Static)', () => {
-  test('Complete setup flow - new user', async () => {
-    // 🔵 Test static form processing and local state management
-    render(<App />);
-    
-    // 🔵 Verify DailyWorkflow component renders with static data
-    expect(screen.getByText('RELEVO')).toBeInTheDocument();
-    expect(screen.getByText('I-PASS Setup')).toBeInTheDocument();
-    
-    // 🔵 Test static form interactions
-    const doctorInput = screen.getByLabelText('Doctor Name');
-    fireEvent.change(doctorInput, { target: { value: 'Dr. Smith' } });
-    
-    const unitSelect = screen.getByLabelText('Medical Unit');
-    fireEvent.change(unitSelect, { target: { value: 'PICU' } });
-    
-    // 🔵 Test local state transition
-    const completeButton = screen.getByText('Complete Setup');
-    fireEvent.click(completeButton);
-    
-    // 🔵 Verify transition to main interface (local state change)
-    await waitFor(() => {
-      expect(screen.getByText('Illness Severity')).toBeInTheDocument();
-    });
-  });
-  
-  test('🔵 Setup validation - static form validation', async () => {
-    render(<App />);
-    
-    // 🔵 Test static validation without server communication
-    const completeButton = screen.getByText('Complete Setup');
-    fireEvent.click(completeButton);
-    
-    // 🔵 Verify client-side validation messages
-    expect(screen.getByText('Doctor name is required')).toBeInTheDocument();
-  });
-});
-```
-
-#### Real-time Hook Testing
-```typescript
-describe('🔴 Real-time Custom Hooks', () => {
-  test('useIsMobile - real-time viewport detection', () => {
-    const { result } = renderHook(() => useIsMobile());
-    
-    // 🔴 Test real-time mobile detection
-    act(() => {
-      Object.defineProperty(window, 'innerWidth', {
-        writable: true,
-        configurable: true,
-        value: 500,
-      });
-      window.dispatchEvent(new Event('resize'));
-    });
-    
-    expect(result.current).toBe(true);
-    
-    // 🔴 Test real-time desktop detection
-    act(() => {
-      Object.defineProperty(window, 'innerWidth', {
-        writable: true,
-        configurable: true,
-        value: 1200,
-      });
-      window.dispatchEvent(new Event('resize'));
-    });
-    
-    expect(result.current).toBe(false);
-  });
-  
-  test('🔴 useSyncStatus - real-time sync management', () => {
-    const { result } = renderHook(() => useSyncStatus());
-    
-    // 🔴 Test real-time sync status changes
-    act(() => {
-      result.current.setSyncStatus('saving');
-    });
-    expect(result.current.syncStatus).toBe('saving');
-    
-    // 🔴 Test real-time status display updates
-    expect(result.current.getSyncStatusDisplay()).toContain('Saving');
-  });
-  
-  test('🔴 useHandoverSession - real-time session timers', () => {
-    const { result } = renderHook(() => useHandoverSession());
-    
-    // 🔴 Test real-time timer functions
-    expect(typeof result.current.getTimeUntilHandover).toBe('function');
-    expect(typeof result.current.getSessionDuration).toBe('function');
-    
-    // 🔴 Verify real-time timer updates
-    const initialTime = result.current.getSessionDuration();
-    setTimeout(() => {
-      const updatedTime = result.current.getSessionDuration();
-      expect(updatedTime).toBeGreaterThan(initialTime);
-    }, 1000);
-  });
-});
-```
-
-#### Mock Collaboration Testing
-```typescript
-describe('🟡 Mock Collaboration System', () => {
-  test('Simulated real-time collaboration panel', async () => {
-    render(<App />);
-    
-    // 🔵 Test static panel opening
-    const collabToggle = screen.getByText('Collaboration');
-    fireEvent.click(collabToggle);
-    
-    // 🔵 Verify static panel structure
-    expect(screen.getByTestId('collaboration-panel')).toBeInTheDocument();
-    
-    // 🟡 Test mock activity feed
-    expect(screen.getByText('Recent Activity')).toBeInTheDocument();
-    
-    // 🟡 Test simulated discussion threads
-    expect(screen.getByText('Discussion Threads')).toBeInTheDocument();
-    
-    // 🔵 Test static section navigation from collaboration
-    const sectionNav = screen.getByText('Navigate to Patient Summary');
-    fireEvent.click(sectionNav);
-    
-    expect(screen.getByTestId('patient-summary-section')).toHaveClass('expanded');
-  });
-  
-  test('🟡 Mock real-time animations and indicators', async () => {
-    render(<App />);
-    
-    // 🟡 Test simulated real-time update animations
-    const severityOption = screen.getByText('Stable');
-    fireEvent.click(severityOption);
-    
-    // 🟡 Verify mock real-time animation class is applied
-    const updatedElement = screen.getByTestId('illness-severity-section');
-    expect(updatedElement).toHaveClass('realtime-update');
-  });
-});
-```
-
 ## 🔮 FUTURE ENHANCEMENTS ROADMAP
 
 ### Planned Feature Integration
@@ -1441,326 +1122,6 @@ flowchart TD
 
 ### Component Creation Patterns
 
-#### New Feature Component Template
-```typescript
-// Template for new RELEVO components with real-time feature classification
-interface NewFeatureProps {
-  // 🔵 Static patient-related props (from constants)
-  patients?: Patient[];
-  selectedPatientId?: number;
-  patientData?: Patient;
-  
-  // 🔵 Static user context props (from App.tsx state)
-  currentUser: User;
-  
-  // 🔵 Local UI state management props
-  isOpen?: boolean;
-  isExpanded?: boolean;
-  focusMode?: boolean;
-  
-  // 🔵 Local event handlers (following App.tsx patterns)
-  onClose?: () => void;
-  onToggle?: () => void;
-  onPatientSelect?: (patientId: number) => void;
-  onDataUpdate?: (data: any) => void;
-  
-  // 🔴 Real-time sync and collaboration props
-  syncStatus?: SyncStatus;
-  setSyncStatus?: (status: SyncStatus) => void;
-  onOpenDiscussion?: () => void;
-  
-  // 🔴 Real-time mobile responsiveness
-  isMobile?: boolean;
-}
-
-export function NewFeatureComponent({
-  patients = [],
-  selectedPatientId,
-  patientData,
-  currentUser,
-  isOpen = false,
-  isExpanded = false,
-  focusMode = false,
-  onClose,
-  onToggle,
-  onPatientSelect,
-  onDataUpdate,
-  syncStatus = 'synced',
-  setSyncStatus,
-  onOpenDiscussion,
-  isMobile = false
-}: NewFeatureProps) {
-  // 🔵 Local state management (following App.tsx patterns)
-  const [localState, setLocalState] = useState(initialState);
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasChanges, setHasChanges] = useState(false);
-  
-  // 🔴 Real-time auto-save functionality (consistent with existing components)
-  useEffect(() => {
-    if (hasChanges && setSyncStatus) {
-      setSyncStatus('pending');
-      
-      const saveTimer = setTimeout(() => {
-        // 🔴 Perform real-time save operation
-        setSyncStatus('saving');
-        
-        // 🔴 Simulate real-time save completion
-        setTimeout(() => {
-          setSyncStatus('synced');
-          setHasChanges(false);
-        }, 1000);
-      }, 2000);
-      
-      return () => clearTimeout(saveTimer);
-    }
-  }, [hasChanges, setSyncStatus]);
-  
-  // 🔵 Local event handlers following RELEVO patterns
-  const handleDataChange = (newData: any) => {
-    setLocalState(newData);
-    setHasChanges(true);
-    onDataUpdate?.(newData);
-  };
-  
-  const handlePatientSelection = (patientId: number) => {
-    onPatientSelect?.(patientId);
-    // 🔵 Add frontend audit logging (console only)
-    console.log(`🔵 AUDIT: Patient selected: ${patientId} by ${currentUser.name}`);
-  };
-  
-  // 🔴 Real-time mobile-responsive rendering
-  if (isMobile) {
-    return (
-      <div className="mobile-new-feature">
-        {/* 🔵 Mobile-optimized static interface */}
-        <Card className="mobile-card">
-          <CardHeader className="mobile-header">
-            <div className="flex items-center justify-between">
-              <CardTitle>New Feature</CardTitle>
-              {onClose && (
-                <Button variant="ghost" size="sm" onClick={onClose}>
-                  <X className="h-4 w-4" />
-                </Button>
-              )}
-            </div>
-          </CardHeader>
-          <CardContent className="mobile-content">
-            {/* 🔵 Mobile content implementation */}
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-  
-  // 🔵 Static desktop rendering
-  return (
-    <div className={`new-feature-component ${focusMode ? 'focus-mode' : ''}`}>
-      <Card className="medical-card">
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <CardTitle>New Feature</CardTitle>
-              {/* 🔴 Real-time sync status indicator */}
-              {syncStatus && (
-                <Badge variant={syncStatus === 'synced' ? 'default' : 'secondary'}>
-                  {syncStatus}
-                </Badge>
-              )}
-            </div>
-            <div className="flex items-center space-x-2">
-              {/* 🟡 Mock collaboration integration */}
-              {onOpenDiscussion && (
-                <Button variant="outline" size="sm" onClick={onOpenDiscussion}>
-                  Discussion
-                </Button>
-              )}
-              {onToggle && (
-                <Button variant="ghost" size="sm" onClick={onToggle}>
-                  {isExpanded ? <ChevronUp /> : <ChevronDown />}
-                </Button>
-              )}
-            </div>
-          </div>
-        </CardHeader>
-        {isExpanded && (
-          <CardContent>
-            {/* 🔵 Component content implementation */}
-          </CardContent>
-        )}
-      </Card>
-    </div>
-  );
-}
-```
-
-#### Data Integration Pattern
-```typescript
-// Pattern for integrating with existing RELEVO data stores and state management
-const useRELEVOData = (patientId?: number) => {
-  const [patient, setPatient] = useState<Patient | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  
-  useEffect(() => {
-    if (patientId) {
-      setLoading(true);
-      setError(null);
-      
-      try {
-        // 🔵 Try static data sources with fallbacks (following existing patterns)
-        const patientData = 
-          // 🔵 Primary static data source (from constants)
-          patientData.find(p => p.id === patientId) ||
-          // 🟡 Fallback mock data source
-          activeCollaborators.find(c => c.patientId === patientId)?.patient ||
-          null;
-          
-        setPatient(patientData);
-      } catch (err) {
-        setError('Failed to load patient data');
-        console.error('🔵 Patient data loading error:', err);
-      } finally {
-        setLoading(false);
-      }
-    }
-  }, [patientId]);
-  
-  return { patient, loading, error };
-};
-
-// 🔴 Integration with real-time sync status system
-const useRELEVOSync = (autoSave: boolean = true) => {
-  const [syncStatus, setSyncStatus] = useState<SyncStatus>('synced');
-  const [pendingChanges, setPendingChanges] = useState<any[]>([]);
-  
-  const handleDataChange = useCallback((data: any) => {
-    setPendingChanges(prev => [...prev, { ...data, timestamp: Date.now() }]);
-    
-    if (autoSave) {
-      setSyncStatus('pending');
-      
-      // 🔴 Real-time auto-save after 2 seconds (consistent with existing components)
-      const saveTimer = setTimeout(() => {
-        setSyncStatus('saving');
-        
-        // 🔴 Simulate real-time save operation
-        setTimeout(() => {
-          setSyncStatus('synced');
-          setPendingChanges([]);
-        }, 1000);
-      }, 2000);
-      
-      return () => clearTimeout(saveTimer);
-    }
-  }, [autoSave]);
-  
-  return { syncStatus, setSyncStatus, handleDataChange, pendingChanges };
-};
-```
-
-### State Management Guidelines
-
-#### Modal State Pattern
-```typescript
-// 🔵 Standard modal state management pattern following App.tsx conventions
-const useRELEVOModal = (initialOpen = false) => {
-  const [isOpen, setIsOpen] = useState(initialOpen);
-  const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [modalData, setModalData] = useState<any>(null);
-  
-  const openModal = (id?: number, data?: any) => {
-    setSelectedId(id || null);
-    setModalData(data || null);
-    setIsOpen(true);
-  };
-  
-  const closeModal = () => {
-    setIsOpen(false);
-    setSelectedId(null);
-    setModalData(null);
-  };
-  
-  // 🔵 Integration with existing App.tsx modal patterns (static event handling)
-  const handleEscapeKey = useCallback((event: KeyboardEvent) => {
-    if (event.key === 'Escape' && isOpen) {
-      closeModal();
-    }
-  }, [isOpen]);
-  
-  useEffect(() => {
-    document.addEventListener('keydown', handleEscapeKey);
-    return () => document.removeEventListener('keydown', handleEscapeKey);
-  }, [handleEscapeKey]);
-  
-  return {
-    isOpen,
-    selectedId,
-    modalData,
-    openModal,
-    closeModal
-  };
-};
-```
-
-#### Event Handler Pattern
-```typescript
-// 🔵 Standard event handler pattern following App.tsx conventions
-const createRELEVOEventHandlers = (
-  setState: (state: any) => void,
-  onUpdate?: (data: any) => void,
-  currentUser?: User
-) => {
-  const handlePatientAction = (patientId: number, action: string, data?: any) => {
-    // 🔵 Frontend audit logging (following RELEVO security patterns)
-    console.log(`🔵 AUDIT: Action: ${action} on Patient: ${patientId} by User: ${currentUser?.name}`);
-    
-    // 🔵 Update local state
-    setState(prevState => ({
-      ...prevState,
-      selectedPatientId: patientId,
-      lastAction: action,
-      lastActionTimestamp: Date.now(),
-      actionData: data
-    }));
-    
-    // 🔵 Notify parent component (following App.tsx callback patterns)
-    onUpdate?.({ patientId, action, data, timestamp: Date.now() });
-  };
-  
-  const handleSectionToggle = (sectionKey: string) => {
-    setState(prevState => ({
-      ...prevState,
-      expandedSections: {
-        ...prevState.expandedSections,
-        [sectionKey]: !prevState.expandedSections[sectionKey]
-      }
-    }));
-  };
-  
-  const handleCollaborationAction = (action: string, data: any) => {
-    // 🟡 Integration with mock collaboration system
-    setState(prevState => ({
-      ...prevState,
-      collaborationActivity: [
-        ...prevState.collaborationActivity,
-        {
-          action,
-          data,
-          user: currentUser?.name,
-          timestamp: Date.now(),
-          isMockData: true // 🟡 Flag to identify simulated data
-        }
-      ]
-    }));
-  };
-  
-  return { 
-    handlePatientAction, 
-    handleSectionToggle, 
-    handleCollaborationAction 
-  };
-};
-```
 
 ## Real-time Feature Implementation Status
 
@@ -1796,3 +1157,741 @@ This comprehensive documentation provides a complete mapping of the RELEVO medic
 - **Developer implementation guidelines**: Patterns for integrating real-time and static features
 
 This serves as the definitive guide for understanding how all features of the RELEVO application interconnect and function together, with clear transparency about what's currently real-time versus simulated, to provide a seamless medical handover experience for healthcare professionals at Hospital Garrahan.
+
+# RELEVO - Medical Handover Platform UX Documentation
+
+## Overview
+RELEVO is a digital medical handover platform for Hospital Garrahan that implements the I-PASS methodology. This documentation outlines the complete information architecture, user flows, and interaction patterns.
+
+---
+
+## 🏗️ Information Architecture
+
+### Application Hierarchy
+
+```
+RELEVO Application
+├── 📋 Daily Setup (Entry Point)
+├── 📊 Main Application Shell
+│   ├── 🔄 Schedule/Dashboard View
+│   ├── 👥 Patients Management
+│   ├── 👤 Profile & Settings
+│   └── 🔍 Global Search (Command Palette)
+├── 🏥 Clinical Workflows
+│   ├── 📝 Handover Sessions
+│   ├── 📄 Clinical Documentation
+│   └── 👁️ Patient Detail Views
+└── 🎛️ Navigation System
+    ├── 📱 Right-Side Sidebar
+    ├── 🔍 Command Palette (⌘K)
+    └── 📋 Quick Actions
+```
+
+
+---
+
+## 🗺️ COMPREHENSIVE FEATURE RELATIONSHIP MAP
+
+### Feature Interconnection Matrix
+
+```mermaid
+graph TB
+    subgraph "Entry Layer"
+        DS[Daily Setup]
+        DS --> |Setup Complete| MAIN[Main Application Shell]
+    end
+    
+    subgraph "Navigation Layer"
+        MAIN --> |Navigation System| SIDEBAR[Right-Side Sidebar]
+        MAIN --> |Quick Access| CMD[Command Palette ⌘K]
+        MAIN --> |Header Context| HEADER[Header Component]
+    end
+    
+    subgraph "Primary Views"
+        MAIN --> |Tab: Schedule| DASH[HandoverDashboard]
+        MAIN --> |Tab: Patients| PAT[Patient Management]
+        MAIN --> |Tab: Profile| PROF[Profile View]
+    end
+    
+    subgraph "Patient Management Flows"
+        PAT --> |Mobile Layout| PATLIST[PatientListView]
+        PAT --> |Desktop Layout| FIGMA[FigmaDesktopLayout]
+        PATLIST --> |Patient Selection| DETAIL[PatientDetailView]
+        FIGMA --> |Patient Selection| DETAIL
+        CMD --> |Search Results| DETAIL
+    end
+    
+    subgraph "Clinical Workflows"
+        DETAIL --> |Start Handover| HANDOVER[HandoverSession]
+        DETAIL --> |Clinical Entry| CLINICAL[ClinicalDocumentation]
+        DASH --> |Quick Handover| HANDOVER
+        SIDEBAR --> |I-PASS Docs| CLINICAL
+    end
+    
+    subgraph "Data Layer"
+        MAIN --> |Patient Data| PSTORE[patients.store]
+        MAIN --> |Setup Data| MSTORE[mockData.store]
+        MAIN --> |Clinical Data| CSTORE[clinical.store]
+        HANDOVER --> |I-PASS Data| CSTORE
+        CLINICAL --> |Documentation| CSTORE
+    end
+    
+    subgraph "Modal System"
+        MAIN --> |Setup Change| DSMODAL[Daily Setup Modal]
+        MAIN --> |Search Interface| CMDMODAL[Command Palette Modal]
+        HANDOVER --> |I-PASS Session| HMODAL[Handover Modal]
+        CLINICAL --> |Documentation| CMODAL[Clinical Modal]
+    end
+```
+
+### Data Flow Architecture Map
+
+```mermaid
+flowchart LR
+    subgraph "State Management Layer"
+        RS[React useState]
+        PS[patients.store]
+        MS[mockData.store]
+        CS[clinical.store]
+        US[user.store]
+    end
+    
+    subgraph "Application State"
+        RS --> |activeTab| TAB_STATE[Tab State Management]
+        RS --> |selectedPatient| PAT_STATE[Patient Selection State]
+        RS --> |modalStates| MODAL_STATE[Modal State Management]
+        RS --> |setupData| SETUP_STATE[Setup Configuration State]
+    end
+    
+    subgraph "Data Sources"
+        PS --> |Patient Lists| PAT_VIEWS[Patient Views]
+        PS --> |Desktop Patients| DESKTOP_PAT[getDesktopPatients()]
+        PS --> |Clinical Patients| CLINICAL_PAT[getClinicalPatients()]
+        MS --> |Hospital Data| HOSPITAL_PAT[hospitalPatients]
+        MS --> |Units & Shifts| CONFIG_DATA[Configuration Data]
+    end
+    
+    subgraph "Component Data Flow"
+        PAT_VIEWS --> |Mobile| PATLIST[PatientListView]
+        PAT_VIEWS --> |Desktop| FIGMA[FigmaDesktopLayout]
+        DESKTOP_PAT --> FIGMA
+        CLINICAL_PAT --> CLINICAL[ClinicalDocumentation]
+        HOSPITAL_PAT --> DETAIL[PatientDetailView]
+        CONFIG_DATA --> DS[DailySetup]
+    end
+```
+
+---
+
+## 🎯 DETAILED USER FLOW MAPPING
+
+### 1. Complete Application Entry Flow
+
+```mermaid
+flowchart TD
+    START[User Opens RELEVO] --> CHECK{Setup Complete?}
+    
+    CHECK -->|No| SETUP_START[Daily Setup Screen]
+    CHECK -->|Yes| MAIN_APP[Main Application]
+    
+    subgraph "Daily Setup Flow"
+        SETUP_START --> DOCTOR[Enter Doctor Information]
+        DOCTOR --> |Name & Credentials| UNIT[Select Medical Unit]
+        UNIT --> |PICU/NICU/General/Cardiology/Surgery| SHIFT[Select Shift Time]
+        SHIFT --> |Morning/Evening/Night| PATIENTS[Assign Patients]
+        PATIENTS --> |Select from Available| PREFS[Set Preferences]
+        PREFS --> |Notifications/AutoSave/Collaboration| SETUP_COMPLETE[Setup Complete]
+        SETUP_COMPLETE --> MAIN_APP
+    end
+    
+    subgraph "Main Application Loading"
+        MAIN_APP --> INIT_DATA[Initialize Application Data]
+        INIT_DATA --> |Load Patient Data| LOAD_PATIENTS[patients.store]
+        INIT_DATA --> |Load Configuration| LOAD_CONFIG[mockData.store]
+        INIT_DATA --> |Set Default Tab| SCHEDULE_VIEW[Schedule Dashboard]
+    end
+    
+    subgraph "Data Dependencies"
+        LOAD_PATIENTS --> |Import patients| PAT_DATA[Patient Array]
+        LOAD_PATIENTS --> |getDesktopPatients()| DESK_PAT[Desktop Patient Data]
+        LOAD_PATIENTS --> |getClinicalPatients()| CLIN_PAT[Clinical Patient Data]
+        LOAD_CONFIG --> |hospitalPatients| HOSP_PAT[Hospital Patient Details]
+        LOAD_CONFIG --> |units, shifts| CONFIG[Unit & Shift Configuration]
+    end
+```
+
+**Data Requirements at Each Step:**
+- **Doctor Information**: Name, credentials, medical license
+- **Unit Selection**: Available units from `units` configuration
+- **Shift Selection**: Available shifts from `shifts` configuration  
+- **Patient Assignment**: Filtered patients by unit and availability
+- **Preferences**: Notification settings, auto-save intervals, collaboration modes
+
+### 2. Navigation System Flow Map
+
+```mermaid
+flowchart TD
+    subgraph "Navigation Entry Points"
+        SIDEBAR[Right-Side Sidebar] --> NAV_MENU[Navigation Menu]
+        HEADER[Header Component] --> MOBILE_TRIGGER[Mobile Hamburger Menu]
+        KEYBOARD[⌘K Shortcut] --> CMD_PALETTE[Command Palette]
+    end
+    
+    subgraph "Navigation Actions"
+        NAV_MENU --> SCH[Schedule/Dashboard]
+        NAV_MENU --> PAT[Patients Management]
+        NAV_MENU --> SEARCH[Search Action]
+        NAV_MENU --> DOCS[I-PASS Documentation]
+        NAV_MENU --> SETTINGS[Settings/Profile]
+        
+        SEARCH --> CMD_PALETTE
+        MOBILE_TRIGGER --> NAV_MENU
+    end
+    
+    subgraph "Navigation State Management"
+        SCH --> |setActiveTab('schedule')| SCH_STATE[Schedule State Active]
+        PAT --> |setActiveTab('patients')| PAT_STATE[Patients State Active]
+        SETTINGS --> |setActiveTab('profile')| PROF_STATE[Profile State Active]
+        
+        DOCS --> |handleFastClinicalEntry()| FAST_CLINICAL[Quick Clinical Documentation]
+        CMD_PALETTE --> |openCommandPalette()| SEARCH_STATE[Search Modal Open]
+    end
+    
+    subgraph "Context Updates"
+        SCH_STATE --> |Update Header| HEADER_SCH[Header: "Schedule"]
+        PAT_STATE --> |Update Header| HEADER_PAT["Patients • Count Badge"]
+        PROF_STATE --> |Update Header| HEADER_PROF["Profile & Settings"]
+        
+        SCH_STATE --> |Update Content| DASH_COMPONENT[HandoverDashboard Component]
+        PAT_STATE --> |Update Content| PAT_COMPONENT[Patient Management Component]
+        PROF_STATE --> |Update Content| PROF_COMPONENT[ProfileView Component]
+    end
+```
+
+**Navigation State Dependencies:**
+- **Active Tab State**: `activeTab` React state controlling current view
+- **Sidebar State**: ShadCN sidebar provider managing collapse/expand
+- **Mobile Detection**: `isMobile` state for responsive behavior
+- **Command Palette State**: `commandPaletteOpen` controlling search modal
+
+### 3. Patient Management Comprehensive Flow
+
+```mermaid
+flowchart TD
+    subgraph "Patient Management Entry"
+        PAT_TAB[Patients Tab Selected] --> DEVICE_CHECK{Device Type Detection}
+        
+        DEVICE_CHECK -->|Mobile < 768px| MOBILE_LAYOUT[PatientListView]
+        DEVICE_CHECK -->|Desktop ≥ 768px| DESKTOP_LAYOUT[FigmaDesktopLayout]
+    end
+    
+    subgraph "Mobile Patient Flow"
+        MOBILE_LAYOUT --> |patients.store data| MOBILE_LIST[Patient List Cards]
+        MOBILE_LIST --> |Touch Patient Card| PAT_SELECT_M[handlePatientSelect()]
+        PAT_SELECT_M --> |setSelectedPatientDetail(id)| DETAIL_VIEW[PatientDetailView]
+    end
+    
+    subgraph "Desktop Patient Flow"
+        DESKTOP_LAYOUT --> |getDesktopPatients() data| DESKTOP_GRID[Patient Grid Layout]
+        DESKTOP_GRID --> |Click Patient| PAT_SELECT_D[Patient Selection]
+        PAT_SELECT_D --> |Multiple Selection Modes| DETAIL_VIEW
+        
+        DESKTOP_LAYOUT --> |⌘K Integration| CMD_TRIGGER[Command Palette Trigger]
+        CMD_TRIGGER --> |Search Results| SEARCH_SELECT[Search-based Selection]
+        SEARCH_SELECT --> DETAIL_VIEW
+    end
+    
+    subgraph "Patient Detail Actions"
+        DETAIL_VIEW --> |hospitalPatients.find(id)| PAT_DETAIL_DATA[Patient Detail Data]
+        PAT_DETAIL_DATA --> ACT1[Start Handover]
+        PAT_DETAIL_DATA --> ACT2[Clinical Documentation]
+        PAT_DETAIL_DATA --> ACT3[View History]
+        PAT_DETAIL_DATA --> ACT4[Back to List]
+        
+        ACT1 --> |handleStartHandover(id)| HANDOVER_FLOW[Handover Session Flow]
+        ACT2 --> |handleClinicalEntry(id, type)| CLINICAL_FLOW[Clinical Documentation Flow]
+        ACT4 --> |handlePatientDetailBack()| RETURN_LIST[Return to Patient List]
+    end
+    
+    subgraph "Data Source Mapping"
+        MOBILE_LIST --> |Source| PAT_STORE_M[patients array from patients.store]
+        DESKTOP_GRID --> |Source| PAT_STORE_D[getDesktopPatients() function]
+        PAT_DETAIL_DATA --> |Source| HOSP_PAT[hospitalPatients from mockData]
+        
+        HANDOVER_FLOW --> |Uses| HOSP_PAT
+        CLINICAL_FLOW --> |Uses| CLIN_PAT[getClinicalPatients()]
+    end
+```
+
+**Patient Management Data Flow:**
+- **Patient List Source**: `patients` array from `patients.store`
+- **Desktop Enhanced Data**: `getDesktopPatients()` with additional formatting
+- **Detail View Data**: `hospitalPatients` array for comprehensive patient info
+- **Clinical Integration**: `getClinicalPatients()` for documentation workflows
+
+### 4. Clinical Workflow Integration Map
+
+```mermaid
+flowchart TD
+    subgraph "Clinical Workflow Entry Points"
+        SIDEBAR_DOCS[Sidebar: I-PASS docs] --> FAST_ENTRY[handleFastClinicalEntry()]
+        PATIENT_DETAIL[Patient Detail View] --> CLINICAL_BUTTON[Clinical Documentation Button]
+        DASHBOARD[HandoverDashboard] --> START_HANDOVER[Start Handover Button]
+        CMD_PALETTE[Command Palette] --> QUICK_ACTIONS[Quick Clinical Actions]
+    end
+    
+    subgraph "Handover Session Flow"
+        START_HANDOVER --> |setHandoverSessionActive(true)| HANDOVER_MODAL[HandoverSession Modal]
+        HANDOVER_MODAL --> |I-PASS Methodology| IPASS_FLOW[I-PASS Step Flow]
+        
+        IPASS_FLOW --> STEP1[Identity & Verification]
+        STEP1 --> STEP2[Illness Severity Assessment]
+        STEP2 --> STEP3[Patient Summary Generation]
+        STEP3 --> STEP4[Action List Creation]
+        STEP4 --> STEP5[Situation Awareness]
+        STEP5 --> STEP6[Synthesis & Confirmation]
+        
+        STEP6 --> |Complete| HANDOVER_COMPLETE[Handover Complete]
+        HANDOVER_COMPLETE --> |Save Data| CLINICAL_STORE[clinical.store]
+        HANDOVER_COMPLETE --> |Close Modal| RETURN_DASHBOARD[Return to Dashboard]
+    end
+    
+    subgraph "Clinical Documentation Flow"
+        CLINICAL_BUTTON --> |setClinicalDocOpen(true)| CLINICAL_MODAL[ClinicalDocumentation Modal]
+        FAST_ENTRY --> |Default Patient Selection| CLINICAL_MODAL
+        
+        CLINICAL_MODAL --> |getClinicalPatients() data| DOC_TYPES[Document Type Selection]
+        DOC_TYPES --> ACTION_LIST[Action Lists]
+        DOC_TYPES --> PROGRESS_NOTES[Progress Notes]
+        DOC_TYPES --> MED_ORDERS[Medication Orders]
+        DOC_TYPES --> LAB_RESULTS[Lab Results]
+        
+        ACTION_LIST --> |defaultType: 'action_list'| DOC_EDITOR[Document Editor]
+        PROGRESS_NOTES --> DOC_EDITOR
+        MED_ORDERS --> DOC_EDITOR
+        LAB_RESULTS --> DOC_EDITOR
+        
+        DOC_EDITOR --> |Auto-save every 30s| AUTO_SAVE[Auto-save System]
+        DOC_EDITOR --> |Manual Save| MANUAL_SAVE[Manual Save]
+        AUTO_SAVE --> CLINICAL_STORE
+        MANUAL_SAVE --> CLINICAL_STORE
+    end
+    
+    subgraph "State Management Integration"
+        HANDOVER_MODAL --> |selectedPatientForHandover| HANDOVER_STATE[Handover Patient State]
+        CLINICAL_MODAL --> |selectedPatientForDoc| CLINICAL_STATE[Clinical Patient State]
+        CLINICAL_MODAL --> |lastDocumentedPatient| LAST_PAT_STATE[Last Patient Memory]
+        
+        FAST_ENTRY --> |Uses lastDocumentedPatient| SMART_SELECTION[Smart Patient Selection]
+        SMART_SELECTION --> |Fallback Logic| PAT_FALLBACK[Patient Fallback Logic]
+        PAT_FALLBACK --> |1. Last documented| LAST_DOC[lastDocumentedPatient]
+        PAT_FALLBACK --> |2. Watcher severity| WATCHER_PAT[illnessSeverity: 'watcher']
+        PAT_FALLBACK --> |3. In-progress status| INPROG_PAT[status: 'in-progress']
+        PAT_FALLBACK --> |4. First available| FIRST_PAT[patients[0]]
+    end
+```
+
+**Clinical Workflow Data Dependencies:**
+- **Handover Sessions**: Uses `hospitalPatients` for complete patient data
+- **Clinical Documentation**: Uses `getClinicalPatients()` for formatted clinical data
+- **Smart Selection**: Implements fallback logic for quick clinical entry
+- **Auto-save**: Continuous persistence to `clinical.store`
+
+### 5. Command Palette System Flow
+
+```mermaid
+flowchart TD
+    subgraph "Command Palette Activation"
+        KEYBOARD[⌘K / Ctrl+K] --> OPEN_CMD[openCommandPalette()]
+        SIDEBAR_SEARCH[Sidebar: Search] --> OPEN_CMD
+        QUICK_ACTIONS[Quick Action Buttons] --> OPEN_CMD
+        
+        OPEN_CMD --> |setCommandPaletteOpen(true)| CMD_MODAL[Command Palette Modal]
+    end
+    
+    subgraph "Search Functionality"
+        CMD_MODAL --> |Input Field| SEARCH_INPUT[Search Input Component]
+        SEARCH_INPUT --> |Real-time Filter| SEARCH_LOGIC[Search Logic]
+        
+        SEARCH_LOGIC --> |Filter patients by:| FILTER_CRITERIA[Filter Criteria]
+        FILTER_CRITERIA --> NAME_SEARCH[Name Match]
+        FILTER_CRITERIA --> ROOM_SEARCH[Room Match]  
+        FILTER_CRITERIA --> MRN_SEARCH[MRN Match]
+        
+        NAME_SEARCH --> |toLowerCase() contains| RESULTS[Search Results]
+        ROOM_SEARCH --> |toLowerCase() contains| RESULTS
+        MRN_SEARCH --> |Exact or partial match| RESULTS
+        
+        RESULTS --> |Limit to 5 results| DISPLAY_RESULTS[Display Results]
+    end
+    
+    subgraph "Command Actions"
+        DISPLAY_RESULTS --> |Click Patient| PAT_ACTION[Patient Selection Action]
+        DISPLAY_RESULTS --> |Quick Actions| QUICK_ACTION[Quick Action Menu]
+        
+        PAT_ACTION --> |handlePatientSelect(id)| PAT_DETAIL[Patient Detail View]
+        PAT_ACTION --> |Close Command Palette| CLOSE_CMD[Close Modal]
+        
+        QUICK_ACTION --> |Start Handover| HANDOVER_ACTION[Handover Quick Start]
+        QUICK_ACTION --> |Clinical Note| CLINICAL_ACTION[Quick Clinical Entry]
+        QUICK_ACTION --> |Navigation| NAV_ACTION[Navigation Shortcuts]
+    end
+    
+    subgraph "Keyboard Navigation"
+        SEARCH_INPUT --> |Arrow Keys| RESULT_NAV[Result Navigation]
+        RESULT_NAV --> |Up/Down| HIGHLIGHT[Highlight Selection]
+        HIGHLIGHT --> |Enter| SELECT_ACTION[Select Highlighted]
+        HIGHLIGHT --> |Escape| CLOSE_CMD
+        
+        SELECT_ACTION --> PAT_ACTION
+        SELECT_ACTION --> QUICK_ACTION
+        SELECT_ACTION --> NAV_ACTION
+    end
+    
+    subgraph "Data Integration"
+        SEARCH_LOGIC --> |Source Data| PAT_DATA[patients array]
+        PAT_DATA --> |Safe Filtering| SAFE_PAT[safePatients with null checks]
+        SAFE_PAT --> |Filter Logic| FILTERED[Filtered Results]
+        
+        FILTERED --> |Result Display| RESULT_CARD[Patient Result Cards]
+        RESULT_CARD --> |Patient Info| INFO_DISPLAY[Name, Room, Diagnosis]
+        INFO_DISPLAY --> |Click Handler| PAT_ACTION
+    end
+```
+
+**Command Palette Features:**
+- **Global Access**: Available from any view via keyboard shortcut
+- **Fuzzy Search**: Intelligent matching across patient data fields
+- **Quick Actions**: Direct access to common workflows
+- **Keyboard Navigation**: Full keyboard accessibility
+- **Recent Items**: Memory of frequently accessed patients
+
+### 6. Responsive Layout Flow Map
+
+```mermaid
+flowchart TD
+    subgraph "Device Detection System"
+        WINDOW_SIZE[Window Size Detection] --> |useEffect + resize listener| SIZE_STATE[isMobile State]
+        SIZE_STATE --> |< 768px| MOBILE_TRUE[isMobile: true]
+        SIZE_STATE --> |≥ 768px| MOBILE_FALSE[isMobile: false]
+    end
+    
+    subgraph "Layout Adaptations"
+        MOBILE_TRUE --> |SidebarProvider| MOBILE_SIDEBAR[defaultOpen: false]
+        MOBILE_FALSE --> |SidebarProvider| DESKTOP_SIDEBAR[defaultOpen: true]
+        
+        MOBILE_TRUE --> |Patient View| MOBILE_PAT_VIEW[PatientListView]
+        MOBILE_FALSE --> |Patient View| DESKTOP_PAT_VIEW[FigmaDesktopLayout]
+        
+        MOBILE_TRUE --> |Navigation| MOBILE_NAV[Hamburger Menu in Header]
+        MOBILE_FALSE --> |Navigation| DESKTOP_NAV[Sidebar Trigger in Footer]
+    end
+    
+    subgraph "Component Behavior Changes"
+        MOBILE_PAT_VIEW --> |Touch Optimized| TOUCH_CARDS[Touch-friendly Patient Cards]
+        DESKTOP_PAT_VIEW --> |Mouse Optimized| HOVER_STATES[Hover States & Tooltips]
+        
+        MOBILE_NAV --> |EnhancedSidebarTrigger| MOBILE_TRIGGER[Menu Icon + Mobile Indicator]
+        DESKTOP_NAV --> |EnhancedSidebarTrigger| DESKTOP_TRIGGER[Chevron Icons]
+        
+        TOUCH_CARDS --> |44px min touch target| ACCESSIBILITY[Touch Accessibility]
+        HOVER_STATES --> |Hover effects| DESKTOP_UX[Desktop User Experience]
+    end
+    
+    subgraph "Sidebar Responsive Behavior"
+        MOBILE_SIDEBAR --> |Collapsed by default| ICON_MODE_M[Icon Mode Mobile]
+        DESKTOP_SIDEBAR --> |Expanded by default| FULL_MODE_D[Full Mode Desktop]
+        
+        ICON_MODE_M --> |4rem width (64px)| MOBILE_SIDEBAR_WIDTH[Mobile Sidebar Width]
+        FULL_MODE_D --> |4.5rem collapsed (72px)| DESKTOP_SIDEBAR_WIDTH[Desktop Sidebar Width]
+        
+        MOBILE_TRIGGER --> |Hamburger always visible| MOBILE_ACCESS[Mobile Sidebar Access]
+        DESKTOP_TRIGGER --> |Chevron in sidebar footer| DESKTOP_ACCESS[Desktop Sidebar Access]
+    end
+```
+
+**Responsive Design Features:**
+- **Breakpoint System**: 768px threshold for mobile/desktop detection
+- **Component Switching**: Different components for mobile vs desktop layouts
+- **Touch Optimization**: 44px minimum touch targets for accessibility
+- **Sidebar Adaptation**: Different collapse behaviors and trigger positions
+
+---
+
+## 🔄 STATE MANAGEMENT ARCHITECTURE
+
+### Application State Flow Diagram
+
+```mermaid
+flowchart TD
+    subgraph "React State Layer (App.tsx)"
+        APP_STATE[Application State] --> TAB_STATE[activeTab: TabType]
+        APP_STATE --> MOBILE_STATE[isMobile: boolean]
+        APP_STATE --> SETUP_STATE[dailySetup: DailySetupData | null]
+        APP_STATE --> MODAL_STATES[Modal States]
+        APP_STATE --> PATIENT_STATES[Patient Selection States]
+    end
+    
+    subgraph "Modal State Management"
+        MODAL_STATES --> SETUP_MODAL[showSetupChange: boolean]
+        MODAL_STATES --> HANDOVER_MODAL[handoverSessionActive: boolean]
+        MODAL_STATES --> CLINICAL_MODAL[clinicalDocOpen: boolean]
+        MODAL_STATES --> CMD_MODAL[commandPaletteOpen: boolean]
+    end
+    
+    subgraph "Patient State Management"
+        PATIENT_STATES --> SELECTED_DETAIL[selectedPatientDetail: number | null]
+        PATIENT_STATES --> SELECTED_DOC[selectedPatientForDoc: number | null]
+        PATIENT_STATES --> SELECTED_HANDOVER[selectedPatientForHandover: number | null]
+        PATIENT_STATES --> LAST_DOCUMENTED[lastDocumentedPatient: number | null]
+        PATIENT_STATES --> DEFAULT_DOC_TYPE[defaultDocType: string]
+    end
+    
+    subgraph "Data Store Integration"
+        SETUP_STATE --> |Configuration Data| MOCK_DATA[mockData.store]
+        PATIENT_STATES --> |Patient Lists| PATIENTS_STORE[patients.store]
+        CLINICAL_MODAL --> |Clinical Data| CLINICAL_STORE[clinical.store]
+        HANDOVER_MODAL --> |I-PASS Data| CLINICAL_STORE
+    end
+    
+    subgraph "Event Handler Layer"
+        TAB_STATE --> |handleNavigate()| NAV_HANDLER[Navigation Handler]
+        PATIENT_STATES --> |handlePatientSelect()| PAT_HANDLER[Patient Selection Handler]
+        MODAL_STATES --> |Modal Open/Close Handlers| MODAL_HANDLER[Modal Management Handler]
+        SETUP_STATE --> |handleSetupComplete()| SETUP_HANDLER[Setup Management Handler]
+    end
+```
+
+### Data Flow Between Components
+
+```mermaid
+flowchart LR
+    subgraph "Data Sources"
+        PS[patients.store] --> |patients array| APP[App.tsx]
+        PS --> |getDesktopPatients()| DESKTOP[FigmaDesktopLayout]
+        PS --> |getClinicalPatients()| CLINICAL[ClinicalDocumentation]
+        
+        MS[mockData.store] --> |hospitalPatients| DETAIL[PatientDetailView]
+        MS --> |units, shifts| SETUP[DailySetup]
+        MS --> |DailySetupData type| CONFIG[Configuration]
+    end
+    
+    subgraph "State Propagation"
+        APP --> |activeTab prop| COMPONENTS[View Components]
+        APP --> |dailySetup data| SIDEBAR[app-sidebar]
+        APP --> |patient counts| BADGE[Patient Count Badges]
+        APP --> |current doctor| PROFILE[Profile Information]
+    end
+    
+    subgraph "Event Flow"
+        COMPONENTS --> |User Actions| HANDLERS[Event Handlers]
+        HANDLERS --> |State Updates| APP
+        APP --> |Re-render| COMPONENTS
+        
+        HANDLERS --> |Data Persistence| STORES[Data Stores]
+        STORES --> |State Sync| APP
+    end
+```
+
+---
+
+## 📊 COMPONENT INTERACTION MATRIX
+
+### Component Dependency Map
+
+| Component | Data Dependencies | State Dependencies | Event Handlers | Child Components |
+|-----------|------------------|-------------------|----------------|-----------------|
+| **App.tsx** | patients.store, mockData.store | activeTab, modalStates, patientStates | handleNavigate, handlePatientSelect, handleSetupComplete | Header, All Views, Modals |
+| **DailySetup** | units, shifts from mockData | setupData, isEditing | onSetupComplete | Form Components |
+| **HandoverDashboard** | patients array, dailySetup | currentDoctor, selectedPatients | onStartHandover, onChangeSetup | QuickActions, Timeline |
+| **PatientListView** | patients array | - | onPatientSelect | PatientCard components |
+| **FigmaDesktopLayout** | getDesktopPatients() | currentDoctor, unit, shift | onCommandPalette, onStartHandover | Desktop Patient Components |
+| **PatientDetailView** | hospitalPatients.find(id) | selectedPatientDetail | onBack, onStartHandover, onOpenDocumentation | DetailComponents |
+| **HandoverSession** | hospitalPatients, selectedPatientId | handoverSessionActive | onClose | I-PASS Components |
+| **ClinicalDocumentation** | getClinicalPatients() | selectedPatientForDoc, defaultType | onClose | Documentation Forms |
+| **CommandPalette** | patients array | commandPaletteOpen | onClose, onPatientSelect, onNavigate | Search Components |
+| **app-sidebar** | - | currentDoctor, unit, shift, activeTab | onNavigate, onOpenCommandPalette | SidebarComponents |
+| **ProfileView** | - | doctorName, unit, shift, isMobile | - | Profile Components |
+
+### Modal Management System
+
+```mermaid
+stateDiagram-v2
+    [*] --> MainApp : App Launch
+    
+    MainApp --> DailySetupModal : showSetupChange = true
+    DailySetupModal --> MainApp : Setup Complete / Cancel
+    
+    MainApp --> CommandPaletteModal : ⌘K / Search Action
+    CommandPaletteModal --> MainApp : Selection Made / Escape
+    CommandPaletteModal --> PatientDetailView : Patient Selected
+    
+    MainApp --> HandoverModal : Start Handover Action
+    HandoverModal --> MainApp : Handover Complete / Cancel
+    
+    MainApp --> ClinicalModal : Clinical Documentation Action
+    ClinicalModal --> MainApp : Documentation Complete / Cancel
+    
+    MainApp --> PatientDetailView : Patient Selection
+    PatientDetailView --> MainApp : Back Action
+    PatientDetailView --> HandoverModal : Start Handover
+    PatientDetailView --> ClinicalModal : Clinical Entry
+```
+
+---
+
+## 🔒 SECURITY & DATA PRIVACY
+
+### Patient Data Protection Flow
+
+```mermaid
+flowchart TD
+    subgraph "Data Access Control"
+        USER_AUTH[User Authentication] --> ROLE_CHECK[Role Verification]
+        ROLE_CHECK --> |Doctor/Nurse| UNIT_ACCESS[Unit Access Control]
+        UNIT_ACCESS --> |Assigned Unit| PATIENT_FILTER[Patient Data Filtering]
+    end
+    
+    subgraph "Data Sanitization"
+        PATIENT_FILTER --> |Filter by assignment| ASSIGNED_PATIENTS[Assigned Patients Only]
+        ASSIGNED_PATIENTS --> |Remove sensitive fields| SANITIZED_DATA[Sanitized Patient Data]
+        SANITIZED_DATA --> |Audit logging| ACCESS_LOG[Access Audit Trail]
+    end
+    
+    subgraph "Session Management"
+        ACCESS_LOG --> |Track usage| SESSION_MONITOR[Session Monitoring]
+        SESSION_MONITOR --> |Timeout management| AUTO_LOGOUT[Automatic Logout]
+        AUTO_LOGOUT --> |Clear sensitive data| DATA_CLEANUP[Data Cleanup]
+    end
+```
+
+
+## 📈 PERFORMANCE OPTIMIZATION STRATEGY
+
+### Component Loading Strategy
+
+```mermaid
+flowchart TD
+    subgraph "Initial Load"
+        APP_SHELL[App Shell] --> |Critical Path| ESSENTIAL[Essential Components]
+        ESSENTIAL --> DAILY_SETUP[DailySetup]
+        ESSENTIAL --> SIDEBAR[app-sidebar]
+        ESSENTIAL --> HEADER[Header]
+    end
+    
+    subgraph "Lazy Loading"
+        TAB_SWITCH[Tab Switch] --> |Dynamic Import| LAZY_COMPONENTS[Lazy Components]
+        LAZY_COMPONENTS --> PATIENT_VIEWS[Patient Management Views]
+        LAZY_COMPONENTS --> HANDOVER_SESSION[HandoverSession]
+        LAZY_COMPONENTS --> CLINICAL_DOC[ClinicalDocumentation]
+    end
+    
+    subgraph "Data Loading"
+        ESSENTIAL --> |Preload| PATIENT_DATA[Patient Data]
+        PATIENT_DATA --> |Progressive| ADDITIONAL_DATA[Additional Patient Details]
+        TAB_SWITCH --> |On-demand| VIEW_SPECIFIC_DATA[View-specific Data]
+    end
+```
+
+---
+
+## 🧪 TESTING STRATEGY
+
+### User Flow Testing Map
+
+```mermaid
+flowchart TD
+    subgraph "Unit Tests"
+        COMPONENT_TESTS[Component Tests] --> |Each Component| ISOLATED_TESTS[Isolated Behavior Tests]
+        ISOLATED_TESTS --> |Props/State| PROP_TESTS[Props & State Tests]
+        ISOLATED_TESTS --> |Event Handlers| EVENT_TESTS[Event Handler Tests]
+        ISOLATED_TESTS --> |Rendering| RENDER_TESTS[Rendering Tests]
+    end
+    
+    subgraph "Integration Tests"
+        WORKFLOW_TESTS[Workflow Tests] --> |User Journeys| JOURNEY_TESTS[User Journey Tests]
+        JOURNEY_TESTS --> |Daily Setup Flow| SETUP_FLOW_TEST[Setup Flow Testing]
+        JOURNEY_TESTS --> |Patient Management| PATIENT_FLOW_TEST[Patient Flow Testing]
+        JOURNEY_TESTS --> |Handover Process| HANDOVER_FLOW_TEST[Handover Flow Testing]
+        JOURNEY_TESTS --> |Clinical Documentation| CLINICAL_FLOW_TEST[Clinical Flow Testing]
+    end
+    
+    subgraph "E2E Tests"
+        E2E_TESTS[End-to-End Tests] --> |Complete Workflows| FULL_SCENARIOS[Full Scenario Tests]
+        FULL_SCENARIOS --> |Doctor Daily Workflow| DAILY_WORKFLOW_TEST[Daily Workflow Test]
+        FULL_SCENARIOS --> |Patient Handover Session| HANDOVER_E2E_TEST[Handover E2E Test]
+        FULL_SCENARIOS --> |Clinical Documentation| CLINICAL_E2E_TEST[Clinical E2E Test]
+        FULL_SCENARIOS --> |Mobile Responsive| MOBILE_E2E_TEST[Mobile E2E Test]
+    end
+```
+### Test Scenarios by Feature
+
+
+## 🔮 FUTURE ENHANCEMENTS ROADMAP
+
+### Planned Feature Integration
+
+```mermaid
+gantt
+    title RELEVO Enhancement Roadmap
+    dateFormat  YYYY-MM-DD
+    section Phase 1
+    Voice Recognition Integration    :2025-02-01, 30d
+    Advanced Search Filters          :2025-02-15, 20d
+    Real-time Collaboration         :2025-03-01, 45d
+    
+    section Phase 2  
+    Mobile Native App               :2025-04-01, 60d
+    AI Documentation Assistant      :2025-04-15, 45d
+    Advanced Analytics Dashboard    :2025-05-01, 30d
+    
+    section Phase 3
+    Multi-facility Support          :2025-06-01, 90d
+    EMR Integration APIs            :2025-06-15, 60d
+    Telemedicine Integration        :2025-07-01, 45d
+```
+
+### Architecture Evolution
+
+```mermaid
+flowchart TD
+    subgraph "Current Architecture"
+        CURRENT[React + TypeScript + ShadCN] --> |Enhance| ENHANCED[Enhanced Component System]
+    end
+    
+    subgraph "Phase 1 Enhancements"
+        ENHANCED --> VOICE[Voice Recognition Layer]
+        ENHANCED --> COLLAB[Real-time Collaboration]
+        ENHANCED --> SEARCH[Advanced Search Engine]
+    end
+    
+    subgraph "Phase 2 Evolution"
+        VOICE --> MOBILE[Native Mobile Apps]
+        COLLAB --> AI[AI Assistant Integration]
+        SEARCH --> ANALYTICS[Analytics Platform]
+    end
+    
+    subgraph "Phase 3 Scale"
+        MOBILE --> MULTI[Multi-facility Platform]
+        AI --> EMR[EMR Integration Hub]
+        ANALYTICS --> TELEMEDICINE[Telemedicine Platform]
+    end
+```
+
+---
+
+
+This comprehensive documentation provides a complete mapping of the RELEVO medical handover platform's information architecture and user flows. It serves as both a design reference and implementation guide, ensuring consistency and quality across all features and future enhancements.
+
+The documentation covers:
+- **Complete feature relationship mapping**
+- **Detailed user flow documentation**
+- **State management architecture**
+- **Component interaction matrices**
+- **Performance optimization strategies**
+- **Security and privacy considerations**
+- **Testing strategies**
+- **Future enhancement roadmaps**
+- **Developer implementation guidelines**
+
+This serves as the definitive guide for understanding how all features of the RELEVO application interconnect and function together to provide a seamless medical handover experience for healthcare professionals at Hospital Garrahan.
