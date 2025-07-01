@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  DailyWorkflow, 
   HandoverHistory, 
   FullscreenEditor, 
   MobileMenus, 
@@ -10,7 +9,6 @@ import { Header } from './layout/Header';
 import { MainContent } from './layout/MainContent';
 import { Footer } from './layout/Footer';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import {
   Sidebar,
   SidebarContent,
@@ -29,20 +27,17 @@ import { useHandoverSession } from '.';
 import { useSyncStatus } from '@/hooks/useSyncStatus';
 import { currentUser, patientData, activeCollaborators } from '@/common/constants';
 import type { FullscreenEditingState, ExpandedSections } from '@/common/types';
-import { Clock, Stethoscope, X } from 'lucide-react';
+import { X } from 'lucide-react';
 
 export default function App() {
   // Core state
-  const [workflowSetup, setWorkflowSetup] = useState(false);
   const [handoverComplete, setHandoverComplete] = useState(false);
   
   // UI state
   const [showHistory, setShowHistory] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [focusMode, setFocusMode] = useState(false);
-  const [showActivityFeed, setShowActivityFeed] = useState(false);
   const [showCollaborators, setShowCollaborators] = useState(false);
-  const [showShareMenu, setShowShareMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   // Fullscreen editing state
@@ -116,40 +111,6 @@ export default function App() {
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [focusMode, fullscreenEditing]);
-
-  // Show workflow setup if not completed
-  if (!workflowSetup) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        {/* Simplified Header for Setup */}
-        <div className="bg-white border-b border-gray-200 px-4 sm:px-6 py-4 sticky top-0 z-40">
-          <div className="flex items-center justify-between max-w-7xl mx-auto">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-3">
-                <Stethoscope className="w-6 h-6 text-gray-900" />
-                <h1 className="text-xl font-bold text-gray-900">RELEVO</h1>
-              </div>
-              <Badge variant="outline" className="text-gray-700 border-gray-200 bg-gray-50 hidden sm:flex">
-                I-PASS Setup
-              </Badge>
-            </div>
-            <div className="flex items-center space-x-2 text-sm text-gray-600">
-              <Clock className="w-4 h-4" />
-              <span className="hidden sm:inline">{new Date().toLocaleTimeString()}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Daily Workflow Setup */}
-        <div className="px-4 sm:px-6 py-8">
-          <DailyWorkflow 
-            currentUser={currentUser} 
-            onSetupComplete={() => setWorkflowSetup(true)}
-          />
-        </div>
-      </div>
-    );
-  }
 
   return (
     <TooltipProvider>

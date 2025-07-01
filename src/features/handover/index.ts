@@ -1,5 +1,4 @@
 // Handover Feature Exports
-export { DailyWorkflow } from './components/DailyWorkflow';
 export { HandoverHistory } from './components/HandoverHistory';
 export { ConfirmationChecklist } from './components/ConfirmationChecklist';
 export { SynthesisByReceiver } from './components/SynthesisByReceiver';
