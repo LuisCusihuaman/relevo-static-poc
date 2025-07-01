@@ -1,6 +1,3 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
-}
+// Compatibility layer for shadcn UI components
+// Re-exports utils from the new common directory location
+export * from "../common/utils"; 

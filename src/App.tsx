@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
-import { PatientListView } from './components/PatientListView';
-import { ProfileView } from './components/ProfileView';
-import { HandoverSession } from './components/HandoverSession';
-import { DailySetup } from './components/DailySetup';
-import { HandoverDashboard } from './components/HandoverDashboard';
-import { FigmaDesktopLayout } from './components/FigmaDesktopLayout';
+import { PatientListView } from './features/patient-management';
+import { ProfileView } from './features/profile';
+import { HandoverSession } from './features/handover';
+import { DailySetup } from './features/daily-setup';
+import { HandoverDashboard } from './features/handover';
+import { FigmaDesktopLayout } from './components/layout/FigmaDesktopLayout';
 import { CommandPalette, useCommandPalette } from './components/CommandPalette';
-import { ClinicalDocumentation } from './components/ClinicalDocumentation';
-import { PatientDetailView } from './components/PatientDetailView';
-import { AppSidebar } from './components/app-sidebar';
+import { ClinicalDocumentation } from './features/clinical-documentation';
+import { PatientDetailView } from './features/patient-management';
+import { AppSidebar } from './components/layout/app-sidebar';
 import { Badge } from './components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './components/ui/dialog';
 import {
@@ -21,8 +21,8 @@ import { Separator } from './components/ui/separator';
 import { ChevronRight, ChevronLeft, Menu } from 'lucide-react';
 
 // Import consolidated data from patients store using new composable types
-import { patients, getDesktopPatients, getClinicalPatients } from './data/patients.store';
-import { units, shifts, type DailySetupData } from './data/mockData';
+import { patients, getDesktopPatients, getClinicalPatients } from './store/patients.store';
+import { units, shifts, type DailySetupData, type Patient } from './common/mockData';
 
 // Import hospital patients from CommandPalette for detail view
 const hospitalPatients = [
@@ -294,7 +294,7 @@ export default function App() {
     if (detailPatient) {
       return (
         <PatientDetailView
-          patient={detailPatient}
+          patient={detailPatient as Patient}
           onBack={handlePatientDetailBack}
           onStartHandover={handleStartHandover}
           onOpenDocumentation={handleClinicalEntry}
