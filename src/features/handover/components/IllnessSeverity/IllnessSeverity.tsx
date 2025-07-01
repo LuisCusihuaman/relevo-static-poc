@@ -1,12 +1,15 @@
-import { useState, useEffect } from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { 
-  Thermometer, Heart, Brain, Stethoscope, Clock,
-  CheckCircle2, Edit, Eye, User, Wifi
+import {
+  Brain,
+  CheckCircle2,
+  Clock,
+  Edit, Eye,
+  Heart,
+  Stethoscope,
+  Thermometer,
+  User, Wifi
 } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 // Compact severity levels with simpler styling
 const severityLevels = [

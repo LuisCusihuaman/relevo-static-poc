@@ -1,23 +1,31 @@
-import { useState, useEffect } from 'react';
-import { 
-  Search, User, Clock, AlertTriangle, Users, MessageSquare, FileText, 
-  Activity, Calendar, Stethoscope, Clipboard, Eye, Filter, MoreHorizontal,
-  Edit3, History, UserCheck, Bell, ChevronRight, Plus
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  Activity,
+  AlertTriangle,
+  Calendar,
+  ChevronRight,
+  Clipboard,
+  Clock,
+  Eye,
+  FileText,
+  MessageSquare,
+  MoreHorizontal,
+  Plus,
+  Search,
+  Stethoscope,
+  UserCheck,
+  Users
+} from 'lucide-react';
+import { useState } from 'react';
 import { PatientAlerts } from './PatientAlerts';
 
 // Import consolidated data and types from patients store
-import { 
-  patients
-} from '../../../store/patients.store';
 import { type Patient } from '../../../common/types';
 
 interface DesktopPatientViewProps {

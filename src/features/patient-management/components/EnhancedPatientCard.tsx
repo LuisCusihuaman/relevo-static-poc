@@ -1,10 +1,9 @@
-import { useState } from 'react';
-import { ChevronRight, Clock, User, AlertTriangle, CheckCircle, Play, Heart, Thermometer, Activity, Pill, AlertCircle, Shield, Eye, FileText, History } from "lucide-react";
-import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { Progress } from "@/components/ui/progress";
+import { Activity, AlertCircle, AlertTriangle, CheckCircle, ChevronRight, Clock, Eye, FileText, Heart, History, Pill, Play, Shield, Thermometer, User } from "lucide-react";
+import { useState } from 'react';
 
 // Import centralized types
 import { type EnhancedPatientCardData } from '../../../common/types';

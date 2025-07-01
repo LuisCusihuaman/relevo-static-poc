@@ -1,18 +1,18 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { PatientSummary } from '../PatientSummary';
-import { SituationAwareness } from '../SituationAwareness';
-import { Button } from '@/components/ui/button';
+import { activeCollaborators, currentUser, patientData } from '@/common/constants';
+import type { FullscreenEditingState, SyncStatus } from '@/common/types';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { X, Save, Clock, Stethoscope } from 'lucide-react';
-import { 
+import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { patientData, activeCollaborators, currentUser } from '@/common/constants';
-import type { FullscreenEditingState, SyncStatus } from '@/common/types';
+import { Clock, Save, Stethoscope, X } from 'lucide-react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { PatientSummary } from '../PatientSummary';
+import { SituationAwareness } from '../SituationAwareness';
 
 interface FullscreenEditorProps {
   fullscreenEditing: FullscreenEditingState;

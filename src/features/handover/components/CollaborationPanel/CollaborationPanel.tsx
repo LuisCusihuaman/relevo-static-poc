@@ -1,16 +1,16 @@
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Separator } from '@/components/ui/separator';
+import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
-import { 
-  X, Bell, MessageSquare, Clock, Users, Send, 
-  Reply, MoreVertical, Pin, AlertCircle, FileText,
-  Activity
+import {
+  Activity,
+  Bell, MessageSquare,
+  Send,
+  Users,
+  X
 } from 'lucide-react';
+import { useState } from 'react';
 
 interface CollaborationPanelProps {
   onClose: () => void;

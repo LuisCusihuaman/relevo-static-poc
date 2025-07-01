@@ -1,8 +1,8 @@
 
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { User, MapPin, Calendar, Clock, Activity, Users } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
+import { Activity, Calendar, Clock, MapPin, User, Users } from 'lucide-react';
 
 interface PatientHeaderProps {
   patient: {

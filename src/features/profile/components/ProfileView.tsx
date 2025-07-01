@@ -1,13 +1,13 @@
-import { useState } from 'react';
-import { User, Settings, Bell, Shield, KeyRound, ChevronRight, Building2, Clock, MapPin } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
+import { Switch } from '@/components/ui/switch';
+import { Textarea } from '@/components/ui/textarea';
+import { Bell, Building2, ChevronRight, Clock, KeyRound, MapPin, Settings, Shield, User } from 'lucide-react';
+import { useState } from 'react';
 
 interface ProfileViewProps {
   doctorName: string;

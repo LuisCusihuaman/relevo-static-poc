@@ -1,28 +1,26 @@
-import { useState } from 'react';
-import { 
-  ArrowLeft, 
-  Calendar, 
-  MapPin, 
-  User, 
-  Stethoscope, 
-  AlertTriangle, 
-  Eye, 
-  CheckCircle, 
-  Clock, 
-  FileText, 
-  Activity, 
-  Target, 
-  Plus, 
-  ChevronDown, 
-  ChevronUp,
-  Play,
-  Edit3
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import {
+  Activity,
+  AlertTriangle,
+  ArrowLeft,
+  CheckCircle,
+  ChevronDown,
+  ChevronUp,
+  Edit3,
+  Eye,
+  FileText,
+  MapPin,
+  Play,
+  Plus,
+  Stethoscope,
+  Target,
+  User
+} from 'lucide-react';
+import { useState } from 'react';
 
 // Import patient data types
 import { type Patient } from '../../../common/types';

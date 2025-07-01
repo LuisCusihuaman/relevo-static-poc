@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import { Plus, Users, Clock, AlertTriangle, FileText, Target, Eye, ChevronDown, ChevronUp } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { AlertTriangle, ChevronDown, ChevronUp, Clock, Eye, FileText, Plus, Target, Users } from 'lucide-react';
+import { useState } from 'react';
 
 // Import types
 import { type DesktopPatient } from '../../common/types';

@@ -1,14 +1,20 @@
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { 
-  X, Edit, AlertTriangle, CheckSquare, 
-  FileText, Activity, Save, MessageSquare, Target
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Activity,
+  AlertTriangle, CheckSquare,
+  Edit,
+  FileText,
+  MessageSquare,
+  Save,
+  Target,
+  X
 } from 'lucide-react';
+import { useState } from 'react';
 
 interface QuickActionsProps {
   patient: any;

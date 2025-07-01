@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Progress } from '@/components/ui/progress';
-import { 
-  MessageSquare, CheckSquare, Users, Clock, ShieldCheck,
-  Save, AlertCircle, ThumbsUp, FileText, User, Lock,
-  Target, Activity, AlertTriangle, Plus, Eye, UserCheck,
-  CheckCircle2, Circle, XCircle
+import {
+  CheckCircle2,
+  CheckSquare,
+  Circle,
+  Clock,
+  Lock,
+  ShieldCheck
 } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 interface SynthesisByReceiverProps {
   onOpenThread?: (section: string) => void;

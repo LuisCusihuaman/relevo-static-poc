@@ -1,30 +1,30 @@
-import { useState, useEffect } from 'react';
-import { 
-  HandoverHistory, 
-  FullscreenEditor, 
-  MobileMenus, 
-  CollaborationPanel 
-} from '.';
-import { Header } from './layout/Header';
-import { MainContent } from './layout/MainContent';
-import { Footer } from './layout/Footer';
+import { currentUser, patientData } from '@/common/constants';
+import type { ExpandedSections, FullscreenEditingState } from '@/common/types';
 import { Button } from '@/components/ui/button';
 import {
   Sidebar,
   SidebarContent,
   SidebarHeader,
-  SidebarProvider,
   SidebarInset,
+  SidebarProvider,
 } from '@/components/ui/sidebar';
-import { 
+import {
   TooltipProvider,
 } from '@/components/ui/tooltip';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { useHandoverSession } from '.';
 import { useSyncStatus } from '@/hooks/useSyncStatus';
-import { currentUser, patientData } from '@/common/constants';
-import type { FullscreenEditingState, ExpandedSections } from '@/common/types';
 import { X } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import {
+  CollaborationPanel,
+  FullscreenEditor,
+  HandoverHistory,
+  MobileMenus,
+  useHandoverSession
+} from '.';
+import { Footer } from './layout/Footer';
+import { Header } from './layout/Header';
+import { MainContent } from './layout/MainContent';
 
 interface HandoverProps {
   onBack?: () => void;

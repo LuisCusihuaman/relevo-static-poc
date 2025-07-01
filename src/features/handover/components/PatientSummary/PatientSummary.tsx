@@ -1,12 +1,17 @@
-import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Textarea } from '@/components/ui/textarea';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { 
-  FileText, Edit, Save, Clock, Lock, Shield
-} from 'lucide-react';
 import type { SyncStatus } from '@/common/types';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Clock,
+  Edit,
+  FileText,
+  Lock,
+  Save,
+  Shield
+} from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 interface PatientSummaryProps {
   onOpenThread?: (section: string) => void;

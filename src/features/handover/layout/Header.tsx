@@ -1,20 +1,29 @@
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { activeCollaborators, currentlyPresent, patientData } from '@/common/constants';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { 
-  Activity, MessageSquare, History, FileText,
-  Maximize2, MoreHorizontal, X, ArrowRight, Calendar, MapPin, UserPlus,
-  Stethoscope, ChevronLeft
-} from 'lucide-react';
-import { 
+import { Separator } from '@/components/ui/separator';
+import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { currentlyPresent, patientData, activeCollaborators } from '@/common/constants';
+import {
+  Activity,
+  ArrowRight, Calendar,
+  ChevronLeft,
+  FileText,
+  History,
+  MapPin,
+  Maximize2,
+  MessageSquare,
+  MoreHorizontal,
+  Stethoscope,
+  UserPlus,
+  X
+} from 'lucide-react';
+import React from 'react';
 
 interface HeaderProps {
   focusMode: boolean;

@@ -1,20 +1,19 @@
-import React from 'react';
-import { 
-  IllnessSeverity, 
-  PatientSummary, 
-  ActionList, 
-  SituationAwareness, 
-  SynthesisByReceiver 
-} from '..';
+import { activeCollaborators, ipassGuidelines, patientData } from '@/common/constants';
+import type { ExpandedSections, FullscreenComponent, SyncStatus, User } from '@/common/types';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { ChevronUp, ChevronDown, Info } from 'lucide-react';
-import { 
+import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { activeCollaborators, patientData, currentUser, ipassGuidelines } from '@/common/constants';
-import type { ExpandedSections, SyncStatus, FullscreenComponent, User } from '@/common/types';
+import { ChevronDown, ChevronUp, Info } from 'lucide-react';
+import {
+  ActionList,
+  IllnessSeverity,
+  PatientSummary,
+  SituationAwareness,
+  SynthesisByReceiver
+} from '..';
 
 interface MainContentProps {
   focusMode: boolean;

@@ -1,16 +1,21 @@
 
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import type { User as UserType } from '@/common/types';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
-import { CollaborationPanel } from '../CollaborationPanel';
-import { HandoverHistory } from '../HandoverHistory';
-import { 
-  Clock, Activity, Users, MessageSquare, History,
-  Maximize2, User
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import {
+  Activity,
+  Clock,
+  History,
+  Maximize2,
+  MessageSquare,
+  User,
+  Users
 } from 'lucide-react';
 import { activeCollaborators, patientData } from '../../../../common/constants';
-import type { User as UserType } from '../../../../../../relevo-app-vite/src/common/types';
+import { CollaborationPanel } from '../CollaborationPanel';
+import { HandoverHistory } from '../HandoverHistory';
 
 interface MobileMenusProps {
   showMobileMenu: boolean;

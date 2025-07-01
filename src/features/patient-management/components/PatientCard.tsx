@@ -1,8 +1,8 @@
-import { ChevronRight, Clock, User, AlertTriangle, CheckCircle, Play, Heart, Thermometer, Activity, Pill, AlertCircle } from "lucide-react";
-import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
+import { Progress } from "@/components/ui/progress";
+import { Activity, AlertCircle, AlertTriangle, CheckCircle, ChevronRight, Clock, Heart, Pill, Play, Thermometer, User } from "lucide-react";
+import { useEffect, useState } from "react";
 
 // Define PatientCardData interface locally since it needs additional fields
 interface PatientCardData {

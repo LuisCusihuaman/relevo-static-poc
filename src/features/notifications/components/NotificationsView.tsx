@@ -1,17 +1,17 @@
 // COMPONENT UPDATED TO USE COMPOSABLE PATIENT TYPES
 // Updated to use centralized patient data instead of hardcoded patient references
 
-import { useState, useEffect } from 'react';
-import { Bell, AlertTriangle, Clock, X, Filter, Search, Calendar, Info } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { AlertTriangle, Bell, Calendar, Clock, Filter, Info, Search, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 // Import centralized composable types and patient data
-import { patients } from '../../../store/patients.store';
 import { type Patient } from '../../../common/types';
+import { patients } from '../../../store/patients.store';
 
 interface ServiceAlert {
   id: number;

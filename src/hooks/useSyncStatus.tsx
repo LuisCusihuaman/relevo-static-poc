@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
 import { WifiOff } from 'lucide-react';
-import type { SyncStatus } from '../../../relevo-app-vite/src/common/types';
+import { useEffect, useState } from 'react';
+
+type SyncStatus = 'synced' | 'syncing' | 'offline';
 
 export function useSyncStatus() {
   const [isOnline, setIsOnline] = useState(true);

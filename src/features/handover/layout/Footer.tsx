@@ -1,6 +1,5 @@
-import React from 'react';
-import { Button } from '@/components/ui/button';
 import { patientData } from '@/common/constants';
+import { Button } from '@/components/ui/button';
 
 interface FooterProps {
   focusMode: boolean;

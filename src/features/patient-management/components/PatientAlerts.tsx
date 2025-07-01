@@ -1,21 +1,18 @@
-import { useState } from 'react';
-import { 
-  AlertTriangle, 
-  Info, 
-  Shield, 
-  Activity, 
-  Calendar, 
-  X, 
-  Stethoscope,
-  Zap,
-  FileText,
-  Heart,
-  Bug,
-  Pill
-} from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Activity,
+  AlertTriangle,
+  Bug,
+  Calendar,
+  FileText,
+  Heart,
+  Info,
+  Shield,
+  Zap
+} from 'lucide-react';
+import { useState } from 'react';
 
 export type Alert = {
   id: string;

@@ -1,15 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
+import type { SyncStatus } from '@/common/types';
 import { Badge } from '@/components/ui/badge';
-import { Textarea } from '@/components/ui/textarea';
-import { Separator } from '@/components/ui/separator';
+import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { 
-  AlertTriangle, MessageSquare, Edit, Plus, X, Clock, 
-  User, ChevronRight, CheckSquare, AlertCircle, Circle, Type, FileText, Users,
-  PenTool, Activity, Save, Eye, Target, Play, Square, Trash2, Send, Maximize2
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Activity,
+  AlertCircle,
+  Edit, Plus,
+  Send,
+  Trash2,
+  Users,
+  X
 } from 'lucide-react';
-import type { SyncStatus } from '../../../../../../relevo-app-vite/src/common/types';
+import React, { useEffect, useState } from 'react';
 
 // Enhanced collaborator with typing indicators
 interface Collaborator {

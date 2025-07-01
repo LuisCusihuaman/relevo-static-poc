@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
-import { 
-  Plus, X, CheckSquare, Clock, AlertCircle, User, Calendar,
-  Send, Trash2, ArrowRight, ChevronRight, Users, Target,
-  Activity, MessageSquare, Archive, History
+import { Textarea } from '@/components/ui/textarea';
+import {
+  CheckSquare, Clock,
+  History,
+  Plus,
+  Send, Trash2,
+  X
 } from 'lucide-react';
+import React, { useState } from 'react';
 
 interface Collaborator {
   id: number;

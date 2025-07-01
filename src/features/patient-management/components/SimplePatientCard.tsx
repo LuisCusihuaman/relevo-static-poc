@@ -1,24 +1,19 @@
-import { useState } from 'react';
-import { 
-  AlertTriangle, 
-  Clock, 
-  Users, 
-  FileText, 
-  Stethoscope, 
-  Eye,
-  MessageSquare,
-  Calendar,
-  Activity,
-  CheckCircle,
-  ArrowRight,
-  Play,
-  ChevronRight
-} from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import {
+  Activity,
+  AlertTriangle,
+  ArrowRight,
+  CheckCircle,
+  ChevronRight,
+  Eye,
+  FileText,
+  Play,
+  Users
+} from 'lucide-react';
 
 // Import proper Patient type and alert utilities
-import { type Patient, getCriticalAlertCount, getAlertCount } from '../../../common/types';
+import { type Patient, getAlertCount, getCriticalAlertCount } from '../../../common/types';
 
 interface SimplePatientCardProps {
   patient: Patient;

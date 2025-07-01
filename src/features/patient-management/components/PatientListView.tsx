@@ -1,21 +1,21 @@
-import { useState, useEffect } from 'react';
-import { Search, Calendar, Users, Clock, Edit3, CheckCircle, AlertTriangle, Eye } from 'lucide-react';
-import { SimplePatientCard } from './SimplePatientCard';
-import HandoverApp from '../../handover/handover';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardHeader } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { AlertTriangle, Calendar, CheckCircle, Clock, Edit3, Eye, Search, Users } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import HandoverApp from '../../handover/handover';
+import { SimplePatientCard } from './SimplePatientCard';
 
 // Import consolidated data and utilities from patients store
-import { 
-  mockPatients, 
-  mockDetailedAlerts, 
-  mockCollaborators,
+import {
   getPatientStats,
-  sortPatients 
+  mockCollaborators,
+  mockDetailedAlerts,
+  mockPatients,
+  sortPatients
 } from '../../../store/patients.store';
 
 interface PatientListViewProps {
