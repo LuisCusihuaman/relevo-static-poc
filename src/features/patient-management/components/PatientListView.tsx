@@ -73,6 +73,7 @@ export function PatientListView({ onPatientSelect }: PatientListViewProps) {
 
   return (
     <div className="w-full min-h-0 flex flex-col bg-background">
+      <div className="max-w-7xl mx-auto w-full">
       {/* ENHANCED: Header with Better Contrast */}
       <div className="flex-shrink-0 bg-background">
         <div className="p-4 lg:p-6">
@@ -282,6 +283,7 @@ export function PatientListView({ onPatientSelect }: PatientListViewProps) {
             )}
           </div>
         </ScrollArea>
+      </div>
       </div>
     </div>
   );

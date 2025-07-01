@@ -65,7 +65,7 @@ export function ContextAwareDashboard() {
   ];
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="max-w-7xl mx-auto space-y-6 p-6">
       {/* Welcome Header */}
       <Card>
         <CardHeader className="pb-4">

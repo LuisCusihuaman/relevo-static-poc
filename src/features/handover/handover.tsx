@@ -172,7 +172,8 @@ export default function App({ onBack }: HandoverProps = {}) {
 
           {/* Main Content */}
           <div className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-24">
-            <MainContent
+            <div className="max-w-7xl mx-auto">
+              <MainContent
               focusMode={focusMode}
               layoutMode={layoutMode}
               expandedSections={expandedSections}
@@ -185,6 +186,7 @@ export default function App({ onBack }: HandoverProps = {}) {
               getSessionDuration={getSessionDuration}
               currentUser={currentUser}
             />
+            </div>
           </div>
 
           {/* Footer */}
