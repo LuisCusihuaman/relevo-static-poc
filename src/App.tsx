@@ -3,13 +3,12 @@ import { PatientListView } from './features/patient-management';
 import { ProfileView } from './features/profile';
 import { HandoverSession } from './features/handover';
 import { DailySetup } from './features/daily-setup';
-import { HandoverDashboard } from './features/handover';
+import { ContextAwareDashboard } from './features/dashboard';
 import { FigmaDesktopLayout } from './components/layout/FigmaDesktopLayout';
 import { CommandPalette, useCommandPalette } from './components/CommandPalette';
 import { ClinicalDocumentation } from './features/clinical-documentation';
 import { PatientDetailView } from './features/patient-management';
 import { AppSidebar } from './components/layout/app-sidebar';
-import { Badge } from './components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './components/ui/dialog';
 import {
   SidebarInset,
@@ -17,7 +16,6 @@ import {
   useSidebar,
 } from './components/ui/sidebar';
 import { Button } from './components/ui/button';
-import { Separator } from './components/ui/separator';
 import { ChevronRight, ChevronLeft, Menu } from 'lucide-react';
 
 // Import consolidated data from patients store using new composable types
@@ -176,11 +174,11 @@ export default function App() {
   const [showSetupChange, setShowSetupChange] = useState(false);
   
   // Modal States
-  const [handoverSessionActive, setHandoverSessionActive] = useState(false);
   const [clinicalDocOpen, setClinicalDocOpen] = useState(false);
   
-  // Patient Detail View State
+  // Navigation States
   const [selectedPatientDetail, setSelectedPatientDetail] = useState<number | null>(null);
+  const [showHandoverView, setShowHandoverView] = useState(false);
   
   // Selected Items
   const [selectedPatientForDoc, setSelectedPatientForDoc] = useState<number | null>(null);
@@ -218,29 +216,18 @@ export default function App() {
 
   const handleStartHandover = (patientId?: number) => {
     setSelectedPatientForHandover(patientId || null);
-    setHandoverSessionActive(true);
+    setShowHandoverView(true);
     setSelectedPatientDetail(null);
   };
 
   const handlePatientHandover = (patientId: number) => {
     setSelectedPatientForHandover(patientId);
-    setHandoverSessionActive(true);
+    setShowHandoverView(true);
   };
 
-  const handleQuickAction = (action: string) => {
-    switch (action) {
-      case 'handover':
-        setHandoverSessionActive(true);
-        break;
-      case 'add-patient':
-        // TODO: Implement add patient
-        break;
-      case 'change-setup':
-        handleChangeSetup();
-        break;
-      default:
-        break;
-    }
+  const handleCloseHandover = () => {
+    setShowHandoverView(false);
+    setSelectedPatientForHandover(null);
   };
 
   const handlePatientSelect = (patientId: number) => {
@@ -283,6 +270,27 @@ export default function App() {
     }
   };
 
+  // Show handover view if active
+  if (showHandoverView) {
+    return (
+      <div className="min-h-screen relative">
+        {/* Back button */}
+        <div className="absolute top-4 left-4 z-50">
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={handleCloseHandover}
+            className="bg-white/90 backdrop-blur-sm"
+          >
+            <ChevronLeft className="w-4 h-4 mr-2" />
+            Back to {activeTab === 'schedule' ? 'Schedule' : 'Patients'}
+          </Button>
+        </div>
+        <HandoverSession />
+      </div>
+    );
+  }
+
   // Show daily setup if not completed
   if (!setupComplete) {
     return <DailySetup onSetupComplete={handleSetupComplete} />;
@@ -318,16 +326,7 @@ export default function App() {
   const renderContent = () => {
     switch (activeTab) {
       case 'schedule':
-        return (
-          <HandoverDashboard
-            currentDoctor={dailySetup?.doctorName || 'Dr. Unknown'}
-            selectedPatients={dailySetup?.selectedPatients || []}
-            unit={dailySetup?.unit || ''}
-            onStartHandover={handleStartHandover}
-            onChangeSetup={handleChangeSetup}
-            patients={patients}
-          />
-        );
+        return <ContextAwareDashboard />;
       case 'patients':
         // Use different layouts based on screen size
         return isMobile ? (
@@ -355,16 +354,7 @@ export default function App() {
           />
         );
       default:
-        return (
-          <HandoverDashboard
-            currentDoctor={dailySetup?.doctorName || 'Dr. Unknown'}
-            selectedPatients={dailySetup?.selectedPatients || []}
-            unit={dailySetup?.unit || ''}
-            onStartHandover={handleStartHandover}
-            onChangeSetup={handleChangeSetup}
-            patients={patients}
-          />
-        );
+        return <ContextAwareDashboard />;
     }
   };
 
@@ -449,16 +439,6 @@ export default function App() {
         selectedPatientId={selectedPatientForDoc || undefined}
         defaultType={defaultDocType}
       />
-
-      {handoverSessionActive && (
-        <HandoverSession 
-          onClose={() => {
-            setHandoverSessionActive(false);
-            setSelectedPatientForHandover(null);
-          }}
-          selectedPatientId={selectedPatientForHandover}
-        />
-      )}
     </SidebarProvider>
   );
 }

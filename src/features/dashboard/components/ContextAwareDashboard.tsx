@@ -92,7 +92,7 @@ export function ContextAwareDashboard() {
                 {currentTime.toLocaleTimeString()}
               </div>
               <div className="text-sm text-muted-foreground">
-                {currentShift.unit} Unit
+                {unitStatus.name} Unit
               </div>
             </div>
           </div>
