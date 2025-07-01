@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Plus, Search, Calendar, Users, Clock, Edit3, Activity, CheckCircle, AlertTriangle, MessageSquare, Eye, User } from 'lucide-react';
+import { Search, Calendar, Users, Clock, Edit3, CheckCircle, AlertTriangle, Eye } from 'lucide-react';
 import { SimplePatientCard } from './SimplePatientCard';
-import { CollaborativeHandover } from '../../handover/components/CollaborativeHandover';
+import HandoverApp from '../../handover/handover';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardHeader } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 // Import consolidated data and utilities from patients store
@@ -65,7 +65,7 @@ export function PatientListView({ onPatientSelect }: PatientListViewProps) {
         >
           ← Back to Patient List
         </Button>
-        <CollaborativeHandover 
+        <HandoverApp 
           patientId={handoverPatient} 
           patientName={patient?.name || 'Unknown Patient'} 
         />

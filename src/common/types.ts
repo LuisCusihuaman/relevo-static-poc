@@ -284,3 +284,91 @@ export interface DoctorMetrics {
     alerts: number;
   };
 }
+
+
+// HANDOVER
+
+export type SyncStatus = 'synced' | 'syncing' | 'pending' | 'offline';
+
+export type FullscreenComponent = 'patient-summary' | 'situation-awareness';
+
+export interface FullscreenEditingState {
+  component: FullscreenComponent;
+  autoEdit: boolean;
+}
+
+export interface ExpandedSections {
+  illness: boolean;
+  patient: boolean;
+  actions: boolean;
+  awareness: boolean;
+  synthesis: boolean;
+}
+
+export interface User {
+  name: string;
+  role: string;
+  shift: string;
+  initials: string;
+}
+
+export interface Physician {
+  name: string;
+  role: string;
+  initials: string;
+  color: string;
+  shiftEnd?: string;
+  shiftStart?: string;
+  status: string;
+  patientAssignment: string;
+}
+
+export interface PatientData {
+  id: string;
+  name: string;
+  age: number;
+  mrn: string;
+  admissionDate: string;
+  currentDateTime: string;
+  primaryTeam: string;
+  primaryDiagnosis: string;
+  severity: string;
+  handoverStatus: string;
+  shift: string;
+  room: string;
+  unit: string;
+  assignedPhysician: Physician;
+  receivingPhysician: Physician;
+  handoverTime: string;
+}
+
+export interface Collaborator {
+  id: number;
+  name: string;
+  initials: string;
+  color: string;
+  status: 'active' | 'viewing' | 'offline';
+  lastSeen: string;
+  activity: string;
+  role: string;
+  presenceType: 'assigned-current' | 'assigned-receiving' | 'participating' | 'supporting';
+}
+
+export interface AppState {
+  workflowSetup: boolean;
+  handoverComplete: boolean;
+  showHistory: boolean;
+  showComments: boolean;
+  focusMode: boolean;
+  showActivityFeed: boolean;
+  showCollaborators: boolean;
+  showShareMenu: boolean;
+  showMobileMenu: boolean;
+  fullscreenEditing: FullscreenEditingState | null;
+  isOnline: boolean;
+  syncStatus: SyncStatus;
+  layoutMode: 'single' | 'columns';
+  sessionDuration: number;
+  expandedSections: ExpandedSections;
+  currentSaveFunction: (() => void) | null;
+}
