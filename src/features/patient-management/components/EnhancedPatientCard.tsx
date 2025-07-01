@@ -2,19 +2,39 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Activity, AlertCircle, AlertTriangle, CheckCircle, ChevronRight, Clock, Eye, FileText, Heart, History, Pill, Play, Shield, Thermometer, User } from "lucide-react";
-import { useState } from 'react';
+import {
+  Activity,
+  AlertCircle,
+  AlertTriangle,
+  CheckCircle,
+  ChevronRight,
+  FileText,
+  Heart,
+  History,
+  Pill,
+  Play,
+  Shield,
+  User
+} from "lucide-react";
+import { useState } from "react";
 
 // Import centralized types
-import { type EnhancedPatientCardData } from '../../../common/types';
+import {
+  type Alert,
+  type EnhancedPatientCardData,
+} from "../../../common/types";
 
 interface EnhancedPatientCardProps {
   patient: EnhancedPatientCardData;
-  viewMode?: 'compact' | 'detailed' | 'handover';
+  viewMode?: "compact" | "detailed" | "handover";
   onStartHandover?: (patientId: number) => void;
 }
 
-export function EnhancedPatientCard({ patient, viewMode = 'compact', onStartHandover }: EnhancedPatientCardProps) {
+export function EnhancedPatientCard({
+  patient,
+  viewMode: _viewMode = "compact",
+  onStartHandover,
+}: EnhancedPatientCardProps) {
   const [showIPass, setShowIPass] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
 
@@ -26,23 +46,23 @@ export function EnhancedPatientCard({ patient, viewMode = 'compact', onStartHand
           textColor: "text-chart-1",
           bgColor: "bg-chart-1/10",
           label: "Pending Review",
-          icon: <AlertTriangle className="w-4 h-4" />
+          icon: <AlertTriangle className="w-4 h-4" />,
         };
       case "in-progress":
         return {
           color: "bg-primary",
-          textColor: "text-primary", 
+          textColor: "text-primary",
           bgColor: "bg-primary/10",
           label: "Active Care",
-          icon: <Play className="w-4 h-4" />
+          icon: <Play className="w-4 h-4" />,
         };
       case "complete":
         return {
           color: "bg-chart-2",
           textColor: "text-chart-2",
-          bgColor: "bg-chart-2/10", 
+          bgColor: "bg-chart-2/10",
           label: "Stable",
-          icon: <CheckCircle className="w-4 h-4" />
+          icon: <CheckCircle className="w-4 h-4" />,
         };
     }
   };
@@ -62,15 +82,15 @@ export function EnhancedPatientCard({ patient, viewMode = 'compact', onStartHand
 
   const getCriticalAlertIcon = (type: string) => {
     switch (type) {
-      case 'allergy':
+      case "allergy":
         return <AlertCircle className="w-4 h-4 text-destructive" />;
-      case 'lab_critical':
+      case "lab_critical":
         return <Activity className="w-4 h-4 text-destructive" />;
-      case 'medication':
+      case "medication":
         return <Pill className="w-4 h-4 text-chart-1" />;
-      case 'vital':
+      case "vital":
         return <Heart className="w-4 h-4 text-destructive" />;
-      case 'isolation':
+      case "isolation":
         return <Shield className="w-4 h-4 text-chart-4" />;
       default:
         return <AlertTriangle className="w-4 h-4 text-muted-foreground" />;
@@ -78,51 +98,82 @@ export function EnhancedPatientCard({ patient, viewMode = 'compact', onStartHand
   };
 
   const getVitalStatus = (vital: string, value: number | string) => {
+    if (typeof value !== 'number') {
+      return { status: 'normal', class: 'text-chart-2 bg-chart-2/10' };
+    }
     switch (vital) {
-      case 'heartRate':
-        const hr = value as number;
-        if (hr > 120 || hr < 60) return { status: 'critical', class: 'text-destructive bg-destructive/10' };
-        if (hr > 100 || hr < 70) return { status: 'warning', class: 'text-chart-1 bg-chart-1/10' };
-        return { status: 'normal', class: 'text-chart-2 bg-chart-2/10' };
-      case 'oxygen':
-        const o2 = value as number;
-        if (o2 < 90) return { status: 'critical', class: 'text-destructive bg-destructive/10' };
-        if (o2 < 95) return { status: 'warning', class: 'text-chart-1 bg-chart-1/10' };
-        return { status: 'normal', class: 'text-chart-2 bg-chart-2/10' };
-      case 'temperature':
-        const temp = value as number;
-        if (temp > 39 || temp < 35) return { status: 'critical', class: 'text-destructive bg-destructive/10' };
-        if (temp > 38 || temp < 36) return { status: 'warning', class: 'text-chart-1 bg-chart-1/10' };
-        return { status: 'normal', class: 'text-chart-2 bg-chart-2/10' };
+      case "heartRate": {
+        const hr = value;
+        if (hr > 120 || hr < 60)
+          return {
+            status: "critical",
+            class: "text-destructive bg-destructive/10",
+          };
+        if (hr > 100 || hr < 70)
+          return { status: "warning", class: "text-chart-1 bg-chart-1/10" };
+        return { status: "normal", class: "text-chart-2 bg-chart-2/10" };
+      }
+      case "oxygen": {
+        const o2 = value;
+        if (o2 < 90)
+          return {
+            status: "critical",
+            class: "text-destructive bg-destructive/10",
+          };
+        if (o2 < 95)
+          return { status: "warning", class: "text-chart-1 bg-chart-1/10" };
+        return { status: "normal", class: "text-chart-2 bg-chart-2/10" };
+      }
+      case "temperature": {
+        const temp = value;
+        if (temp > 39 || temp < 35)
+          return {
+            status: "critical",
+            class: "text-destructive bg-destructive/10",
+          };
+        if (temp > 38 || temp < 36)
+          return { status: "warning", class: "text-chart-1 bg-chart-1/10" };
+        return { status: "normal", class: "text-chart-2 bg-chart-2/10" };
+      }
       default:
-        return { status: 'normal', class: 'text-chart-2 bg-chart-2/10' };
+        return { status: "normal", class: "text-chart-2 bg-chart-2/10" };
     }
   };
 
   const statusConfig = getStatusConfig(patient.status);
-  const criticalAlerts = patient.criticalAlerts.filter(alert => alert.severity === 'high');
+  const criticalAlerts = patient.alerts.filter(
+    (alert: Alert) => alert.level === "HIGH",
+  );
 
   return (
-    <Card className={`glass-card rounded-2xl border-l-4 ${getPriorityBorder(patient.priority)} overflow-hidden transition-all duration-200 hover:shadow-lg ${
-      criticalAlerts.length > 0 ? 'ring-2 ring-destructive/20' : ''
-    }`}>
+    <Card
+      className={`glass-card rounded-2xl border-l-4 ${getPriorityBorder(patient.priority || "low")} overflow-hidden transition-all duration-200 hover:shadow-lg ${
+        criticalAlerts.length > 0 ? "ring-2 ring-destructive/20" : ""
+      }`}
+    >
       <CardContent className="p-6">
         {/* Critical Alerts Banner */}
         {criticalAlerts.length > 0 && (
           <div className="mb-4 p-3 bg-destructive/10 border border-destructive/20 rounded-xl">
             <div className="flex items-center gap-2 mb-2">
               <AlertTriangle className="w-5 h-5 text-destructive animate-pulse" />
-              <span className="font-semibold text-destructive">Critical Alerts ({criticalAlerts.length})</span>
+              <span className="font-semibold text-destructive">
+                Critical Alerts ({criticalAlerts.length})
+              </span>
             </div>
             <div className="space-y-2">
-              {criticalAlerts.slice(0, 2).map((alert, index) => (
+              {criticalAlerts.slice(0, 2).map((alert: Alert, index: number) => (
                 <div key={index} className="flex items-center gap-2 text-sm">
                   {getCriticalAlertIcon(alert.type)}
-                  <span className="text-destructive font-medium">{alert.message}</span>
+                  <span className="text-destructive font-medium">
+                    {alert.alertCatalogItem.description}
+                  </span>
                 </div>
               ))}
               {criticalAlerts.length > 2 && (
-                <div className="text-sm text-destructive">+ {criticalAlerts.length - 2} more alerts</div>
+                <div className="text-sm text-destructive">
+                  + {criticalAlerts.length - 2} more alerts
+                </div>
               )}
             </div>
           </div>
@@ -132,17 +183,25 @@ export function EnhancedPatientCard({ patient, viewMode = 'compact', onStartHand
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2">
-              <h3 className="font-semibold text-foreground text-xl">{patient.name}</h3>
+              <h3 className="font-semibold text-foreground text-xl">
+                {patient.name}
+              </h3>
               <Badge variant="secondary" className="text-sm">
                 {patient.age}y
               </Badge>
-              <Badge 
-                variant={patient.priority === 'high' ? 'destructive' : patient.priority === 'medium' ? 'default' : 'secondary'}
+              <Badge
+                variant={
+                  patient.priority === "high"
+                    ? "destructive"
+                    : patient.priority === "medium"
+                      ? "default"
+                      : "secondary"
+                }
                 className="text-sm capitalize"
               >
                 {patient.priority} Priority
               </Badge>
-              {patient.integrationData.monitoringActive && (
+              {patient.integrationData?.monitoringActive && (
                 <Badge variant="outline" className="text-sm">
                   <Activity className="w-3 h-3 mr-1" />
                   Live Monitoring
@@ -152,16 +211,19 @@ export function EnhancedPatientCard({ patient, viewMode = 'compact', onStartHand
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
               <span className="font-medium">{patient.room}</span>
               <span>•</span>
-              <span>MRN: {patient.id.toString().padStart(6, '0')}</span>
+              <span>MRN: {patient.id.toString().padStart(6, "0")}</span>
               <span>•</span>
-              <span>Admitted: {new Date(patient.admissionDate).toLocaleDateString()}</span>
+              <span>
+                Admitted:{" "}
+                {new Date(patient.admissionDate || "").toLocaleDateString()}
+              </span>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-2">
-            <div className={`p-2 rounded-lg ${statusConfig.bgColor}`}>
-              <div className={statusConfig.textColor}>
-                {statusConfig.icon}
+            <div className={`p-2 rounded-lg ${statusConfig?.bgColor}`}>
+              <div className={statusConfig?.textColor}>
+                {statusConfig?.icon}
               </div>
             </div>
             <Button
@@ -188,205 +250,208 @@ export function EnhancedPatientCard({ patient, viewMode = 'compact', onStartHand
               I-PASS
             </Button>
           </div>
-          <p className="text-sm text-muted-foreground leading-relaxed">{patient.description}</p>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            {patient.description}
+          </p>
         </div>
 
         {/* I-PASS Protocol Details */}
-        {showIPass && (
-          <div className="mb-4 p-4 bg-primary/5 border border-primary/20 rounded-xl">
-            <h5 className="font-medium text-primary mb-3 flex items-center gap-2">
-              <FileText className="w-4 h-4" />
-              I-PASS Structured Handover
-            </h5>
-            <div className="space-y-3 text-sm">
-              <div>
-                <span className="font-medium text-foreground">Illness Severity:</span>
-                <p className="text-muted-foreground mt-1">{patient.iPassData.illness}</p>
+        {showIPass && patient.iPassData && (
+          <div className="mt-4 p-4 bg-muted/50 rounded-xl space-y-4">
+            <h4 className="font-semibold text-foreground">
+              I-PASS Handover Summary
+            </h4>
+            {[
+              {
+                letter: 'I',
+                title: 'Illness Severity',
+                content: patient.iPassData?.illness,
+              },
+              {
+                letter: 'P',
+                title: 'Patient Summary',
+                content: patient.iPassData?.patientSummary,
+              },
+              {
+                letter: 'A',
+                title: 'Action List',
+                content: patient.iPassData?.actionList,
+              },
+              {
+                letter: 'S',
+                title: 'Situation Awareness',
+                content: patient.iPassData?.situationAwareness.join(', '),
+              },
+              {
+                letter: 'S',
+                title: 'Synthesis by Receiver',
+                content: patient.iPassData?.synthesis,
+              },
+            ].map((item, index: number) => (
+              <div key={index} className="flex items-start gap-4">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/20 text-primary font-bold flex items-center justify-center">
+                  {item.letter}
+                </div>
+                <div>
+                  <h5 className="font-medium text-foreground">{item.title}</h5>
+                  <p className="text-sm text-muted-foreground">
+                    {item.content || 'Not specified'}
+                  </p>
+                </div>
               </div>
-              <div>
-                <span className="font-medium text-foreground">Patient Summary:</span>
-                <p className="text-muted-foreground mt-1">{patient.iPassData.patientSummary}</p>
-              </div>
-              <div>
-                <span className="font-medium text-foreground">Action List:</span>
-                <ul className="text-muted-foreground mt-1 space-y-1">
-                  {patient.iPassData.actionList.map((action, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <span className="text-primary">•</span>
-                      {action}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <span className="font-medium text-foreground">Situation Awareness:</span>
-                <ul className="text-muted-foreground mt-1 space-y-1">
-                  {patient.iPassData.situationAwareness.map((item, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <span className="text-primary">•</span>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <span className="font-medium text-foreground">Synthesis:</span>
-                <p className="text-muted-foreground mt-1">{patient.iPassData.synthesis}</p>
-              </div>
-            </div>
+            ))}
           </div>
         )}
 
         {/* Enhanced Vitals with Critical Highlighting */}
-        <div className="mb-4 p-4 bg-secondary/20 rounded-xl">
-          <h5 className="font-medium text-foreground mb-3 flex items-center gap-2">
-            <Activity className="w-4 h-4" />
-            Real-time Vitals
-            <Badge variant="outline" className="text-xs">
-              Updated {patient.integrationData.labLastSync}
-            </Badge>
-          </h5>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {Object.entries(patient.vitals).map(([key, value]) => {
-              const vitalStatus = getVitalStatus(key, value);
-              const icons = {
-                heartRate: Heart,
-                bloodPressure: Activity,
-                temperature: Thermometer,
-                oxygen: Activity
-              };
-              const Icon = icons[key as keyof typeof icons];
-              const units = {
-                heartRate: 'bpm',
-                bloodPressure: 'mmHg',
-                temperature: '°C',
-                oxygen: '%'
-              };
-
-              return (
-                <div key={key} className={`text-center p-3 rounded-lg ${vitalStatus.class}`}>
-                  <div className="flex items-center justify-center gap-1 mb-1">
-                    <Icon className="w-4 h-4" />
-                    <span className="text-xs uppercase tracking-wide">{key.replace(/([A-Z])/g, ' $1').trim()}</span>
+        {patient.vitals && (
+          <div className="mb-4 p-4 bg-secondary/20 rounded-xl">
+            <h5 className="font-medium text-foreground mb-3 flex items-center gap-2">
+              <Activity className="w-4 h-4" />
+              Real-time Vitals
+              <Badge variant="outline" className="text-xs">
+                Updated {patient.integrationData?.labLastSync}
+              </Badge>
+            </h5>
+            <div className="grid grid-cols-5 gap-3">
+              {Object.entries(patient.vitals).map(([key, value]) => {
+                const vitalStatus = getVitalStatus(key, value as number);
+                return (
+                  <div
+                    key={key}
+                    className={`p-3 rounded-lg text-center ${vitalStatus.class}`}
+                  >
+                    <div className="text-sm capitalize text-muted-foreground">
+                      {key.replace(/([A-Z])/g, " $1")}
+                    </div>
+                    <div className="font-semibold text-lg">{String(value)}</div>
+                    <div className="text-xs opacity-80">
+                      {vitalStatus.status}
+                    </div>
                   </div>
-                  <div className="font-semibold text-lg">{value}</div>
-                  <div className="text-xs opacity-80">{units[key as keyof typeof units]}</div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
-        </div>
+        )}
 
-        {/* Medications and Allergies with Safety Highlighting */}
-        <div className="mb-4 space-y-3">
-          <div>
+        {/* Medications */}
+        {patient.medications && patient.medications.length > 0 && (
+          <div className="mb-4">
             <h5 className="font-medium text-foreground mb-2 flex items-center gap-2">
-              <Pill className="w-4 h-4" />
-              Current Medications
+              <Pill className="w-4 h-4" /> Medications
             </h5>
             <div className="flex flex-wrap gap-2">
-              {patient.medications.map((med, index) => (
-                <Badge key={index} variant="outline" className="text-sm">
-                  {med}
+              {patient.medications.map((med: { name: string; dosage: string }, index: number) => (
+                <Badge
+                  key={index}
+                  variant="outline"
+                  className="text-xs font-normal"
+                >
+                  {med.name} {med.dosage}
                 </Badge>
               ))}
             </div>
           </div>
-          
-          {patient.allergies.length > 0 && (
-            <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
-              <h5 className="font-medium text-destructive mb-2 flex items-center gap-2">
-                <AlertCircle className="w-4 h-4" />
-                ⚠️ ALLERGIES - CRITICAL
-              </h5>
-              <div className="flex flex-wrap gap-2">
-                {patient.allergies.map((allergy, index) => (
-                  <Badge key={index} variant="destructive" className="text-sm font-bold">
-                    {allergy}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Progress for in-progress patients */}
-        {patient.status === "in-progress" && (
-          <div className="mb-4">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-muted-foreground">Treatment Progress</span>
-              <span className="text-sm font-medium text-primary">{patient.completionPercentage}%</span>
-            </div>
-            <Progress value={patient.completionPercentage} className="h-3" />
-          </div>
         )}
 
-        {/* Integration Status */}
-        <div className="mb-4 p-3 bg-accent/50 rounded-lg">
-          <div className="flex items-center gap-4 text-sm">
-            <div className="flex items-center gap-1">
-              <div className="w-2 h-2 bg-chart-2 rounded-full"></div>
-              <span className="text-muted-foreground">EHR: {patient.integrationData.ehrLastSync}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <div className="w-2 h-2 bg-chart-2 rounded-full"></div>
-              <span className="text-muted-foreground">Labs: {patient.integrationData.labLastSync}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <div className="w-2 h-2 bg-chart-2 rounded-full animate-pulse"></div>
-              <span className="text-muted-foreground">Monitoring: Active</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Handover History */}
-        {showHistory && (
-          <div className="mb-4 p-4 bg-muted/30 rounded-xl">
-            <h5 className="font-medium text-foreground mb-3 flex items-center gap-2">
-              <History className="w-4 h-4" />
-              Recent Handover History
+        {/* Allergies */}
+        {patient.allergies && patient.allergies.length > 0 && (
+          <div className="mb-4">
+            <h5 className="font-medium text-destructive mb-2 flex items-center gap-2">
+              <Shield className="w-4 h-4" /> Allergies
             </h5>
-            <div className="space-y-2">
-              {patient.handoverHistory.slice(0, 3).map((handover, index) => (
-                <div key={index} className="flex items-center justify-between text-sm p-2 bg-background rounded">
-                  <div>
-                    <span className="font-medium">{handover.fromDoctor} → {handover.toDoctor}</span>
-                    <div className="text-xs text-muted-foreground">{handover.timestamp.toLocaleString()}</div>
-                  </div>
-                  <Badge variant={handover.status === 'completed' ? 'default' : 'secondary'} className="text-xs">
-                    {handover.status}
-                  </Badge>
-                </div>
+            <div className="flex flex-wrap gap-2">
+              {patient.allergies.map((allergy: { substance: string }, index: number) => (
+                <Badge
+                  key={index}
+                  variant="destructive"
+                  className="text-xs font-normal"
+                >
+                  {allergy.substance}
+                </Badge>
               ))}
             </div>
           </div>
         )}
 
-        {/* Footer Actions */}
-        <div className="flex items-center justify-between pt-4 border-t border-border">
-          <div className="flex items-center gap-4 text-sm text-muted-foreground">
-            <div className="flex items-center gap-1">
-              <User className="w-4 h-4" />
-              <span>{patient.doctor.replace('Dr. ', '')}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Clock className="w-4 h-4" />
-              <span>{patient.lastUpdated}</span>
-            </div>
+        {/* Handover History */}
+        {showHistory && patient.handoverHistory && (
+          <div className="mb-4 p-4 bg-primary/5 border border-primary/20 rounded-xl">
+            <h5 className="font-medium text-primary mb-3 flex items-center gap-2">
+              <History className="w-4 h-4" />
+              Handover History
+            </h5>
+            <ul className="space-y-2 text-sm">
+              {patient.handoverHistory
+                .slice(0, 3)
+                .map((handover, index: number) => (
+                  <li key={index} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <User className="w-4 h-4 text-muted-foreground" />
+                      <span className="font-medium text-foreground">
+                        {handover.from} to {handover.to}
+                      </span>
+                    </div>
+                    <span className="text-muted-foreground">
+                      {new Date(handover.timestamp).toLocaleDateString()}
+                    </span>
+                  </li>
+                ))}
+            </ul>
           </div>
-          
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm">
-              <Eye className="w-4 h-4 mr-1" />
-              View Full
-            </Button>
-            <Button 
-              size="sm" 
-              className="flex items-center gap-2"
-              onClick={() => onStartHandover?.(patient.id)}
+        )}
+
+        {/* Task Progress */}
+        <div className="mt-4">
+          <div className="flex justify-between items-center mb-1">
+            <span className="text-sm font-medium text-foreground">
+              Care Plan Progress
+            </span>
+            <span className="text-sm font-semibold text-foreground">
+              {patient.completionPercentage || 0}%
+            </span>
+          </div>
+          <Progress
+            value={patient.completionPercentage}
+            className="h-2"
+          />
+        </div>
+
+        {/* Key Team Members */}
+        <div className="mt-4 space-y-2">
+          <h4 className="font-semibold text-foreground">Key Team Members</h4>
+          {(patient.medications || []).map(
+            (
+              member: { name: string; route: string },
+              index: number,
+            ) => (
+              <div
+                key={index}
+                className="flex items-center justify-between text-sm"
+              >
+                <div className="flex items-center gap-2">
+                  <User className="w-4 h-4 text-muted-foreground" />
+                  <span className="font-medium">{member.name}</span>
+                </div>
+                <span className="text-muted-foreground">{member.route}</span>
+              </div>
+            ),
+          )}
+        </div>
+
+        {/* Action Button */}
+        <div className="mt-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <User className="w-4 h-4" />
+              <span>{patient.doctor?.replace('Dr. ', '')}</span>
+            </div>
+            <Button
+              onClick={() => onStartHandover && onStartHandover(patient.id)}
+              size="sm"
             >
-              {patient.status === "complete" ? "Review" : patient.status === "in-progress" ? "Continue" : "Start Handover"}
-              <ChevronRight className="w-4 h-4" />
+              Start Handover <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
           </div>
         </div>

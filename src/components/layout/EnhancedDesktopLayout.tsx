@@ -1,10 +1,24 @@
-import { useState, useEffect } from 'react';
-import { Search, User, Settings, Bell, Plus, MoreHorizontal, Zap, Command } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Card, CardContent } from '@/components/ui/card';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Bell,
+  Command,
+  MoreHorizontal,
+  Plus,
+  Search,
+  Settings,
+  User,
+  Zap,
+} from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface EnhancedDesktopLayoutProps {
   children: React.ReactNode;
@@ -16,14 +30,14 @@ interface EnhancedDesktopLayoutProps {
   onQuickAction?: (action: string) => void;
 }
 
-export function EnhancedDesktopLayout({ 
-  children, 
-  currentDoctor, 
-  unit, 
-  shift, 
+export function EnhancedDesktopLayout({
+  children,
+  currentDoctor,
+  unit,
+  shift,
   patientCount,
   onCommandPalette,
-  onQuickAction
+  onQuickAction,
 }: EnhancedDesktopLayoutProps) {
   const [notifications] = useState(2);
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -44,14 +58,18 @@ export function EnhancedDesktopLayout({
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-                <span className="text-primary-foreground font-semibold text-sm">R</span>
+                <span className="text-primary-foreground font-semibold text-sm">
+                  R
+                </span>
               </div>
               <div className="hidden md:block">
                 <h1 className="font-semibold text-lg">RELEVO</h1>
-                <p className="text-xs text-muted-foreground">Medical Handover Platform</p>
+                <p className="text-xs text-muted-foreground">
+                  Medical Handover Platform
+                </p>
               </div>
             </div>
-            
+
             {/* Context Information */}
             <div className="hidden lg:flex items-center gap-3">
               <div className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
@@ -64,20 +82,34 @@ export function EnhancedDesktopLayout({
                 {patientCount} Patients
               </div>
               <div className="text-sm text-muted-foreground">
-                {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                {currentTime.toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
               </div>
             </div>
           </div>
 
           {/* Center Section - Quick Search */}
           <div className="hidden md:flex flex-1 max-w-lg mx-8">
-            <div 
+            <div
               className="relative w-full cursor-pointer"
               onClick={onCommandPalette}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onCommandPalette();
+                }
+              }}
+              role="button"
+              tabIndex={0}
+              aria-label="Open command palette"
             >
               <div className="flex items-center gap-3 px-4 py-2 bg-muted/30 hover:bg-muted/50 rounded-lg transition-colors">
                 <Search className="w-4 h-4 text-muted-foreground" />
-                <span className="text-muted-foreground">Search patients, create notes...</span>
+                <span className="text-muted-foreground">
+                  Search patients, create notes...
+                </span>
                 <div className="ml-auto flex items-center gap-1">
                   <Command className="w-3 h-3 text-muted-foreground" />
                   <span className="text-xs text-muted-foreground">K</span>
@@ -93,7 +125,7 @@ export function EnhancedDesktopLayout({
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => onQuickAction?.('handover')}
+                onClick={() => onQuickAction?.("handover")}
                 className="gap-2"
               >
                 <Zap className="w-4 h-4" />
@@ -102,7 +134,7 @@ export function EnhancedDesktopLayout({
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => onQuickAction?.('add-patient')}
+                onClick={() => onQuickAction?.("add-patient")}
               >
                 <Plus className="w-4 h-4" />
               </Button>
@@ -122,7 +154,10 @@ export function EnhancedDesktopLayout({
             <Button variant="ghost" size="sm" className="relative">
               <Bell className="w-4 h-4" />
               {notifications > 0 && (
-                <Badge variant="destructive" className="absolute -top-1 -right-1 w-4 h-4 p-0 flex items-center justify-center text-xs">
+                <Badge
+                  variant="destructive"
+                  className="absolute -top-1 -right-1 w-4 h-4 p-0 flex items-center justify-center text-xs"
+                >
                   {notifications}
                 </Badge>
               )}
@@ -134,10 +169,15 @@ export function EnhancedDesktopLayout({
                 <Button variant="ghost" className="gap-2 pl-2">
                   <Avatar className="w-7 h-7">
                     <AvatarFallback className="text-xs">
-                      {currentDoctor.split(' ').map(n => n[0]).join('')}
+                      {currentDoctor
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="hidden md:block font-medium text-sm">{currentDoctor}</span>
+                  <span className="hidden md:block font-medium text-sm">
+                    {currentDoctor}
+                  </span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
@@ -160,18 +200,12 @@ export function EnhancedDesktopLayout({
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1">
-        {children}
-      </main>
+      <main className="flex-1">{children}</main>
 
       {/* Quick Access Footer (Desktop Only) */}
       <div className="hidden lg:block fixed bottom-6 right-6 z-20">
         <div className="flex items-center gap-2">
-          <Button
-            size="sm"
-            onClick={onCommandPalette}
-            className="shadow-lg"
-          >
+          <Button size="sm" onClick={onCommandPalette} className="shadow-lg">
             <Command className="w-4 h-4 mr-2" />
             Quick Actions
           </Button>
@@ -188,47 +222,55 @@ interface EnhancedPatientListProps {
     name: string;
     room: string;
     diagnosis: string;
-    priority: 'high' | 'medium' | 'low';
+    priority: "high" | "medium" | "low";
     alertCount: number;
     lastUpdate: string;
-    status: 'pending' | 'in-progress' | 'complete';
+    status: "pending" | "in-progress" | "complete";
     collaborators: number;
     unreadComments: number;
   }>;
-  viewMode: 'list' | 'grid';
+  viewMode: "list" | "grid";
   onPatientClick?: (patientId: number) => void;
   onQuickNote?: (patientId: number) => void;
 }
 
-export function EnhancedPatientList({ 
-  patients, 
-  viewMode, 
-  onPatientClick, 
-  onQuickNote 
+export function EnhancedPatientList({
+  patients,
+  viewMode,
+  onPatientClick,
+  onQuickNote,
 }: EnhancedPatientListProps) {
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'high': return 'border-l-destructive bg-destructive/5';
-      case 'medium': return 'border-l-chart-1 bg-chart-1/5';
-      case 'low': return 'border-l-chart-2 bg-chart-2/5';
-      default: return 'border-l-border';
+      case "high":
+        return "border-l-destructive bg-destructive/5";
+      case "medium":
+        return "border-l-chart-1 bg-chart-1/5";
+      case "low":
+        return "border-l-chart-2 bg-chart-2/5";
+      default:
+        return "border-l-border";
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'pending': return 'text-chart-1 bg-chart-1/10';
-      case 'in-progress': return 'text-primary bg-primary/10';
-      case 'complete': return 'text-chart-2 bg-chart-2/10';
-      default: return 'text-muted-foreground bg-muted';
+      case "pending":
+        return "text-chart-1 bg-chart-1/10";
+      case "in-progress":
+        return "text-primary bg-primary/10";
+      case "complete":
+        return "text-chart-2 bg-chart-2/10";
+      default:
+        return "text-muted-foreground bg-muted";
     }
   };
 
-  if (viewMode === 'list') {
+  if (viewMode === "list") {
     return (
       <div className="space-y-3">
         {patients.map((patient) => (
-          <Card 
+          <Card
             key={patient.id}
             className={`cursor-pointer hover:shadow-md transition-all border-l-4 ${getPriorityColor(patient.priority)}`}
             onClick={() => onPatientClick?.(patient.id)}
@@ -241,7 +283,9 @@ export function EnhancedPatientList({
                     <Badge variant="outline" className="text-xs">
                       {patient.room}
                     </Badge>
-                    <Badge className={`text-xs ${getStatusColor(patient.status)}`}>
+                    <Badge
+                      className={`text-xs ${getStatusColor(patient.status)}`}
+                    >
                       {patient.status}
                     </Badge>
                     {patient.alertCount > 0 && (
@@ -250,16 +294,20 @@ export function EnhancedPatientList({
                       </Badge>
                     )}
                   </div>
-                  <p className="text-sm text-muted-foreground mb-2">{patient.diagnosis}</p>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    {patient.diagnosis}
+                  </p>
                   <div className="flex items-center gap-4 text-xs text-muted-foreground">
                     <span>Updated {patient.lastUpdate}</span>
                     <span>{patient.collaborators} collaborators</span>
                     {patient.unreadComments > 0 && (
-                      <span className="text-primary">{patient.unreadComments} new comments</span>
+                      <span className="text-primary">
+                        {patient.unreadComments} new comments
+                      </span>
                     )}
                   </div>
                 </div>
-                
+
                 <div className="flex items-center gap-2">
                   <Button
                     variant="outline"
@@ -273,7 +321,11 @@ export function EnhancedPatientList({
                   </Button>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="sm" onClick={(e) => e.stopPropagation()}>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         <MoreHorizontal className="w-4 h-4" />
                       </Button>
                     </DropdownMenuTrigger>
@@ -296,7 +348,7 @@ export function EnhancedPatientList({
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
       {patients.map((patient) => (
-        <Card 
+        <Card
           key={patient.id}
           className={`cursor-pointer hover:shadow-md transition-all border-l-4 ${getPriorityColor(patient.priority)}`}
           onClick={() => onPatientClick?.(patient.id)}
@@ -313,11 +365,11 @@ export function EnhancedPatientList({
                 {patient.status}
               </Badge>
             </div>
-            
+
             <p className="text-xs text-muted-foreground mb-3 line-clamp-2">
               {patient.diagnosis}
             </p>
-            
+
             <div className="flex items-center justify-between">
               <div className="flex gap-1">
                 {patient.alertCount > 0 && (
@@ -329,7 +381,7 @@ export function EnhancedPatientList({
                   {patient.priority}
                 </Badge>
               </div>
-              
+
               <Button
                 variant="ghost"
                 size="sm"

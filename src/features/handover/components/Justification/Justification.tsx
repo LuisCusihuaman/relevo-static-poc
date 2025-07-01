@@ -1,10 +1,17 @@
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Textarea } from '@/components/ui/textarea';
-import { Calendar, Edit3, FileText, MessageSquare, Plus, User } from 'lucide-react';
-import { useState } from 'react';
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Calendar,
+  Edit3,
+  FileText,
+  MessageSquare,
+  Plus,
+  User,
+} from "lucide-react";
+import { useState } from "react";
 
 interface JustificationProps {
   collaborators: Array<{
@@ -18,36 +25,38 @@ interface JustificationProps {
 
 export function Justification({ collaborators }: JustificationProps) {
   const [isAddingEntry, setIsAddingEntry] = useState(false);
-  const [newEntry, setNewEntry] = useState('');
+  const [newEntry, setNewEntry] = useState("");
 
   const justificationEntries = [
     {
       id: 1,
-      timestamp: '14:15',
-      author: 'Dr. Ana Martinez',
-      initials: 'AM',
-      content: 'Patient requires continued oxygen support due to acute exacerbation of COPD. Clinical improvement noted with current treatment plan including corticosteroids and bronchodilators. Recommend maintaining current O2 flow rate and monitoring for further improvement over next 24 hours.',
-      priority: 'high',
+      timestamp: "14:15",
+      author: "Dr. Ana Martinez",
+      initials: "AM",
+      content:
+        "Patient requires continued oxygen support due to acute exacerbation of COPD. Clinical improvement noted with current treatment plan including corticosteroids and bronchodilators. Recommend maintaining current O2 flow rate and monitoring for further improvement over next 24 hours.",
+      priority: "high",
       isBeingEdited: true,
-      editedBy: 'Dr. Johnson'
+      editedBy: "Dr. Johnson",
     },
     {
       id: 2,
-      timestamp: '13:45',
-      author: 'Dr. Johnson',
-      initials: 'DJ',
-      content: 'Patient and family education completed regarding COPD management and signs of exacerbation. Discharge planning discussion initiated. Social work consultation requested for home care evaluation.',
-      priority: 'medium',
-      isBeingEdited: false
-    }
+      timestamp: "13:45",
+      author: "Dr. Johnson",
+      initials: "DJ",
+      content:
+        "Patient and family education completed regarding COPD management and signs of exacerbation. Discharge planning discussion initiated. Social work consultation requested for home care evaluation.",
+      priority: "medium",
+      isBeingEdited: false,
+    },
   ];
 
-  const activeEditor = collaborators.find(c => c.section === 'justification');
+  const activeEditor = collaborators.find((c) => c.section === "justification");
 
   const handleAddEntry = () => {
     if (newEntry.trim()) {
       // In real app, this would add to the shared document
-      setNewEntry('');
+      setNewEntry("");
       setIsAddingEntry(false);
     }
   };
@@ -62,7 +71,9 @@ export function Justification({ collaborators }: JustificationProps) {
             {activeEditor && (
               <div className="flex items-center space-x-2 ml-4">
                 <Avatar className="w-5 h-5">
-                  <AvatarFallback className={`${activeEditor.color} text-white text-xs`}>
+                  <AvatarFallback
+                    className={`${activeEditor.color} text-white text-xs`}
+                  >
                     {activeEditor.initials}
                   </AvatarFallback>
                 </Avatar>
@@ -88,7 +99,9 @@ export function Justification({ collaborators }: JustificationProps) {
         {/* Add New Entry */}
         {isAddingEntry && (
           <div className="p-4 border-2 border-blue-200 rounded-lg bg-blue-50">
-            <h4 className="font-medium text-gray-900 mb-3">New Justification Entry</h4>
+            <h4 className="font-medium text-gray-900 mb-3">
+              New Justification Entry
+            </h4>
             <Textarea
               placeholder="Enter clinical reasoning, decision rationale, or additional context..."
               value={newEntry}
@@ -99,7 +112,11 @@ export function Justification({ collaborators }: JustificationProps) {
               <Button size="sm" onClick={handleAddEntry}>
                 Add Entry
               </Button>
-              <Button size="sm" variant="outline" onClick={() => setIsAddingEntry(false)}>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setIsAddingEntry(false)}
+              >
                 Cancel
               </Button>
             </div>
@@ -109,12 +126,12 @@ export function Justification({ collaborators }: JustificationProps) {
         {/* Existing Entries */}
         <div className="space-y-4">
           {justificationEntries.map((entry) => (
-            <div 
-              key={entry.id} 
+            <div
+              key={entry.id}
               className={`border rounded-lg p-4 space-y-3 ${
-                entry.isBeingEdited 
-                  ? 'border-blue-300 bg-blue-50' 
-                  : 'border-gray-200'
+                entry.isBeingEdited
+                  ? "border-blue-300 bg-blue-50"
+                  : "border-gray-200"
               }`}
             >
               <div className="flex items-center justify-between">
@@ -125,8 +142,10 @@ export function Justification({ collaborators }: JustificationProps) {
                   <span>{entry.author}</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Badge 
-                    variant={entry.priority === 'high' ? 'destructive' : 'secondary'}
+                  <Badge
+                    variant={
+                      entry.priority === "high" ? "destructive" : "secondary"
+                    }
                     className="text-xs"
                   >
                     {entry.priority.toUpperCase()}
@@ -139,7 +158,7 @@ export function Justification({ collaborators }: JustificationProps) {
                   )}
                 </div>
               </div>
-              
+
               <div className="relative">
                 <p className="text-sm leading-relaxed">{entry.content}</p>
                 {entry.isBeingEdited && (
@@ -154,9 +173,7 @@ export function Justification({ collaborators }: JustificationProps) {
                       {entry.initials}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="text-xs text-gray-500">
-                    {entry.author}
-                  </span>
+                  <span className="text-xs text-gray-500">{entry.author}</span>
                 </div>
                 <Button variant="ghost" size="sm" className="text-xs">
                   <MessageSquare className="w-3 h-3 mr-1" />
@@ -178,8 +195,13 @@ export function Justification({ collaborators }: JustificationProps) {
             <span>Shared with team</span>
             <div className="flex -space-x-1">
               {collaborators.slice(0, 3).map((collaborator) => (
-                <Avatar key={collaborator.id} className="w-5 h-5 border border-white">
-                  <AvatarFallback className={`${collaborator.color} text-white text-xs`}>
+                <Avatar
+                  key={collaborator.id}
+                  className="w-5 h-5 border border-white"
+                >
+                  <AvatarFallback
+                    className={`${collaborator.color} text-white text-xs`}
+                  >
                     {collaborator.initials}
                   </AvatarFallback>
                 </Avatar>

@@ -1,2 +1,2 @@
 // Profile Feature Exports
-export { ProfileView } from './components/ProfileView'; 
+export { ProfileView } from "./components/ProfileView";

@@ -1,1 +1,1 @@
-export { PatientSummary } from './PatientSummary';
+export { PatientSummary } from "./PatientSummary";

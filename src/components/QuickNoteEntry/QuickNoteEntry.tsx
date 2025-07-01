@@ -1,11 +1,17 @@
-import { useState, useEffect } from 'react';
-import { Plus, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { Plus, Save, X } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface Patient {
   id: number;
@@ -21,29 +27,67 @@ interface QuickNoteEntryProps {
   doctorName: string;
 }
 
-export function QuickNoteEntry({ isOpen, onClose, patients, doctorName }: QuickNoteEntryProps) {
-  const [selectedPatient, setSelectedPatient] = useState<string>('');
-  const [noteType, setNoteType] = useState<string>('');
-  const [noteContent, setNoteContent] = useState('');
+interface RecentNote {
+  id: number;
+  patientId: string;
+  type: string;
+  content: string;
+  timestamp: Date;
+  author: string;
+}
+
+export function QuickNoteEntry({
+  isOpen,
+  onClose,
+  patients,
+  doctorName,
+}: QuickNoteEntryProps) {
+  const [selectedPatient, setSelectedPatient] = useState<string>("");
+  const [noteType, setNoteType] = useState<string>("");
+  const [noteContent, setNoteContent] = useState("");
   const [isSaving, setIsSaving] = useState(false);
-  const [recentNotes, setRecentNotes] = useState<any[]>([]);
+  const [recentNotes, setRecentNotes] = useState<RecentNote[]>([]);
 
   const noteTypes = [
-    { id: 'assessment', label: '📋 Assessment', color: 'bg-blue-50 text-blue-700' },
-    { id: 'plan', label: '🎯 Plan Update', color: 'bg-green-50 text-green-700' },
-    { id: 'observation', label: '👁️ Observation', color: 'bg-purple-50 text-purple-700' },
-    { id: 'concern', label: '⚠️ Concern', color: 'bg-yellow-50 text-yellow-700' },
-    { id: 'improvement', label: '📈 Improvement', color: 'bg-emerald-50 text-emerald-700' },
-    { id: 'family', label: '👨‍👩‍👧‍👦 Family Note', color: 'bg-pink-50 text-pink-700' },
+    {
+      id: "assessment",
+      label: "📋 Assessment",
+      color: "bg-blue-50 text-blue-700",
+    },
+    {
+      id: "plan",
+      label: "🎯 Plan Update",
+      color: "bg-green-50 text-green-700",
+    },
+    {
+      id: "observation",
+      label: "👁️ Observation",
+      color: "bg-purple-50 text-purple-700",
+    },
+    {
+      id: "concern",
+      label: "⚠️ Concern",
+      color: "bg-yellow-50 text-yellow-700",
+    },
+    {
+      id: "improvement",
+      label: "📈 Improvement",
+      color: "bg-emerald-50 text-emerald-700",
+    },
+    {
+      id: "family",
+      label: "👨‍👩‍👧‍👦 Family Note",
+      color: "bg-pink-50 text-pink-700",
+    },
   ];
 
   const quickTemplates = [
     "Stable overnight, no acute concerns",
-    "Pain well controlled with current regimen", 
+    "Pain well controlled with current regimen",
     "Family meeting scheduled for tomorrow",
     "Consider step-down if continues current trajectory",
     "Awaiting results from morning labs",
-    "Discussed discharge planning with team"
+    "Discussed discharge planning with team",
   ];
 
   useEffect(() => {
@@ -54,38 +98,40 @@ export function QuickNoteEntry({ isOpen, onClose, patients, doctorName }: QuickN
 
   const handleSave = async () => {
     if (!selectedPatient || !noteType || !noteContent.trim()) return;
-    
+
     setIsSaving(true);
-    
+
     // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     const newNote = {
       id: Date.now(),
       patientId: selectedPatient,
       type: noteType,
       content: noteContent,
       timestamp: new Date(),
-      author: doctorName
+      author: doctorName,
     };
-    
-    setRecentNotes(prev => [newNote, ...prev.slice(0, 4)]);
-    
+
+    setRecentNotes((prev) => [newNote, ...prev.slice(0, 4)]);
+
     // Reset form
-    setNoteContent('');
-    setNoteType('');
+    setNoteContent("");
+    setNoteType("");
     setIsSaving(false);
-    
+
     // Auto-close after successful save
     setTimeout(onClose, 500);
   };
 
   const handleTemplateClick = (template: string) => {
-    setNoteContent(prev => prev ? `${prev}\n${template}` : template);
+    setNoteContent((prev) => (prev ? `${prev}\n${template}` : template));
   };
 
-  const selectedPatientData = patients.find(p => p.id.toString() === selectedPatient);
-  const selectedNoteType = noteTypes.find(nt => nt.id === noteType);
+  const selectedPatientData = patients.find(
+    (p) => p.id.toString() === selectedPatient,
+  );
+  const selectedNoteType = noteTypes.find((nt) => nt.id === noteType);
 
   if (!isOpen) return null;
 
@@ -106,25 +152,41 @@ export function QuickNoteEntry({ isOpen, onClose, patients, doctorName }: QuickN
                 <X className="w-4 h-4" />
               </Button>
             </div>
-            
+
             {/* Doctor Info */}
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Avatar className="w-6 h-6">
                 <AvatarFallback className="text-xs">
-                  {doctorName.split(' ').map(n => n[0]).join('')}
+                  {doctorName
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")}
                 </AvatarFallback>
               </Avatar>
               <span>{doctorName}</span>
               <span>•</span>
-              <span>{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+              <span>
+                {new Date().toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>
             </div>
           </CardHeader>
 
           <CardContent className="flex-1 space-y-4 overflow-auto">
             {/* Patient Selection */}
             <div>
-              <label className="text-sm font-medium mb-2 block">Patient</label>
-              <Select value={selectedPatient} onValueChange={setSelectedPatient}>
+              <label
+                htmlFor="patient-select"
+                className="text-sm font-medium mb-2 block"
+              >
+                Patient
+              </label>
+              <Select
+                value={selectedPatient}
+                onValueChange={setSelectedPatient}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Select patient" />
                 </SelectTrigger>
@@ -141,7 +203,7 @@ export function QuickNoteEntry({ isOpen, onClose, patients, doctorName }: QuickN
                   ))}
                 </SelectContent>
               </Select>
-              
+
               {selectedPatientData && (
                 <p className="text-sm text-muted-foreground mt-1">
                   {selectedPatientData.diagnosis}
@@ -151,7 +213,7 @@ export function QuickNoteEntry({ isOpen, onClose, patients, doctorName }: QuickN
 
             {/* Note Type */}
             <div>
-              <label className="text-sm font-medium mb-2 block">Note Type</label>
+              <h4 className="text-sm font-medium mb-2 block">Note Type</h4>
               <div className="grid grid-cols-2 gap-2">
                 {noteTypes.map((type) => (
                   <button
@@ -160,7 +222,7 @@ export function QuickNoteEntry({ isOpen, onClose, patients, doctorName }: QuickN
                     className={`p-3 rounded-lg text-sm font-medium border transition-all ${
                       noteType === type.id
                         ? `${type.color} border-current shadow-sm`
-                        : 'border-border hover:bg-accent'
+                        : "border-border hover:bg-accent"
                     }`}
                   >
                     {type.label}
@@ -172,7 +234,9 @@ export function QuickNoteEntry({ isOpen, onClose, patients, doctorName }: QuickN
             {/* Quick Templates */}
             {noteType && (
               <div>
-                <label className="text-sm font-medium mb-2 block">Quick Templates</label>
+                <h4 className="text-sm font-medium mb-2 block">
+                  Quick Templates
+                </h4>
                 <div className="space-y-1">
                   {quickTemplates.slice(0, 3).map((template, index) => (
                     <button
@@ -189,20 +253,27 @@ export function QuickNoteEntry({ isOpen, onClose, patients, doctorName }: QuickN
 
             {/* Note Content */}
             <div>
-              <label className="text-sm font-medium mb-2 block">Your Note</label>
+              <label
+                htmlFor="note-content"
+                className="text-sm font-medium mb-2 block"
+              >
+                Your Note
+              </label>
               <Textarea
+                id="note-content"
                 value={noteContent}
                 onChange={(e) => setNoteContent(e.target.value)}
-                placeholder={`Add your ${selectedNoteType?.label.toLowerCase() || 'note'} here...`}
+                placeholder={`Add your ${selectedNoteType?.label.toLowerCase() || "note"} here...`}
                 className="min-h-[120px] resize-none"
-                autoFocus
               />
               <div className="flex items-center justify-between mt-2">
                 <span className="text-xs text-muted-foreground">
                   {noteContent.length} characters
                 </span>
                 {noteContent.length > 500 && (
-                  <span className="text-xs text-yellow-600">Consider breaking into multiple notes</span>
+                  <span className="text-xs text-yellow-600">
+                    Consider breaking into multiple notes
+                  </span>
                 )}
               </div>
             </div>
@@ -210,16 +281,19 @@ export function QuickNoteEntry({ isOpen, onClose, patients, doctorName }: QuickN
             {/* Recent Notes Preview */}
             {recentNotes.length > 0 && (
               <div>
-                <label className="text-sm font-medium mb-2 block">Recent Notes</label>
+                <h4 className="text-sm font-medium mb-2 block">Recent Notes</h4>
                 <div className="space-y-2">
                   {recentNotes.slice(0, 2).map((note) => (
                     <div key={note.id} className="p-2 bg-muted/30 rounded-lg">
                       <div className="flex items-center gap-2 mb-1">
                         <Badge variant="outline" className="text-xs">
-                          {noteTypes.find(nt => nt.id === note.type)?.label}
+                          {noteTypes.find((nt) => nt.id === note.type)?.label}
                         </Badge>
                         <span className="text-xs text-muted-foreground">
-                          {note.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          {note.timestamp.toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
                         </span>
                       </div>
                       <p className="text-sm line-clamp-2">{note.content}</p>
@@ -234,7 +308,9 @@ export function QuickNoteEntry({ isOpen, onClose, patients, doctorName }: QuickN
           <div className="flex-shrink-0 p-4 border-t space-y-3">
             <Button
               onClick={handleSave}
-              disabled={!selectedPatient || !noteType || !noteContent.trim() || isSaving}
+              disabled={
+                !selectedPatient || !noteType || !noteContent.trim() || isSaving
+              }
               className="w-full"
               size="lg"
             >
@@ -250,16 +326,16 @@ export function QuickNoteEntry({ isOpen, onClose, patients, doctorName }: QuickN
                 </>
               )}
             </Button>
-            
+
             <div className="flex gap-2">
               <Button variant="outline" onClick={onClose} className="flex-1">
                 Cancel
               </Button>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={() => {
-                  setNoteContent('');
-                  setNoteType('');
+                  setNoteContent("");
+                  setNoteType("");
                 }}
                 className="flex-1"
                 disabled={!noteContent && !noteType}
@@ -280,7 +356,10 @@ interface QuickNoteButtonProps {
   hasUnreadNotes?: boolean;
 }
 
-export function QuickNoteButton({ onClick, hasUnreadNotes }: QuickNoteButtonProps) {
+export function QuickNoteButton({
+  onClick,
+  hasUnreadNotes,
+}: QuickNoteButtonProps) {
   return (
     <button
       onClick={onClick}

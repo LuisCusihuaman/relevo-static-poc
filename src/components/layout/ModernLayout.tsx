@@ -1,11 +1,26 @@
-import { useState } from 'react';
-import { Search, User, Settings, Bell, Plus, Filter, MoreHorizontal, Eye, EyeOff } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Card, CardContent } from '@/components/ui/card';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import {
+  Bell,
+  Eye,
+  EyeOff,
+  Filter,
+  MoreHorizontal,
+  Plus,
+  Search,
+  Settings,
+  User,
+} from "lucide-react";
+import { useState } from "react";
 
 interface ModernLayoutProps {
   children: React.ReactNode;
@@ -13,21 +28,21 @@ interface ModernLayoutProps {
   unit: string;
   shift: string;
   patientCount: number;
-  onViewModeChange?: (mode: 'compact' | 'detailed') => void;
-  viewMode?: 'compact' | 'detailed';
+  onViewModeChange?: (mode: "compact" | "detailed") => void;
+  viewMode?: "compact" | "detailed";
 }
 
-export function ModernLayout({ 
-  children, 
-  currentDoctor, 
-  unit, 
-  shift, 
+export function ModernLayout({
+  children,
+  currentDoctor,
+  unit,
+  shift,
   patientCount,
   onViewModeChange,
-  viewMode = 'detailed'
+  viewMode = "detailed",
 }: ModernLayoutProps) {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [notifications, setNotifications] = useState(3);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [notifications, _setNotifications] = useState(3);
 
   return (
     <div className="min-h-screen bg-background">
@@ -38,14 +53,18 @@ export function ModernLayout({
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-                <span className="text-primary-foreground font-semibold text-sm">R</span>
+                <span className="text-primary-foreground font-semibold text-sm">
+                  R
+                </span>
               </div>
               <div>
                 <h1 className="font-semibold text-lg">RELEVO</h1>
-                <p className="text-sm text-muted-foreground">Hospital Garrahan</p>
+                <p className="text-sm text-muted-foreground">
+                  Hospital Garrahan
+                </p>
               </div>
             </div>
-            
+
             {/* Context Pills */}
             <div className="hidden md:flex items-center gap-2">
               <Badge variant="secondary" className="px-3 py-1">
@@ -80,10 +99,18 @@ export function ModernLayout({
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => onViewModeChange(viewMode === 'compact' ? 'detailed' : 'compact')}
+                onClick={() =>
+                  onViewModeChange(
+                    viewMode === "compact" ? "detailed" : "compact",
+                  )
+                }
                 className="hidden md:flex"
               >
-                {viewMode === 'compact' ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                {viewMode === "compact" ? (
+                  <Eye className="w-4 h-4" />
+                ) : (
+                  <EyeOff className="w-4 h-4" />
+                )}
               </Button>
             )}
 
@@ -97,7 +124,10 @@ export function ModernLayout({
             <Button variant="ghost" size="sm" className="relative">
               <Bell className="w-5 h-5" />
               {notifications > 0 && (
-                <Badge variant="destructive" className="absolute -top-1 -right-1 w-5 h-5 p-0 flex items-center justify-center text-xs">
+                <Badge
+                  variant="destructive"
+                  className="absolute -top-1 -right-1 w-5 h-5 p-0 flex items-center justify-center text-xs"
+                >
                   {notifications}
                 </Badge>
               )}
@@ -106,13 +136,21 @@ export function ModernLayout({
             {/* Profile */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex items-center gap-2 pl-2">
+                <Button
+                  variant="ghost"
+                  className="flex items-center gap-2 pl-2"
+                >
                   <Avatar className="w-8 h-8">
                     <AvatarFallback className="text-sm">
-                      {currentDoctor.split(' ').map(n => n[0]).join('')}
+                      {currentDoctor
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="hidden md:block font-medium">{currentDoctor}</span>
+                  <span className="hidden md:block font-medium">
+                    {currentDoctor}
+                  </span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
@@ -131,9 +169,7 @@ export function ModernLayout({
       </header>
 
       {/* Main Content */}
-      <main className="flex-1">
-        {children}
-      </main>
+      <main className="flex-1">{children}</main>
     </div>
   );
 }
@@ -159,7 +195,7 @@ export function KanbanLayout({ sections, onSectionAction }: KanbanLayoutProps) {
             {/* Section Header */}
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div 
+                <div
                   className="w-3 h-3 rounded-full"
                   style={{ backgroundColor: section.color }}
                 />
@@ -168,7 +204,7 @@ export function KanbanLayout({ sections, onSectionAction }: KanbanLayoutProps) {
                   {section.count}
                 </Badge>
               </div>
-              
+
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="sm">
@@ -176,11 +212,15 @@ export function KanbanLayout({ sections, onSectionAction }: KanbanLayoutProps) {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem onClick={() => onSectionAction?.(section.id, 'filter')}>
+                  <DropdownMenuItem
+                    onClick={() => onSectionAction?.(section.id, "filter")}
+                  >
                     <Filter className="w-4 h-4 mr-2" />
                     Filter Section
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => onSectionAction?.(section.id, 'sort')}>
+                  <DropdownMenuItem
+                    onClick={() => onSectionAction?.(section.id, "sort")}
+                  >
                     Sort by Priority
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -194,12 +234,14 @@ export function KanbanLayout({ sections, onSectionAction }: KanbanLayoutProps) {
               ) : (
                 <div className="text-center text-muted-foreground py-8">
                   <div className="w-12 h-12 rounded-full bg-muted/30 flex items-center justify-center mx-auto mb-2">
-                    <div 
+                    <div
                       className="w-2 h-2 rounded-full"
                       style={{ backgroundColor: section.color }}
                     />
                   </div>
-                  <p className="text-sm">No items in {section.title.toLowerCase()}</p>
+                  <p className="text-sm">
+                    No items in {section.title.toLowerCase()}
+                  </p>
                 </div>
               )}
             </div>
@@ -208,7 +250,7 @@ export function KanbanLayout({ sections, onSectionAction }: KanbanLayoutProps) {
             <Button
               variant="ghost"
               className="w-full mt-4 border-2 border-dashed border-muted-foreground/20 hover:border-muted-foreground/40"
-              onClick={() => onSectionAction?.(section.id, 'add')}
+              onClick={() => onSectionAction?.(section.id, "add")}
             >
               <Plus className="w-4 h-4 mr-2" />
               Add to {section.title}
@@ -227,25 +269,32 @@ interface CompactPatientCardProps {
     name: string;
     room: string;
     diagnosis: string;
-    priority: 'high' | 'medium' | 'low';
+    priority: "high" | "medium" | "low";
     alertCount: number;
     lastUpdate: string;
   };
   onClick?: () => void;
 }
 
-export function CompactPatientCard({ patient, onClick }: CompactPatientCardProps) {
+export function CompactPatientCard({
+  patient,
+  onClick,
+}: CompactPatientCardProps) {
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'high': return 'border-l-destructive bg-destructive/5';
-      case 'medium': return 'border-l-chart-1 bg-chart-1/5';
-      case 'low': return 'border-l-chart-2 bg-chart-2/5';
-      default: return 'border-l-border';
+      case "high":
+        return "border-l-destructive bg-destructive/5";
+      case "medium":
+        return "border-l-chart-1 bg-chart-1/5";
+      case "low":
+        return "border-l-chart-2 bg-chart-2/5";
+      default:
+        return "border-l-border";
     }
   };
 
   return (
-    <Card 
+    <Card
       className={`cursor-pointer hover:shadow-md transition-all border-l-4 ${getPriorityColor(patient.priority)}`}
       onClick={onClick}
     >
@@ -256,11 +305,11 @@ export function CompactPatientCard({ patient, onClick }: CompactPatientCardProps
             {patient.room}
           </Badge>
         </div>
-        
+
         <p className="text-xs text-muted-foreground mb-3 line-clamp-2">
           {patient.diagnosis}
         </p>
-        
+
         <div className="flex items-center justify-between">
           <div className="flex gap-1">
             {patient.alertCount > 0 && (
@@ -272,7 +321,7 @@ export function CompactPatientCard({ patient, onClick }: CompactPatientCardProps
               {patient.priority}
             </Badge>
           </div>
-          
+
           <span className="text-xs text-muted-foreground">
             {patient.lastUpdate}
           </span>

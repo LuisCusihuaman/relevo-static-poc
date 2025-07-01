@@ -106,46 +106,46 @@
   /* ========================================
      SPACING SYSTEM - 4PX GRID
      ======================================== */
-  --spacing-0\.5: 2px;   /* 0.5 * 4px */
-  --spacing-1: 4px;      /* 1 * 4px base unit */
-  --spacing-2: 8px;      /* 2 * 4px */
-  --spacing-3: 12px;     /* 3 * 4px */
-  --spacing-4: 16px;     /* 4 * 4px */
-  --spacing-5: 20px;     /* 5 * 4px */
-  --spacing-6: 24px;     /* 6 * 4px */
-  --spacing-8: 32px;     /* 8 * 4px */
-  --spacing-10: 40px;    /* 10 * 4px */
-  --spacing-12: 48px;    /* 12 * 4px */
-  --spacing-16: 64px;    /* 16 * 4px */
-  --spacing-20: 80px;    /* 20 * 4px */
-  --spacing-24: 96px;    /* 24 * 4px */
+  --spacing-0\.5: 2px; /* 0.5 * 4px */
+  --spacing-1: 4px; /* 1 * 4px base unit */
+  --spacing-2: 8px; /* 2 * 4px */
+  --spacing-3: 12px; /* 3 * 4px */
+  --spacing-4: 16px; /* 4 * 4px */
+  --spacing-5: 20px; /* 5 * 4px */
+  --spacing-6: 24px; /* 6 * 4px */
+  --spacing-8: 32px; /* 8 * 4px */
+  --spacing-10: 40px; /* 10 * 4px */
+  --spacing-12: 48px; /* 12 * 4px */
+  --spacing-16: 64px; /* 16 * 4px */
+  --spacing-20: 80px; /* 20 * 4px */
+  --spacing-24: 96px; /* 24 * 4px */
 
   /* ========================================
      RESPONSIVE BREAKPOINTS
      ======================================== */
-  --breakpoint-sm: 640px;    /* Mobile landscape */
-  --breakpoint-md: 768px;    /* Tablet */
-  --breakpoint-lg: 1024px;   /* Desktop */
-  --breakpoint-xl: 1280px;   /* Large desktop */
-  --breakpoint-2xl: 1536px;  /* Extra large desktop */
+  --breakpoint-sm: 640px; /* Mobile landscape */
+  --breakpoint-md: 768px; /* Tablet */
+  --breakpoint-lg: 1024px; /* Desktop */
+  --breakpoint-xl: 1280px; /* Large desktop */
+  --breakpoint-2xl: 1536px; /* Extra large desktop */
 
   /* ========================================
      COLOR SYSTEM - SOPHISTICATED PURPLE ACCENT
      ======================================== */
 
   /* Primary Colors - Sophisticated Purple System */
-  --color-primary-50: #faf7ff;    /* Very light purple tint */
-  --color-primary-100: #f3edff;   /* Light purple for selection backgrounds */
-  --color-primary-200: #e1d4ff;   /* Light purple for selection borders */
-  --color-primary-500: #8b5fbf;   /* Main primary - sophisticated purple */
-  --color-primary-600: #7c4db5;   /* Hover state - deeper purple */
-  --color-primary-700: #6d3ba8;   /* Active state - darkest purple */
+  --color-primary-50: #faf7ff; /* Very light purple tint */
+  --color-primary-100: #f3edff; /* Light purple for selection backgrounds */
+  --color-primary-200: #e1d4ff; /* Light purple for selection borders */
+  --color-primary-500: #8b5fbf; /* Main primary - sophisticated purple */
+  --color-primary-600: #7c4db5; /* Hover state - deeper purple */
+  --color-primary-700: #6d3ba8; /* Active state - darkest purple */
   --color-primary-foreground: #ffffff;
   --color-primary: var(--color-primary-500);
 
   /* Unified Canvas System - Pure White */
-  --color-canvas: #ffffff;                               /* Pure white canvas */
-  --color-sidebar-separator: #e5e7eb;                   /* Hairline border - neutral-200 */
+  --color-canvas: #ffffff; /* Pure white canvas */
+  --color-sidebar-separator: #e5e7eb; /* Hairline border - neutral-200 */
 
   /* Neutral Scale - Consistent Hierarchy */
   --color-neutral-50: #f9fafb;
@@ -183,7 +183,7 @@
   --color-border: var(--color-neutral-200);
   --color-input: var(--color-canvas);
   --color-input-border: var(--color-neutral-200);
-  --color-ring: oklch(0.65 0.15 285 / 0.2);  /* Purple focus ring */
+  --color-ring: oklch(0.65 0.15 285 / 0.2); /* Purple focus ring */
   --color-success: var(--color-green-800);
   --color-warning: var(--color-yellow-800);
   --color-destructive: var(--color-red-700);
@@ -192,7 +192,7 @@
   /* Interactive States */
   --color-hover: var(--color-neutral-50);
   --color-selection: var(--color-neutral-100);
-  --color-focus-ring: oklch(0.65 0.15 285 / 0.2);  /* Purple focus ring */
+  --color-focus-ring: oklch(0.65 0.15 285 / 0.2); /* Purple focus ring */
 
   /* ShadCN Color Mapping */
   --color-secondary: var(--color-neutral-100);
@@ -206,8 +206,8 @@
      ======================================== */
   --radius-sm: 4px;
   --radius-md: 6px;
-  --radius-lg: 8px;      /* Main default */
-  --radius-xl: 12px;     /* Soft corners */
+  --radius-lg: 8px; /* Main default */
+  --radius-xl: 12px; /* Soft corners */
   --radius-2xl: 16px;
   --radius-3xl: 24px;
   --radius-full: 9999px; /* Pills */
@@ -218,9 +218,9 @@
   /* ========================================
      SHADOWS - SUBTLE & MINIMAL (REDUCED)
      ======================================== */
-  --shadow-sm: 0 1px 2px 0 oklch(0 0 0 / 0.02);    /* Very subtle */
-  --shadow-md: 0 2px 4px -1px oklch(0 0 0 / 0.03);  /* Minimal shadow */
-  --shadow-lg: 0 4px 6px -2px oklch(0 0 0 / 0.04);  /* Light shadow */
+  --shadow-sm: 0 1px 2px 0 oklch(0 0 0 / 0.02); /* Very subtle */
+  --shadow-md: 0 2px 4px -1px oklch(0 0 0 / 0.03); /* Minimal shadow */
+  --shadow-lg: 0 4px 6px -2px oklch(0 0 0 / 0.04); /* Light shadow */
   --shadow-xl: 0 8px 12px -3px oklch(0 0 0 / 0.05); /* Subtle elevation */
 
   /* Chrome-specific shadows - Reduced */
@@ -231,13 +231,13 @@
   /* ========================================
      TYPOGRAPHY - MEDICAL INTERFACE
      ======================================== */
-  --font-size-xs: 0.75rem;     /* 12px */
-  --font-size-sm: 0.875rem;    /* 14px */
-  --font-size-base: 1rem;      /* 16px */
-  --font-size-lg: 1.125rem;    /* 18px */
-  --font-size-xl: 1.25rem;     /* 20px */
-  --font-size-2xl: 1.5rem;     /* 24px */
-  --font-size-3xl: 1.875rem;   /* 30px */
+  --font-size-xs: 0.75rem; /* 12px */
+  --font-size-sm: 0.875rem; /* 14px */
+  --font-size-base: 1rem; /* 16px */
+  --font-size-lg: 1.125rem; /* 18px */
+  --font-size-xl: 1.25rem; /* 20px */
+  --font-size-2xl: 1.5rem; /* 24px */
+  --font-size-3xl: 1.875rem; /* 30px */
 
   --line-height-none: 1;
   --line-height-tight: 1.25;
@@ -255,19 +255,19 @@
   /* ========================================
      RESPONSIVE LAYOUT DIMENSIONS - ENHANCED SIDEBAR
      ======================================== */
-  --sidebar-width-desktop: 320px;       /* Desktop sidebar width */
-  --sidebar-width-tablet: 280px;        /* Tablet sidebar width */
-  --sidebar-width-icon: 4.5rem;         /* Enhanced icon sidebar width (72px) - more generous */
-  --sidebar-width-icon-mobile: 4rem;    /* Mobile icon sidebar width (64px) */
-  --content-padding-desktop: 32px;      /* Desktop content padding */
-  --content-padding-tablet: 24px;       /* Tablet content padding */
-  --content-padding-mobile: 16px;       /* Mobile content padding */
-  --touch-target-min: 44px;             /* Accessibility */
-  --nav-height: 64px;                   /* Navigation height */
+  --sidebar-width-desktop: 320px; /* Desktop sidebar width */
+  --sidebar-width-tablet: 280px; /* Tablet sidebar width */
+  --sidebar-width-icon: 4.5rem; /* Enhanced icon sidebar width (72px) - more generous */
+  --sidebar-width-icon-mobile: 4rem; /* Mobile icon sidebar width (64px) */
+  --content-padding-desktop: 32px; /* Desktop content padding */
+  --content-padding-tablet: 24px; /* Tablet content padding */
+  --content-padding-mobile: 16px; /* Mobile content padding */
+  --touch-target-min: 44px; /* Accessibility */
+  --nav-height: 64px; /* Navigation height */
 
   /* Sidebar Visual Enhancements */
-  --sidebar-bg-subtle: rgba(249, 250, 251, 0.8);          /* Subtle background */
-  --sidebar-border-subtle: rgba(229, 231, 235, 0.6);      /* Subtle border */
+  --sidebar-bg-subtle: rgba(249, 250, 251, 0.8); /* Subtle background */
+  --sidebar-border-subtle: rgba(229, 231, 235, 0.6); /* Subtle border */
   --sidebar-shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.02); /* Very subtle shadow */
 
   /* ========================================
@@ -276,7 +276,7 @@
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-normal: 200ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-sidebar: 250ms cubic-bezier(0.4, 0, 0.2, 1);  /* Smooth sidebar transitions */
+  --transition-sidebar: 250ms cubic-bezier(0.4, 0, 0.2, 1); /* Smooth sidebar transitions */
 
   /* Custom Pastel Colors */
   --color-gray-25: #fafafa;
@@ -324,7 +324,7 @@
    DARK MODE OVERRIDES - PURPLE THEME
    ======================================== */
 :is(.dark *) {
-  --color-canvas: oklch(0.13 0.02 285);   /* Dark purple-tinted background */
+  --color-canvas: oklch(0.13 0.02 285); /* Dark purple-tinted background */
   --color-sidebar-separator: oklch(0.28 0.02 285);
 
   --color-neutral-50: oklch(0.18 0.02 285);
@@ -343,12 +343,14 @@
   --color-muted-foreground: var(--color-neutral-500);
 
   /* Purple primary colors for dark mode */
-  --color-primary-50: oklch(0.65 0.15 285 / 0.1);   /* Dark mode purple tint */
-  --color-primary-100: oklch(0.65 0.15 285 / 0.15);  /* Dark mode purple selection */
-  --color-primary-200: oklch(0.65 0.15 285 / 0.3);   /* Dark mode purple border */
-  --color-primary-500: oklch(0.7 0.15 285);          /* Brighter purple for dark mode */
-  --color-primary-600: oklch(0.65 0.15 285);         /* Purple hover in dark mode */
-  --color-primary-700: oklch(0.6 0.15 285);          /* Purple active in dark mode */
+  --color-primary-50: oklch(0.65 0.15 285 / 0.1); /* Dark mode purple tint */
+  --color-primary-100: oklch(
+    0.65 0.15 285 / 0.15
+  ); /* Dark mode purple selection */
+  --color-primary-200: oklch(0.65 0.15 285 / 0.3); /* Dark mode purple border */
+  --color-primary-500: oklch(0.7 0.15 285); /* Brighter purple for dark mode */
+  --color-primary-600: oklch(0.65 0.15 285); /* Purple hover in dark mode */
+  --color-primary-700: oklch(0.6 0.15 285); /* Purple active in dark mode */
 
   /* Status colors for dark mode */
   --color-red-50: oklch(0.55 0.15 15 / 0.1);
@@ -405,25 +407,29 @@
   position: relative;
 }
 
-.group\/sidebar-wrapper[data-collapsible="icon"] [data-sidebar="menu-button"]:hover {
+.group\/sidebar-wrapper[data-collapsible="icon"]
+  [data-sidebar="menu-button"]:hover {
   background: var(--color-hover);
   transform: translateX(-2px); /* Left-ward movement for right-side sidebar */
 }
 
-.group\/sidebar-wrapper[data-collapsible="icon"] [data-sidebar="menu-button"][data-active="true"] {
+.group\/sidebar-wrapper[data-collapsible="icon"]
+  [data-sidebar="menu-button"][data-active="true"] {
   background: var(--color-primary-100);
   color: var(--color-primary-600);
 }
 
 /* Enhanced sidebar header in collapsed state */
-.group\/sidebar-wrapper[data-collapsible="icon"] [data-sidebar="sidebar-header"] {
+.group\/sidebar-wrapper[data-collapsible="icon"]
+  [data-sidebar="sidebar-header"] {
   padding: 1rem 0.5rem;
   display: flex;
   justify-content: center;
 }
 
 /* Enhanced sidebar footer in collapsed state */
-.group\/sidebar-wrapper[data-collapsible="icon"] [data-sidebar="sidebar-footer"] {
+.group\/sidebar-wrapper[data-collapsible="icon"]
+  [data-sidebar="sidebar-footer"] {
   padding: 0.5rem;
   display: flex;
   justify-content: center;
@@ -431,12 +437,15 @@
 
 /* Hide text content in collapsed state but keep icons */
 .group\/sidebar-wrapper[data-collapsible="icon"] [data-sidebar="group-label"],
-.group\/sidebar-wrapper[data-collapsible="icon"] [data-sidebar="menu-button"] span:not([data-sidebar="menu-icon"]) {
+.group\/sidebar-wrapper[data-collapsible="icon"]
+  [data-sidebar="menu-button"]
+  span:not([data-sidebar="menu-icon"]) {
   display: none;
 }
 
 /* Enhanced sidebar content spacing */
-.group\/sidebar-wrapper[data-collapsible="icon"] [data-sidebar="sidebar-content"] {
+.group\/sidebar-wrapper[data-collapsible="icon"]
+  [data-sidebar="sidebar-content"] {
   padding: 0.5rem;
   gap: 0.25rem;
 }
@@ -446,7 +455,8 @@
   margin-bottom: 1rem;
 }
 
-.group\/sidebar-wrapper[data-collapsible="icon"] [data-sidebar="group"]:last-child {
+.group\/sidebar-wrapper[data-collapsible="icon"]
+  [data-sidebar="group"]:last-child {
   margin-bottom: 0;
 }
 
@@ -461,11 +471,15 @@
 }
 
 .enhanced-sidebar-trigger::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: linear-gradient(135deg, var(--color-primary) / 0.05, var(--color-primary) / 0.1);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary) / 0.05,
+    var(--color-primary) / 0.1
+  );
   opacity: 0;
   transition: opacity var(--transition-fast);
   z-index: -1;
@@ -477,7 +491,8 @@
 
 /* Pulse animation for mobile indicator */
 @keyframes sidebar-pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.6;
     transform: scale(1);
   }
@@ -495,7 +510,7 @@
 .enhanced-sidebar-trigger:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
-  box-shadow: 
+  box-shadow:
     0 0 0 4px var(--color-focus-ring),
     0 2px 4px rgba(0, 0, 0, 0.05);
 }
@@ -512,7 +527,11 @@
 
 /* Dark mode enhancements for sidebar trigger */
 :is(.dark *) .enhanced-sidebar-trigger::before {
-  background: linear-gradient(135deg, var(--color-primary) / 0.1, var(--color-primary) / 0.15);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary) / 0.1,
+    var(--color-primary) / 0.15
+  );
 }
 
 :is(.dark *) .enhanced-sidebar-trigger {
@@ -534,12 +553,16 @@
 
   html {
     font-size: 14px;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+      Arial, sans-serif;
   }
 
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -571,11 +594,14 @@
       @apply text-sm font-medium leading-normal;
     }
 
-    input, textarea, select {
+    input,
+    textarea,
+    select {
       @apply text-sm text-foreground leading-normal;
     }
 
-    input::placeholder, textarea::placeholder {
+    input::placeholder,
+    textarea::placeholder {
       @apply text-muted-foreground;
     }
   }
@@ -634,7 +660,7 @@
 /**
  * Base typography. This is not applied to elements which have an ancestor with a Tailwind text class.
  */
- @layer base {
+@layer base {
   :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) {
     h1 {
       font-size: var(--text-2xl);
@@ -689,7 +715,6 @@
 html {
   font-size: var(--font-size);
 }
-
 
 /* ========================================
    UTILITIES - CLEAN MEDICAL INTERFACE
@@ -822,8 +847,8 @@ html {
     }
 
     /* Hide scrollbar for IE, Edge and Firefox */
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
   }
 
   .schedule-scroll-container {
@@ -831,7 +856,7 @@ html {
   }
 
   .schedule-scroll-container::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: 0;
     left: 0;
@@ -852,13 +877,17 @@ html {
   }
 
   .patient-scroll-container::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, var(--color-muted) / 0.02, var(--color-muted) / 0.08);
+    background: linear-gradient(
+      135deg,
+      var(--color-muted) / 0.02,
+      var(--color-muted) / 0.08
+    );
     border-radius: 12px;
     pointer-events: none;
     z-index: 0;
@@ -1203,14 +1232,16 @@ html {
     }
 
     /* Enhanced mobile input handling */
-    input, textarea {
+    input,
+    textarea {
       font-size: 16px; /* Prevent zoom on iOS */
       -webkit-appearance: none;
       border-radius: 0; /* Reset iOS styling */
     }
 
     /* Mobile-specific focus styles */
-    input:focus, textarea:focus {
+    input:focus,
+    textarea:focus {
       outline: none;
       border-color: var(--color-primary);
       box-shadow: 0 0 0 2px var(--color-focus-ring);
@@ -1234,7 +1265,7 @@ html {
     border-bottom: 1px solid rgba(229, 231, 235, 0.4);
 
     /* Subtle shadow for depth */
-    box-shadow: 
+    box-shadow:
       0 1px 3px rgba(0, 0, 0, 0.02),
       0 0 0 1px rgba(255, 255, 255, 0.05) inset;
 
@@ -1244,7 +1275,7 @@ html {
 
   .glass-nav:hover {
     background: rgba(255, 255, 255, 0.9);
-    box-shadow: 
+    box-shadow:
       0 2px 6px rgba(0, 0, 0, 0.03),
       0 0 0 1px rgba(255, 255, 255, 0.08) inset;
   }
@@ -1285,14 +1316,14 @@ html {
 
     border-bottom: 1px solid rgba(55, 65, 81, 0.4);
 
-    box-shadow: 
+    box-shadow:
       0 1px 3px rgba(0, 0, 0, 0.1),
       0 0 0 1px rgba(255, 255, 255, 0.02) inset;
   }
 
   :is(.dark *) .glass-nav:hover {
     background: rgba(17, 24, 39, 0.9);
-    box-shadow: 
+    box-shadow:
       0 2px 6px rgba(0, 0, 0, 0.15),
       0 0 0 1px rgba(255, 255, 255, 0.05) inset;
   }
@@ -1309,7 +1340,11 @@ html {
   }
 
   :is(.dark *) .patient-scroll-container::before {
-    background: linear-gradient(135deg, var(--color-neutral-800) / 0.05, var(--color-neutral-800) / 0.15);
+    background: linear-gradient(
+      135deg,
+      var(--color-neutral-800) / 0.05,
+      var(--color-neutral-800) / 0.15
+    );
   }
 }
 
@@ -1444,12 +1479,9 @@ html {
   }
 }
 
-
-
 /* ======================================== OLD STYLES ======================================== */
 
 /* ======================================== NEW STYLES ======================================== */
-
 
 /* Elegant scrollbar styling for medical interface */
 .scroll-area-viewport {

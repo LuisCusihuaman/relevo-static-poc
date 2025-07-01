@@ -1,17 +1,26 @@
-import { activeCollaborators, currentlyPresent, patientData } from '@/common/constants';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Separator } from '@/components/ui/separator';
+import {
+  activeCollaborators,
+  currentlyPresent,
+  patientData,
+} from "@/common/constants";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Separator } from "@/components/ui/separator";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
+} from "@/components/ui/tooltip";
 import {
   Activity,
-  ArrowRight, Calendar,
+  ArrowRight,
+  Calendar,
   ChevronLeft,
   FileText,
   History,
@@ -21,9 +30,9 @@ import {
   MoreHorizontal,
   Stethoscope,
   UserPlus,
-  X
-} from 'lucide-react';
-import React from 'react';
+  X,
+} from "lucide-react";
+import React from "react";
 
 interface HeaderProps {
   focusMode: boolean;
@@ -35,7 +44,11 @@ interface HeaderProps {
   setShowMobileMenu: (show: boolean) => void;
   showComments: boolean;
   showHistory: boolean;
-  getSyncStatusDisplay: () => { icon: React.ReactNode; text: string; color: string };
+  getSyncStatusDisplay: () => {
+    icon: React.ReactNode;
+    text: string;
+    color: string;
+  };
   getTimeUntilHandover: () => string;
   getSessionDuration: () => string;
   onBack?: () => void;
@@ -54,9 +67,11 @@ export function Header({
   getSyncStatusDisplay,
   getTimeUntilHandover,
   getSessionDuration,
-  onBack
+  onBack,
 }: HeaderProps) {
-  const activeUsers = activeCollaborators.filter(user => user.status === 'active' || user.status === 'viewing');
+  const activeUsers = activeCollaborators.filter(
+    (user) => user.status === "active" || user.status === "viewing",
+  );
 
   if (focusMode) return null;
 
@@ -69,8 +84,8 @@ export function Header({
           <div className="flex items-center space-x-4 sm:space-x-6 min-w-0 flex-1">
             {/* Back Button - Only show if onBack prop provided */}
             {onBack && (
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 size="sm"
                 onClick={onBack}
                 className="flex-shrink-0"
@@ -79,28 +94,35 @@ export function Header({
                 <span className="hidden sm:inline">Back</span>
               </Button>
             )}
-            
+
             {/* Logo */}
             <div className="flex items-center space-x-3 flex-shrink-0">
               <Stethoscope className="w-5 h-5 sm:w-6 sm:h-6 text-gray-900" />
-              <h1 className="text-lg sm:text-xl font-bold text-gray-900">RELEVO</h1>
+              <h1 className="text-lg sm:text-xl font-bold text-gray-900">
+                RELEVO
+              </h1>
             </div>
 
             <Separator orientation="vertical" className="h-6 hidden lg:block" />
-            
+
             {/* Patient Name + Essential Info */}
             <div className="flex items-center space-x-3 min-w-0 flex-1">
               <h2 className="font-medium text-gray-900 truncate">
                 {patientData.name}
               </h2>
-              <Badge variant="outline" className="text-gray-700 border-gray-200 bg-gray-50 flex-shrink-0">
+              <Badge
+                variant="outline"
+                className="text-gray-700 border-gray-200 bg-gray-50 flex-shrink-0"
+              >
                 {patientData.room}
               </Badge>
-              
+
               {/* Session duration - realistic medical tracking */}
               <div className="hidden xl:flex items-center space-x-2">
                 <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                <span className="text-xs text-gray-600">Session: {getSessionDuration()}</span>
+                <span className="text-xs text-gray-600">
+                  Session: {getSessionDuration()}
+                </span>
               </div>
             </div>
           </div>
@@ -113,7 +135,9 @@ export function Header({
                 <TooltipTrigger asChild>
                   <div className="relative cursor-pointer">
                     <Avatar className="w-8 h-8 border-2 border-white hover:border-gray-200 transition-colors">
-                      <AvatarFallback className={`${user.color} text-white text-xs`}>
+                      <AvatarFallback
+                        className={`${user.color} text-white text-xs`}
+                      >
                         {user.initials}
                       </AvatarFallback>
                     </Avatar>
@@ -121,7 +145,10 @@ export function Header({
                     <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full border border-white"></div>
                   </div>
                 </TooltipTrigger>
-                <TooltipContent side="bottom" className="bg-gray-900 text-white text-xs px-2 py-1 border-none shadow-lg">
+                <TooltipContent
+                  side="bottom"
+                  className="bg-gray-900 text-white text-xs px-2 py-1 border-none shadow-lg"
+                >
                   <div className="text-center">
                     <div className="font-medium">{user.name}</div>
                     <div className="text-gray-300">{user.role}</div>
@@ -129,62 +156,100 @@ export function Header({
                 </TooltipContent>
               </Tooltip>
             ))}
-            
+
             {/* Show More Button - Google Docs Style */}
             {activeUsers.length > 2 && (
-              <Popover open={showCollaborators} onOpenChange={setShowCollaborators}>
+              <Popover
+                open={showCollaborators}
+                onOpenChange={setShowCollaborators}
+              >
                 <PopoverTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
+                  <Button
+                    variant="ghost"
+                    size="sm"
                     className="h-8 w-auto px-2 text-xs text-gray-600 hover:bg-gray-100 rounded-full"
                   >
                     +{activeUsers.length - 2}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-72 p-0 bg-white border-gray-200 shadow-lg" align="center">
+                <PopoverContent
+                  className="w-72 p-0 bg-white border-gray-200 shadow-lg"
+                  align="center"
+                >
                   <div className="p-3 border-b border-gray-100">
-                    <h3 className="font-medium text-gray-900 text-sm">People with access</h3>
-                    <p className="text-xs text-gray-600">{activeUsers.length} people can view and edit</p>
+                    <h3 className="font-medium text-gray-900 text-sm">
+                      People with access
+                    </h3>
+                    <p className="text-xs text-gray-600">
+                      {activeUsers.length} people can view and edit
+                    </p>
                   </div>
                   <div className="max-h-64 overflow-y-auto">
                     {currentlyPresent.map((person) => (
-                      <div key={person.id} className="p-3 hover:bg-gray-50 transition-colors border-b border-gray-50">
+                      <div
+                        key={person.id}
+                        className="p-3 hover:bg-gray-50 transition-colors border-b border-gray-50"
+                      >
                         <div className="flex items-center space-x-3">
                           <div className="relative">
                             <Avatar className="w-8 h-8">
-                              <AvatarFallback className={`${person.color} text-white text-sm`}>
+                              <AvatarFallback
+                                className={`${person.color} text-white text-sm`}
+                              >
                                 {person.initials}
                               </AvatarFallback>
                             </Avatar>
-                            <div className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white ${
-                              person.status === 'active' ? 'bg-green-500' : 
-                              person.status === 'viewing' ? 'bg-amber-500' : 'bg-gray-400'
-                            }`}></div>
+                            <div
+                              className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white ${
+                                person.status === "active"
+                                  ? "bg-green-500"
+                                  : person.status === "viewing"
+                                    ? "bg-amber-500"
+                                    : "bg-gray-400"
+                              }`}
+                            ></div>
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center space-x-2">
-                              <p className="text-sm font-medium text-gray-900">{person.name}</p>
-                              {person.presenceType === 'assigned-current' && (
-                                <Badge variant="outline" className="text-xs px-1 py-0 bg-blue-50 text-blue-700 border-blue-200">
+                              <p className="text-sm font-medium text-gray-900">
+                                {person.name}
+                              </p>
+                              {person.presenceType === "assigned-current" && (
+                                <Badge
+                                  variant="outline"
+                                  className="text-xs px-1 py-0 bg-blue-50 text-blue-700 border-blue-200"
+                                >
                                   Current
                                 </Badge>
                               )}
-                              {person.presenceType === 'assigned-receiving' && (
-                                <Badge variant="outline" className="text-xs px-1 py-0 bg-purple-50 text-purple-700 border-purple-200">
+                              {person.presenceType === "assigned-receiving" && (
+                                <Badge
+                                  variant="outline"
+                                  className="text-xs px-1 py-0 bg-purple-50 text-purple-700 border-purple-200"
+                                >
                                   Receiving
                                 </Badge>
                               )}
                             </div>
-                            <p className="text-xs text-gray-500">{person.role}</p>
+                            <p className="text-xs text-gray-500">
+                              {person.role}
+                            </p>
                             <div className="flex items-center space-x-1 mt-1">
-                              <div className={`w-1.5 h-1.5 rounded-full ${
-                                person.status === 'active' ? 'bg-green-500' : 
-                                person.status === 'viewing' ? 'bg-amber-500' : 'bg-gray-400'
-                              }`}></div>
+                              <div
+                                className={`w-1.5 h-1.5 rounded-full ${
+                                  person.status === "active"
+                                    ? "bg-green-500"
+                                    : person.status === "viewing"
+                                      ? "bg-amber-500"
+                                      : "bg-gray-400"
+                                }`}
+                              ></div>
                               <span className="text-xs text-gray-500">
-                                {person.status === 'active' ? 'Active now' : 
-                                 person.status === 'viewing' ? 'Viewing' : 'Offline'}
+                                {person.status === "active"
+                                  ? "Active now"
+                                  : person.status === "viewing"
+                                    ? "Viewing"
+                                    : "Offline"}
                               </span>
                             </div>
                           </div>
@@ -193,7 +258,11 @@ export function Header({
                     ))}
                   </div>
                   <div className="p-3 border-t border-gray-100">
-                    <Button variant="ghost" size="sm" className="w-full text-xs hover:bg-gray-50 justify-center">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="w-full text-xs hover:bg-gray-50 justify-center"
+                    >
                       <UserPlus className="w-3 h-3 mr-2" />
                       Share with others
                     </Button>
@@ -202,13 +271,15 @@ export function Header({
               </Popover>
             )}
           </div>
-          
+
           {/* Right Section - Controls */}
           <div className="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
             {/* Sync status indicator */}
             <div className="hidden md:flex items-center space-x-2 text-xs text-gray-600">
               {getSyncStatusDisplay().icon}
-              <span className={getSyncStatusDisplay().color}>{getSyncStatusDisplay().text}</span>
+              <span className={getSyncStatusDisplay().color}>
+                {getSyncStatusDisplay().text}
+              </span>
             </div>
 
             {/* Focus Mode Exit */}
@@ -251,7 +322,7 @@ export function Header({
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowComments(!showComments)}
-                className={`text-xs p-2 hover:bg-gray-100 ${showComments ? 'bg-gray-100' : ''}`}
+                className={`text-xs p-2 hover:bg-gray-100 ${showComments ? "bg-gray-100" : ""}`}
               >
                 <MessageSquare className="w-4 h-4" />
               </Button>
@@ -261,7 +332,7 @@ export function Header({
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowHistory(!showHistory)}
-                className={`text-xs p-2 hover:bg-gray-100 ${showHistory ? 'bg-gray-100' : ''}`}
+                className={`text-xs p-2 hover:bg-gray-100 ${showHistory ? "bg-gray-100" : ""}`}
               >
                 <History className="w-4 h-4" />
               </Button>
@@ -297,15 +368,24 @@ export function Header({
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Avatar className="w-5 h-5 cursor-pointer hover:ring-2 hover:ring-blue-200">
-                    <AvatarFallback className={`${patientData.assignedPhysician.color} text-white text-xs`}>
+                    <AvatarFallback
+                      className={`${patientData.assignedPhysician.color} text-white text-xs`}
+                    >
                       {patientData.assignedPhysician.initials}
                     </AvatarFallback>
                   </Avatar>
                 </TooltipTrigger>
-                <TooltipContent side="bottom" className="bg-gray-900 text-white text-xs px-2 py-1 border-none shadow-lg">
+                <TooltipContent
+                  side="bottom"
+                  className="bg-gray-900 text-white text-xs px-2 py-1 border-none shadow-lg"
+                >
                   <div className="text-center">
-                    <div className="font-medium">{patientData.assignedPhysician.name}</div>
-                    <div className="text-gray-300">{patientData.assignedPhysician.role}</div>
+                    <div className="font-medium">
+                      {patientData.assignedPhysician.name}
+                    </div>
+                    <div className="text-gray-300">
+                      {patientData.assignedPhysician.role}
+                    </div>
                   </div>
                 </TooltipContent>
               </Tooltip>
@@ -313,15 +393,24 @@ export function Header({
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Avatar className="w-5 h-5 cursor-pointer hover:ring-2 hover:ring-purple-200">
-                    <AvatarFallback className={`${patientData.receivingPhysician.color} text-white text-xs`}>
+                    <AvatarFallback
+                      className={`${patientData.receivingPhysician.color} text-white text-xs`}
+                    >
                       {patientData.receivingPhysician.initials}
                     </AvatarFallback>
                   </Avatar>
                 </TooltipTrigger>
-                <TooltipContent side="bottom" className="bg-gray-900 text-white text-xs px-2 py-1 border-none shadow-lg">
+                <TooltipContent
+                  side="bottom"
+                  className="bg-gray-900 text-white text-xs px-2 py-1 border-none shadow-lg"
+                >
                   <div className="text-center">
-                    <div className="font-medium">{patientData.receivingPhysician.name}</div>
-                    <div className="text-gray-300">{patientData.receivingPhysician.role}</div>
+                    <div className="font-medium">
+                      {patientData.receivingPhysician.name}
+                    </div>
+                    <div className="text-gray-300">
+                      {patientData.receivingPhysician.role}
+                    </div>
                   </div>
                 </TooltipContent>
               </Tooltip>

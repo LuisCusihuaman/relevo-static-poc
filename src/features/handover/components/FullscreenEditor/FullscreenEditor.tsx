@@ -1,18 +1,22 @@
-import { activeCollaborators, currentUser, patientData } from '@/common/constants';
-import type { FullscreenEditingState, SyncStatus } from '@/common/types';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
+import {
+  activeCollaborators,
+  currentUser,
+  patientData,
+} from "@/common/constants";
+import type { FullscreenEditingState, SyncStatus } from "@/common/types";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { useIsMobile } from '@/hooks/use-mobile';
-import { Clock, Save, Stethoscope, X } from 'lucide-react';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { PatientSummary } from '../PatientSummary';
-import { SituationAwareness } from '../SituationAwareness';
+} from "@/components/ui/tooltip";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Clock, Save, Stethoscope, X } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { PatientSummary } from "../PatientSummary";
+import { SituationAwareness } from "../SituationAwareness";
 
 interface FullscreenEditorProps {
   fullscreenEditing: FullscreenEditingState;
@@ -40,21 +44,21 @@ export function FullscreenEditor({
   // Get active collaborators with stable reference
   const activeUsers = useRef(
     activeCollaborators
-      .filter(user => user.status === 'active' || user.status === 'viewing')
+      .filter((user) => user.status === "active" || user.status === "viewing")
       .map((user, index) => ({
         ...user,
         id: `${user.id}-${index}`, // Stable ID
-      }))
+      })),
   ).current;
 
   // Stable save function reference
   const saveFunction = useCallback(() => {
     console.log(`Saving ${fullscreenEditing.component} changes`);
-    setSyncStatus('pending');
-    
+    setSyncStatus("pending");
+
     // Simulate save operation
     setTimeout(() => {
-      setSyncStatus('synced');
+      setSyncStatus("synced");
       setHasUnsavedChanges(false);
     }, 1000);
   }, [fullscreenEditing.component, setSyncStatus]);
@@ -67,47 +71,47 @@ export function FullscreenEditor({
   // Handle content changes
   const handleContentChange = useCallback(() => {
     setHasUnsavedChanges(true);
-    setSyncStatus('pending');
+    setSyncStatus("pending");
   }, [setSyncStatus]);
 
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+      if (event.key === "Escape") {
         handleCloseFullscreenEdit();
-      } else if ((event.ctrlKey || event.metaKey) && event.key === 's') {
+      } else if ((event.ctrlKey || event.metaKey) && event.key === "s") {
         event.preventDefault();
         handleFullscreenSave();
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, [handleCloseFullscreenEdit, handleFullscreenSave]);
 
   // Get component title
   const getComponentTitle = () => {
     switch (fullscreenEditing.component) {
-      case 'patient-summary':
-        return 'Patient Summary - Fullscreen Editor';
-      case 'situation-awareness':
-        return 'Situation Awareness - Fullscreen Editor';
+      case "patient-summary":
+        return "Patient Summary - Fullscreen Editor";
+      case "situation-awareness":
+        return "Situation Awareness - Fullscreen Editor";
       default:
-        return 'Fullscreen Editor';
+        return "Fullscreen Editor";
     }
   };
 
   // Get sync status display
   const getSyncStatusDisplay = () => {
     switch (syncStatus) {
-      case 'synced':
-        return { text: 'All changes saved', color: 'text-green-600' };
-      case 'pending':
-        return { text: 'Saving changes...', color: 'text-yellow-600' };
-      case 'error':
-        return { text: 'Save failed', color: 'text-red-600' };
+      case "synced":
+        return { text: "All changes saved", color: "text-green-600" };
+      case "pending":
+        return { text: "Saving changes...", color: "text-yellow-600" };
+      case "error":
+        return { text: "Save failed", color: "text-red-600" };
       default:
-        return { text: 'Ready', color: 'text-gray-600' };
+        return { text: "Ready", color: "text-gray-600" };
     }
   };
 
@@ -122,14 +126,23 @@ export function FullscreenEditor({
           <div className="flex items-center space-x-3 min-w-0 flex-1">
             <div className="flex items-center space-x-2 flex-shrink-0">
               <Stethoscope className="w-4 h-4 sm:w-5 sm:h-5 text-gray-900" />
-              <h1 className="text-base sm:text-lg font-bold text-gray-900">RELEVO</h1>
+              <h1 className="text-base sm:text-lg font-bold text-gray-900">
+                RELEVO
+              </h1>
             </div>
-            <Separator orientation="vertical" className="h-4 sm:h-6 hidden sm:block" />
+            <Separator
+              orientation="vertical"
+              className="h-4 sm:h-6 hidden sm:block"
+            />
             <div className="min-w-0">
               <div className="flex items-center space-x-2">
-                <span className="text-sm text-gray-600">{patientData.name}</span>
+                <span className="text-sm text-gray-600">
+                  {patientData.name}
+                </span>
                 <span className="text-sm text-gray-400">•</span>
-                <span className="text-sm font-medium text-gray-900">{getComponentTitle()}</span>
+                <span className="text-sm font-medium text-gray-900">
+                  {getComponentTitle()}
+                </span>
               </div>
             </div>
           </div>
@@ -138,11 +151,17 @@ export function FullscreenEditor({
           <div className="flex items-center space-x-4">
             {/* Sync Status */}
             <div className="flex items-center space-x-2">
-              <div className={`w-2 h-2 rounded-full ${
-                syncStatus === 'synced' ? 'bg-green-500' : 
-                syncStatus === 'pending' ? 'bg-yellow-500' : 
-                syncStatus === 'error' ? 'bg-red-500' : 'bg-gray-400'
-              }`} />
+              <div
+                className={`w-2 h-2 rounded-full ${
+                  syncStatus === "synced"
+                    ? "bg-green-500"
+                    : syncStatus === "pending"
+                      ? "bg-yellow-500"
+                      : syncStatus === "error"
+                        ? "bg-red-500"
+                        : "bg-gray-400"
+                }`}
+              />
               <span className={`text-sm ${syncDisplay.color}`}>
                 {syncDisplay.text}
               </span>
@@ -155,12 +174,17 @@ export function FullscreenEditor({
                   <Tooltip key={user.id}>
                     <TooltipTrigger asChild>
                       <Avatar className="w-6 h-6 border border-white">
-                        <AvatarFallback className={`${user.color} text-white text-xs font-medium`}>
+                        <AvatarFallback
+                          className={`${user.color} text-white text-xs font-medium`}
+                        >
                           {user.initials}
                         </AvatarFallback>
                       </Avatar>
                     </TooltipTrigger>
-                    <TooltipContent side="bottom" className="bg-gray-900 text-white text-xs px-2 py-1 border-none shadow-lg">
+                    <TooltipContent
+                      side="bottom"
+                      className="bg-gray-900 text-white text-xs px-2 py-1 border-none shadow-lg"
+                    >
                       <div className="text-center">
                         <div className="font-medium">{user.name}</div>
                         <div className="text-gray-300">{user.role}</div>
@@ -177,12 +201,12 @@ export function FullscreenEditor({
             )}
 
             {/* Save Button - Only show for Patient Summary */}
-            {fullscreenEditing.component === 'patient-summary' && (
+            {fullscreenEditing.component === "patient-summary" && (
               <Button
                 ref={saveButtonRef}
                 size="sm"
                 onClick={handleFullscreenSave}
-                disabled={!hasUnsavedChanges || syncStatus === 'pending'}
+                disabled={!hasUnsavedChanges || syncStatus === "pending"}
                 className="bg-gray-900 hover:bg-gray-800 text-white text-xs px-3 h-8"
               >
                 <Save className="w-3 h-3 mr-1" />
@@ -206,11 +230,13 @@ export function FullscreenEditor({
       {/* Content Area - Full available space */}
       <div className="flex-1 min-h-0 overflow-hidden">
         <div className="h-full w-full overflow-auto">
-          <div className={`w-full h-full ${isMobile ? 'p-4' : 'max-w-4xl mx-auto p-6'}`}>
-            {fullscreenEditing.component === 'patient-summary' && (
+          <div
+            className={`w-full h-full ${isMobile ? "p-4" : "max-w-4xl mx-auto p-6"}`}
+          >
+            {fullscreenEditing.component === "patient-summary" && (
               <div className="h-full">
-                <PatientSummary 
-                  onOpenThread={handleOpenDiscussion} 
+                <PatientSummary
+                  onOpenThread={handleOpenDiscussion}
                   focusMode={false}
                   currentUser={currentUser}
                   assignedPhysician={patientData.assignedPhysician}
@@ -226,12 +252,12 @@ export function FullscreenEditor({
                 />
               </div>
             )}
-            
-            {fullscreenEditing.component === 'situation-awareness' && (
+
+            {fullscreenEditing.component === "situation-awareness" && (
               <div className="h-full">
-                <SituationAwareness 
-                  collaborators={activeCollaborators} 
-                  onOpenThread={handleOpenDiscussion} 
+                <SituationAwareness
+                  collaborators={activeCollaborators}
+                  onOpenThread={handleOpenDiscussion}
                   focusMode={false}
                   fullscreenMode={true}
                   autoEdit={fullscreenEditing.autoEdit}

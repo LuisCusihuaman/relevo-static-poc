@@ -1,1 +1,1 @@
-export { CollaborationPanel } from './CollaborationPanel';
+export { CollaborationPanel } from "./CollaborationPanel";

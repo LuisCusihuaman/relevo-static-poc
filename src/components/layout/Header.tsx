@@ -1,4 +1,4 @@
-import { StatusIndicator } from "./StatusIndicator";
+import { StatusIndicator } from "../StatusIndicator";
 
 export function Header() {
   return (
@@ -6,9 +6,11 @@ export function Header() {
       <div className="container mx-auto flex items-center justify-between">
         <div>
           <h1 className="text-xl font-semibold text-gray-900">RELEVO</h1>
-          <p className="text-sm text-gray-600">Pediatric ICU • Children's Hospital</p>
+          <p className="text-sm text-gray-600">
+            Pediatric ICU • Children&apos;s Hospital
+          </p>
         </div>
-        
+
         <div className="flex items-center gap-4">
           <StatusIndicator count={3} label="Pending" color="yellow" />
           <StatusIndicator count={3} label="Active" color="green" />

@@ -1,23 +1,23 @@
 // RELEVO - User Store
 // Doctor profile, metrics, daily setup, and user-related data
 
-import { type DoctorMetrics, type DailySetupData } from '../common/types';
+import { type DailySetupData, type DoctorMetrics } from "../common/types";
 
 // ========================================
 // DOCTOR METRICS DATA
 // ========================================
 
 export const mockMetrics: DoctorMetrics = {
-  patientsAssigned: 5,
-  documentationEntries: 12,
-  clinicalNotesAdded: 8,
-  shiftStartTime: new Date(Date.now() - 6 * 60 * 60 * 1000), // 6 hours ago
-  weeklyDocumentations: 45,
-  weeklyGoal: 50,
-  performanceGrade: 'Senior Practitioner',
-  unitRanking: 'Top 10%',
-  totalClinicalHours: 38,
-  patientsHandedOver: 23
+  totalPatients: 5,
+  completedHandovers: 23,
+  avgHandoverTime: 8.5,
+  ipassCompletionRate: 85,
+  alertsResolved: 12,
+  weeklyGoals: {
+    handovers: 50,
+    documentation: 45,
+    alerts: 20,
+  },
 };
 
 // ========================================
@@ -35,7 +35,7 @@ export interface UserProfile {
   specializations: string[];
   experience: {
     years: number;
-    level: 'Resident' | 'Senior Resident' | 'Fellow' | 'Attending';
+    level: "Resident" | "Senior Resident" | "Fellow" | "Attending";
   };
   credentials: string[];
   currentShift?: {
@@ -45,9 +45,9 @@ export interface UserProfile {
     patients: number[];
   };
   preferences: {
-    theme: 'light' | 'dark' | 'system';
+    theme: "light" | "dark" | "system";
     notifications: boolean;
-    defaultView: 'dashboard' | 'patients';
+    defaultView: "dashboard" | "patients";
     autoSave: boolean;
   };
   statistics: {
@@ -59,31 +59,31 @@ export interface UserProfile {
 }
 
 export const mockUserProfile: UserProfile = {
-  id: 'dr-001',
-  name: 'Dr. Eduardo Martinez',
-  title: 'Senior Resident',
-  department: 'Pediatric Intensive Care',
-  licenseNumber: 'MD-123456',
-  phone: '+54 11 1234-5678',
-  email: 'eduardo.martinez@garrahan.gov.ar',
-  specializations: ['Pediatric Critical Care', 'Emergency Medicine'],
+  id: "dr-001",
+  name: "Dr. Eduardo Martinez",
+  title: "Senior Resident",
+  department: "Pediatric Intensive Care",
+  licenseNumber: "MD-123456",
+  phone: "+54 11 1234-5678",
+  email: "eduardo.martinez@garrahan.gov.ar",
+  specializations: ["Pediatric Critical Care", "Emergency Medicine"],
   experience: {
     years: 4,
-    level: 'Senior Resident'
+    level: "Senior Resident",
   },
-  credentials: ['MD', 'Pediatric Board Certified', 'PALS Certified'],
+  credentials: ["MD", "Pediatric Board Certified", "PALS Certified"],
   preferences: {
-    theme: 'system',
+    theme: "system",
     notifications: true,
-    defaultView: 'dashboard',
-    autoSave: true
+    defaultView: "dashboard",
+    autoSave: true,
   },
   statistics: {
     totalPatients: 847,
     totalDocumentations: 2156,
     averageHandoverTime: 8.5,
-    successfulHandovers: 451
-  }
+    successfulHandovers: 451,
+  },
 };
 
 // ========================================
@@ -97,13 +97,13 @@ export const createDailySetup = (
   doctorName: string,
   unit: string,
   shift: string,
-  selectedPatients: number[]
+  selectedPatients: number[],
 ): DailySetupData => {
   return {
     doctorName,
     unit,
     shift,
-    selectedPatients
+    selectedPatients,
   };
 };
 
@@ -128,26 +128,38 @@ export const validateDailySetup = (setup: Partial<DailySetupData>): boolean => {
  * Calculate time on shift
  */
 export const calculateTimeOnShift = (shiftStartTime: Date): number => {
-  return Math.floor((Date.now() - shiftStartTime.getTime()) / (1000 * 60 * 60 * 100)) / 10;
+  return (
+    Math.floor(
+      (Date.now() - shiftStartTime.getTime()) / (1000 * 60 * 60 * 100),
+    ) / 10
+  );
 };
 
 /**
  * Calculate weekly progress percentage
  */
-export const calculateWeeklyProgress = (current: number, goal: number): number => {
+export const calculateWeeklyProgress = (
+  current: number,
+  goal: number,
+): number => {
   return Math.round((current / goal) * 100);
 };
 
 /**
  * Get performance level based on metrics
  */
-export const getPerformanceLevel = (metrics: DoctorMetrics): 'Excellent' | 'Good' | 'Average' | 'Needs Improvement' => {
-  const weeklyProgress = calculateWeeklyProgress(metrics.weeklyDocumentations, metrics.weeklyGoal);
-  
-  if (weeklyProgress >= 90) return 'Excellent';
-  if (weeklyProgress >= 75) return 'Good';
-  if (weeklyProgress >= 60) return 'Average';
-  return 'Needs Improvement';
+export const getPerformanceLevel = (
+  metrics: DoctorMetrics,
+): "Excellent" | "Good" | "Average" | "Needs Improvement" => {
+  const weeklyProgress = calculateWeeklyProgress(
+    metrics.completedHandovers,
+    metrics.weeklyGoals.handovers,
+  );
+
+  if (weeklyProgress >= 90) return "Excellent";
+  if (weeklyProgress >= 75) return "Good";
+  if (weeklyProgress >= 60) return "Average";
+  return "Needs Improvement";
 };
 
 /**
@@ -183,7 +195,7 @@ export const defaultNotificationPreferences: NotificationPreferences = {
   shiftChanges: true,
   email: true,
   push: true,
-  sound: false
+  sound: false,
 };
 
 // ========================================
@@ -205,7 +217,7 @@ export const createSession = (dailySetup?: DailySetupData): SessionData => {
     loginTime: now,
     lastActivity: now,
     sessionTimeout: 480, // 8 hours
-    dailySetup
+    dailySetup,
   };
 };
 
@@ -216,7 +228,7 @@ export const isSessionValid = (session: SessionData): boolean => {
   const now = new Date();
   const timeSinceActivity = now.getTime() - session.lastActivity.getTime();
   const timeoutMs = session.sessionTimeout * 60 * 1000;
-  
+
   return session.isAuthenticated && timeSinceActivity < timeoutMs;
 };
 
@@ -226,7 +238,7 @@ export const isSessionValid = (session: SessionData): boolean => {
 export const updateSessionActivity = (session: SessionData): SessionData => {
   return {
     ...session,
-    lastActivity: new Date()
+    lastActivity: new Date(),
   };
 };
 
@@ -241,48 +253,48 @@ export interface QuickAccessAction {
   icon: string;
   shortcut?: string;
   action: string;
-  data?: any;
+  data?: unknown;
 }
 
 export const quickAccessActions: QuickAccessAction[] = [
   {
-    id: 'fast-ipass',
-    label: 'Quick I-PASS Entry',
-    description: 'Add documentation for priority patient',
-    icon: 'FileText',
-    shortcut: '⌘N',
-    action: 'clinical_entry'
+    id: "fast-ipass",
+    label: "Quick I-PASS Entry",
+    description: "Add documentation for priority patient",
+    icon: "FileText",
+    shortcut: "⌘N",
+    action: "clinical_entry",
   },
   {
-    id: 'start-handover',
-    label: 'Start Handover',
-    description: 'Begin patient handover process',
-    icon: 'Activity',
-    shortcut: '⌘H',
-    action: 'start_handover'
+    id: "start-handover",
+    label: "Start Handover",
+    description: "Begin patient handover process",
+    icon: "Activity",
+    shortcut: "⌘H",
+    action: "start_handover",
   },
   {
-    id: 'search-patients',
-    label: 'Search Patients',
-    description: 'Find patients quickly',
-    icon: 'Search',
-    shortcut: '⌘K',
-    action: 'open_search'
+    id: "search-patients",
+    label: "Search Patients",
+    description: "Find patients quickly",
+    icon: "Search",
+    shortcut: "⌘K",
+    action: "open_search",
   },
   {
-    id: 'view-alerts',
-    label: 'View Critical Alerts',
-    description: 'Check urgent patient alerts',
-    icon: 'AlertTriangle',
-    shortcut: '⌘A',
-    action: 'view_alerts'
-  }
+    id: "view-alerts",
+    label: "View Critical Alerts",
+    description: "Check urgent patient alerts",
+    icon: "AlertTriangle",
+    shortcut: "⌘A",
+    action: "view_alerts",
+  },
 ];
 
 /**
  * Get user's frequently used actions
  */
-export const getFrequentActions = (userId: string): QuickAccessAction[] => {
+export const getFrequentActions = (): QuickAccessAction[] => {
   // This would typically come from user behavior analytics
   return quickAccessActions.slice(0, 3);
 };

@@ -1,14 +1,28 @@
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { AlertTriangle, ChevronDown, ChevronUp, Clock, Eye, FileText, Plus, Target, Users } from 'lucide-react';
-import { useState } from 'react';
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  AlertTriangle,
+  ChevronDown,
+  ChevronUp,
+  Clock,
+  Eye,
+  FileText,
+  Plus,
+  Target,
+  Users,
+} from "lucide-react";
+import { useState } from "react";
 
 // Import types
-import { type DesktopPatient } from '../../common/types';
+import { type DesktopPatient } from "../../common/types";
 
 interface FigmaDesktopLayoutProps {
   patients?: DesktopPatient[];
@@ -24,102 +38,102 @@ interface FigmaDesktopLayoutProps {
 const actionItems = [
   {
     id: 1,
-    patient: 'Maria Rodriguez',
-    room: 'PICU-01',
-    title: 'Respiratory therapy consultation',
-    description: 'Evaluate O2 requirements and weaning potential',
-    priority: 'high',
-    status: 'pending',
-    timeframe: 'Within 2 hours',
-    assignedTo: 'Dr. Martinez',
-    assignedInitials: 'DM',
-    completed: false
+    patient: "Maria Rodriguez",
+    room: "PICU-01",
+    title: "Respiratory therapy consultation",
+    description: "Evaluate O2 requirements and weaning potential",
+    priority: "high",
+    status: "pending",
+    timeframe: "Within 2 hours",
+    assignedTo: "Dr. Martinez",
+    assignedInitials: "DM",
+    completed: false,
   },
   {
     id: 2,
-    patient: 'Carlos Gonzalez',
-    room: 'PICU-03',
-    title: 'Monitor O2 saturation',
-    description: 'Check q2h, maintain SpO2 >92%',
-    priority: 'high',
-    status: 'active',
-    timeframe: 'Every 2 hours',
-    assignedTo: 'Nursing Team',
-    assignedInitials: 'NT',
-    completed: false
+    patient: "Carlos Gonzalez",
+    room: "PICU-03",
+    title: "Monitor O2 saturation",
+    description: "Check q2h, maintain SpO2 >92%",
+    priority: "high",
+    status: "active",
+    timeframe: "Every 2 hours",
+    assignedTo: "Nursing Team",
+    assignedInitials: "NT",
+    completed: false,
   },
   {
     id: 3,
-    patient: 'Ana Silva',
-    room: 'PICU-05',
-    title: 'Family meeting - discharge planning',
-    description: 'Discuss timeline and home care needs',
-    priority: 'medium',
-    status: 'scheduled',
-    timeframe: 'Tomorrow 2 PM',
-    assignedTo: 'Dr. Wilson',
-    assignedInitials: 'DW',
-    completed: false
+    patient: "Ana Silva",
+    room: "PICU-05",
+    title: "Family meeting - discharge planning",
+    description: "Discuss timeline and home care needs",
+    priority: "medium",
+    status: "scheduled",
+    timeframe: "Tomorrow 2 PM",
+    assignedTo: "Dr. Wilson",
+    assignedInitials: "DW",
+    completed: false,
   },
   {
     id: 4,
-    patient: 'David Kim',
-    room: 'PICU-07',
-    title: 'Social work consultation',
-    description: 'Assess discharge needs and home safety',
-    priority: 'medium',
-    status: 'completed',
-    timeframe: 'Completed 1h ago',
-    assignedTo: 'Social Worker',
-    assignedInitials: 'SW',
-    completed: true
-  }
+    patient: "David Kim",
+    room: "PICU-07",
+    title: "Social work consultation",
+    description: "Assess discharge needs and home safety",
+    priority: "medium",
+    status: "completed",
+    timeframe: "Completed 1h ago",
+    assignedTo: "Social Worker",
+    assignedInitials: "SW",
+    completed: true,
+  },
 ];
 
 // Recent Activity - For right sidebar
 const recentUpdates = [
   {
     id: 1,
-    type: 'Clinical summary updated',
-    timestamp: '11:39 AM',
-    author: 'fwefewewewf',
-    details: 'Updated patient overview and current medications'
+    type: "Clinical summary updated",
+    timestamp: "11:39 AM",
+    author: "fwefewewewf",
+    details: "Updated patient overview and current medications",
   },
   {
     id: 2,
-    type: 'Action items reviewed',
-    timestamp: '10:15 AM',
-    author: 'Dr. Martinez',
-    details: 'Reviewed respiratory therapy consultation status'
+    type: "Action items reviewed",
+    timestamp: "10:15 AM",
+    author: "Dr. Martinez",
+    details: "Reviewed respiratory therapy consultation status",
   },
   {
     id: 3,
-    type: 'Severity assessment updated',
-    timestamp: '9:42 AM',
-    author: 'Nursing Team',
-    details: 'Patient condition assessment and monitoring updates'
+    type: "Severity assessment updated",
+    timestamp: "9:42 AM",
+    author: "Nursing Team",
+    details: "Patient condition assessment and monitoring updates",
   },
   {
     id: 4,
-    type: 'Medication review completed',
-    timestamp: '8:30 AM',
-    author: 'Dr. Wilson',
-    details: 'Reviewed current medication list and dosages'
+    type: "Medication review completed",
+    timestamp: "8:30 AM",
+    author: "Dr. Wilson",
+    details: "Reviewed current medication list and dosages",
   },
   {
     id: 5,
-    type: 'Lab results reviewed',
-    timestamp: '7:15 AM',
-    author: 'Dr. Chen',
-    details: 'Morning lab results analysis and documentation'
+    type: "Lab results reviewed",
+    timestamp: "7:15 AM",
+    author: "Dr. Chen",
+    details: "Morning lab results analysis and documentation",
   },
   {
     id: 6,
-    type: 'Family communication',
-    timestamp: '6:45 AM',
-    author: 'Social Worker',
-    details: 'Updated family on patient status and discharge planning'
-  }
+    type: "Family communication",
+    timestamp: "6:45 AM",
+    author: "Social Worker",
+    details: "Updated family on patient status and discharge planning",
+  },
 ];
 
 // Clinical Summary Content (I-PASS: P - Patient Summary)
@@ -179,100 +193,126 @@ Contingency plans for respiratory distress, discharge planning in progress...`;
 
 export function FigmaDesktopLayout({
   patients = [],
-  currentDoctor,
-  unit,
-  shift,
-  onCommandPalette,
-  onStartHandover,
-  onPatientHandover
+  currentDoctor: _currentDoctor,
+  unit: _unit,
+  shift: _shift,
+  onCommandPalette: _onCommandPalette,
+  onStartHandover: _onStartHandover,
+  onPatientHandover: _onPatientHandover,
 }: FigmaDesktopLayoutProps) {
   // Safe array operations with fallbacks
   const safePatients = Array.isArray(patients) ? patients : [];
   const [selectedPatient, setSelectedPatient] = useState<DesktopPatient | null>(
-    safePatients.length > 0 ? safePatients[0] : null
+    safePatients.length > 0 ? safePatients[0] : null,
   );
   const [actionItemsState, setActionItemsState] = useState(actionItems);
-  
+
   // Progressive disclosure states
   const [clinicalSummaryExpanded, setClinicalSummaryExpanded] = useState(false);
   const [illnessSeverityExpanded, setIllnessSeverityExpanded] = useState(true);
-  const [situationAwarenessExpanded, setSituationAwarenessExpanded] = useState(false);
-
-  const getPatientInitials = (name: string) => {
-    return name.split(' ').map(n => n[0]).join('').toUpperCase();
-  };
+  const [situationAwarenessExpanded, setSituationAwarenessExpanded] =
+    useState(false);
 
   const getSeverityText = (severity: string) => {
     switch (severity) {
-      case 'unstable': return 'Critical';
-      case 'watcher': return 'Watch';
-      case 'stable': return 'Stable';
-      default: return 'Unknown';
+      case "unstable":
+        return "Critical";
+      case "watcher":
+        return "Watch";
+      case "stable":
+        return "Stable";
+      default:
+        return "Unknown";
     }
   };
 
   // Much more subtle, professional medical colors - barely visible dots
   const getSeverityDot = (severity: string) => {
     switch (severity) {
-      case 'unstable': return 'bg-neutral-400/40';    // Very subtle neutral with slight tint
-      case 'watcher': return 'bg-neutral-400/35';     // Very subtle neutral with slight tint
-      case 'stable': return 'bg-neutral-400/30';      // Very subtle neutral with slight tint
-      default: return 'bg-neutral-300/50';
+      case "unstable":
+        return "bg-neutral-400/40"; // Very subtle neutral with slight tint
+      case "watcher":
+        return "bg-neutral-400/35"; // Very subtle neutral with slight tint
+      case "stable":
+        return "bg-neutral-400/30"; // Very subtle neutral with slight tint
+      default:
+        return "bg-neutral-300/50";
     }
   };
 
   // Much more muted text colors - professional neutral grays
   const getSeverityTextColor = (severity: string) => {
     switch (severity) {
-      case 'unstable': return 'text-neutral-600';     // Neutral gray (no red)
-      case 'watcher': return 'text-neutral-600';      // Neutral gray (no amber) 
-      case 'stable': return 'text-neutral-600';       // Neutral gray (no green)
-      default: return 'text-neutral-500';
+      case "unstable":
+        return "text-neutral-600"; // Neutral gray (no red)
+      case "watcher":
+        return "text-neutral-600"; // Neutral gray (no amber)
+      case "stable":
+        return "text-neutral-600"; // Neutral gray (no green)
+      default:
+        return "text-neutral-500";
     }
   };
 
   const getSeverityUrgency = (severity: string) => {
     switch (severity) {
-      case 'unstable': return 'high';
-      case 'watcher': return 'medium';
-      case 'stable': return 'low';
-      default: return 'low';
+      case "unstable":
+        return "high";
+      case "watcher":
+        return "medium";
+      case "stable":
+        return "low";
+      default:
+        return "low";
     }
   };
 
   const handleActionToggle = (actionId: number) => {
-    setActionItemsState(prev => 
-      prev.map(action => 
-        action.id === actionId 
-          ? { 
-              ...action, 
+    setActionItemsState((prev) =>
+      prev.map((action) =>
+        action.id === actionId
+          ? {
+              ...action,
               completed: !action.completed,
-              status: !action.completed ? 'completed' : 'pending'
-            } 
-          : action
-      )
+              status: !action.completed ? "completed" : "pending",
+            }
+          : action,
+      ),
     );
   };
 
   // Calculate severity counts
-  const severityCounts = safePatients.reduce((acc, patient) => {
-    if (patient && patient.illnessSeverity) {
-      acc[patient.illnessSeverity] = (acc[patient.illnessSeverity] || 0) + 1;
-    }
-    return acc;
-  }, {} as Record<string, number>);
+  const severityCounts = safePatients.reduce(
+    (acc, patient) => {
+      if (patient && patient.illnessSeverity) {
+        acc[patient.illnessSeverity] = (acc[patient.illnessSeverity] || 0) + 1;
+      }
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
 
   // Get critical information for selected patient
   const getCriticalInfo = (patient: DesktopPatient | null) => {
     if (!patient) return null;
-    
+
     const urgency = getSeverityUrgency(patient.illnessSeverity);
-    const hasAlerts = patient.alerts && patient.alerts > 0;
-    
+    const hasAlerts = patient.alerts && patient.alerts.length > 0;
+
     return {
-      needsAttention: urgency === 'high' || hasAlerts,
-      nextAction: urgency === 'high' ? 'Monitor closely' : urgency === 'medium' ? 'Check in 2h' : 'Routine care',
-      timeframe: urgency === 'high' ? 'Immediate' : urgency === 'medium' ? '2 hours' : '4-6 hours'
+      needsAttention: urgency === "high" || hasAlerts,
+      nextAction:
+        urgency === "high"
+          ? "Monitor closely"
+          : urgency === "medium"
+            ? "Check in 2h"
+            : "Routine care",
+      timeframe:
+        urgency === "high"
+          ? "Immediate"
+          : urgency === "medium"
+            ? "2 hours"
+            : "4-6 hours",
     };
   };
 
@@ -282,16 +322,22 @@ export function FigmaDesktopLayout({
       <div className="h-full bg-background flex items-center justify-center">
         <div className="text-center">
           <Users className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-foreground mb-2">No Patients Available</h3>
-          <p className="text-muted-foreground">Please check your patient data or contact support.</p>
+          <h3 className="text-lg font-semibold text-foreground mb-2">
+            No Patients Available
+          </h3>
+          <p className="text-muted-foreground">
+            Please check your patient data or contact support.
+          </p>
         </div>
       </div>
     );
   }
 
   const criticalInfo = getCriticalInfo(selectedPatient);
-  const pendingActions = actionItemsState.filter(a => !a.completed).length;
-  const highPriorityActions = actionItemsState.filter(a => !a.completed && a.priority === 'high').length;
+  const pendingActions = actionItemsState.filter((a) => !a.completed).length;
+  const highPriorityActions = actionItemsState.filter(
+    (a) => !a.completed && a.priority === "high",
+  ).length;
 
   return (
     <div className="h-full bg-background">
@@ -302,16 +348,23 @@ export function FigmaDesktopLayout({
             <div>
               <div className="flex items-center gap-3 mb-2">
                 <h1 className="text-lg font-semibold text-foreground">
-                  {selectedPatient ? selectedPatient.name : 'Patient Overview'}
+                  {selectedPatient ? selectedPatient.name : "Patient Overview"}
                 </h1>
                 {selectedPatient && (
                   <>
                     <div className="flex items-center gap-2">
-                      <div className={`w-2 h-2 rounded-full ${getSeverityDot(selectedPatient.illnessSeverity)}`} />
-                      <span className="text-sm text-muted-foreground">{getSeverityText(selectedPatient.illnessSeverity)}</span>
+                      <div
+                        className={`w-2 h-2 rounded-full ${getSeverityDot(selectedPatient.illnessSeverity)}`}
+                      />
+                      <span className="text-sm text-muted-foreground">
+                        {getSeverityText(selectedPatient.illnessSeverity)}
+                      </span>
                     </div>
                     {criticalInfo?.needsAttention && (
-                      <Badge variant="outline" className="text-xs border-amber-200 bg-amber-50 text-amber-700">
+                      <Badge
+                        variant="outline"
+                        className="text-xs border-amber-200 bg-amber-50 text-amber-700"
+                      >
                         Needs Attention
                       </Badge>
                     )}
@@ -320,19 +373,33 @@ export function FigmaDesktopLayout({
               </div>
               {selectedPatient && (
                 <div className="flex items-center gap-6 text-sm text-muted-foreground">
-                  <span><strong>Room:</strong> {selectedPatient.room}</span>
-                  <span><strong>Age:</strong> {selectedPatient.age}</span>
-                  <span><strong>MRN:</strong> A211370</span>
-                  <span><strong>Diagnosis:</strong> {selectedPatient.primaryDiagnosis}</span>
+                  <span>
+                    <strong>Room:</strong> {selectedPatient.room}
+                  </span>
+                  <span>
+                    <strong>Age:</strong> {selectedPatient.age}
+                  </span>
+                  <span>
+                    <strong>MRN:</strong> A211370
+                  </span>
+                  <span>
+                    <strong>Diagnosis:</strong>{" "}
+                    {selectedPatient.primaryDiagnosis}
+                  </span>
                   {criticalInfo && (
-                    <span className="text-primary"><strong>Next:</strong> {criticalInfo.nextAction} ({criticalInfo.timeframe})</span>
+                    <span className="text-primary">
+                      <strong>Next:</strong> {criticalInfo.nextAction} (
+                      {criticalInfo.timeframe})
+                    </span>
                   )}
                 </div>
               )}
             </div>
             <div className="flex items-center gap-3">
-              <Button 
-                onClick={() => selectedPatient && onStartHandover(selectedPatient.id)}
+              <Button
+                onClick={() =>
+                  selectedPatient && _onStartHandover(selectedPatient.id)
+                }
                 className="bg-primary hover:bg-primary/90"
               >
                 Start Handover
@@ -344,15 +411,16 @@ export function FigmaDesktopLayout({
 
       {/* Three Column Layout - Correct I-PASS Structure */}
       <div className="flex h-[calc(100vh-140px)]">
-        
         {/* Left Sidebar - Much More Subtle Status Colors */}
         <div className="w-80 border-r border-border/20 bg-background">
           <div className="p-4 border-b border-border/10">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold text-foreground">Patients</h3>
-              <Badge variant="outline" className="text-xs">{safePatients.length}</Badge>
+              <Badge variant="outline" className="text-xs">
+                {safePatients.length}
+              </Badge>
             </div>
-            
+
             {/* Much More Subtle Priority Summary - Professional Medical Style */}
             <div className="flex items-center gap-4 p-3 bg-neutral-50/30 rounded-lg border border-border/20">
               <div className="flex items-center gap-1.5">
@@ -381,61 +449,74 @@ export function FigmaDesktopLayout({
               {/* Sort patients by severity - unstable first */}
               {safePatients
                 .sort((a, b) => {
-                  const severityOrder = { 'unstable': 0, 'watcher': 1, 'stable': 2 };
-                  return severityOrder[a.illnessSeverity] - severityOrder[b.illnessSeverity];
+                  const severityOrder = { unstable: 0, watcher: 1, stable: 2 };
+                  return (
+                    severityOrder[a.illnessSeverity] -
+                    severityOrder[b.illnessSeverity]
+                  );
                 })
                 .map((patient) => {
                   if (!patient || !patient.id) return null;
-                  
+
                   const isSelected = selectedPatient?.id === patient.id;
                   const urgency = getSeverityUrgency(patient.illnessSeverity);
-                  
+
                   return (
                     <button
                       key={patient.id}
                       onClick={() => setSelectedPatient(patient)}
                       className={`w-full p-4 text-left rounded-lg transition-all duration-200 border ${
                         isSelected
-                          ? 'border-primary/30 bg-primary/5 shadow-sm'
-                          : 'border-border/20 hover:bg-neutral-50/50 hover:border-border/40'
+                          ? "border-primary/30 bg-primary/5 shadow-sm"
+                          : "border-border/20 hover:bg-neutral-50/50 hover:border-border/40"
                       }`}
                     >
                       <div className="space-y-3">
                         {/* Header - Room + Severity + Alert */}
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            <Badge variant="outline" className="text-xs font-semibold bg-primary/10 border-primary/20 text-primary px-2 py-0.5">
-                              {patient.room || 'N/A'}
+                            <Badge
+                              variant="outline"
+                              className="text-xs font-semibold bg-primary/10 border-primary/20 text-primary px-2 py-0.5"
+                            >
+                              {patient.room || "N/A"}
                             </Badge>
-                            <div className={`w-2 h-2 rounded-full ${getSeverityDot(patient.illnessSeverity || 'stable')}`} />
+                            <div
+                              className={`w-2 h-2 rounded-full ${getSeverityDot(patient.illnessSeverity || "stable")}`}
+                            />
                           </div>
-                          {patient.alerts && patient.alerts > 0 && (
+                          {patient.alerts && patient.alerts.length > 0 && (
                             <AlertTriangle className="w-4 h-4 text-amber-500" />
                           )}
                         </div>
 
                         {/* Patient Name - Larger and More Prominent */}
                         <div className="font-semibold text-sm text-foreground">
-                          {patient.name || 'Unknown Patient'}
+                          {patient.name || "Unknown Patient"}
                         </div>
 
                         {/* Patient Info Row - Using Much More Subtle Colors */}
                         <div className="flex items-center justify-between">
                           <div className="text-xs text-muted-foreground">
-                            Age {patient.age || 'N/A'}
+                            Age {patient.age || "N/A"}
                           </div>
-                          <div className={`text-xs font-medium ${getSeverityTextColor(patient.illnessSeverity || 'stable')}`}>
-                            {getSeverityText(patient.illnessSeverity || 'stable')}
+                          <div
+                            className={`text-xs font-medium ${getSeverityTextColor(patient.illnessSeverity || "stable")}`}
+                          >
+                            {getSeverityText(
+                              patient.illnessSeverity || "stable",
+                            )}
                           </div>
                         </div>
 
                         {/* Show diagnosis for critical patients or when selected */}
-                        {(urgency === 'high' || isSelected) && (
+                        {(urgency === "high" || isSelected) && (
                           <div className="text-xs text-foreground/80 leading-relaxed">
-                            {patient.primaryDiagnosis && patient.primaryDiagnosis.length > 45 
-                              ? `${patient.primaryDiagnosis.substring(0, 45)}...` 
-                              : patient.primaryDiagnosis || 'No diagnosis available'
-                            }
+                            {patient.primaryDiagnosis &&
+                            patient.primaryDiagnosis.length > 45
+                              ? `${patient.primaryDiagnosis.substring(0, 45)}...`
+                              : patient.primaryDiagnosis ||
+                                "No diagnosis available"}
                           </div>
                         )}
                       </div>
@@ -449,21 +530,32 @@ export function FigmaDesktopLayout({
         {/* Main Content - Correct I-PASS Framework Structure */}
         <div className="flex-1 overflow-hidden">
           <div className="h-full flex flex-col">
-            
             {/* Clinical Summary (I-PASS: P - Patient Summary) */}
-            <Collapsible open={clinicalSummaryExpanded} onOpenChange={setClinicalSummaryExpanded}>
+            <Collapsible
+              open={clinicalSummaryExpanded}
+              onOpenChange={setClinicalSummaryExpanded}
+            >
               <div className="border-b border-border/10 bg-background">
                 <CollapsibleTrigger asChild>
                   <div className="p-4 hover:bg-muted/20 cursor-pointer transition-colors">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <FileText className="w-4 h-4 text-blue-600" />
-                        <h3 className="font-semibold text-foreground">Clinical Summary</h3>
-                        <Badge variant="outline" className="text-xs bg-blue-50 border-blue-200 text-blue-700">
+                        <h3 className="font-semibold text-foreground">
+                          Clinical Summary
+                        </h3>
+                        <Badge
+                          variant="outline"
+                          className="text-xs bg-blue-50 border-blue-200 text-blue-700"
+                        >
                           I-PASS: P
                         </Badge>
-                        <Badge variant="outline" className="text-xs">Read-Only</Badge>
-                        <Badge variant="outline" className="text-xs">Last updated 11:39 AM</Badge>
+                        <Badge variant="outline" className="text-xs">
+                          Read-Only
+                        </Badge>
+                        <Badge variant="outline" className="text-xs">
+                          Last updated 11:39 AM
+                        </Badge>
                       </div>
                       {clinicalSummaryExpanded ? (
                         <ChevronUp className="w-4 h-4 text-muted-foreground" />
@@ -471,33 +563,39 @@ export function FigmaDesktopLayout({
                         <ChevronDown className="w-4 h-4 text-muted-foreground" />
                       )}
                     </div>
-                    
+
                     {/* Show preview when collapsed */}
                     {!clinicalSummaryExpanded && (
                       <div className="mt-2 text-xs text-muted-foreground">
-                        72-year-old female with acute COPD exacerbation, responding well to treatment...
+                        72-year-old female with acute COPD exacerbation,
+                        responding well to treatment...
                       </div>
                     )}
                   </div>
                 </CollapsibleTrigger>
-                
+
                 <CollapsibleContent>
                   <div className="px-4 pb-4">
                     <div className="mb-3 text-xs text-muted-foreground">
                       <span>To edit this summary, use </span>
-                      <Button 
-                        variant="link" 
+                      <Button
+                        variant="link"
                         className="p-0 h-auto text-xs underline"
-                        onClick={() => selectedPatient && onStartHandover(selectedPatient.id)}
+                        onClick={() =>
+                          selectedPatient &&
+                          _onStartHandover(selectedPatient.id)
+                        }
                       >
                         Start Handover
                       </Button>
                       <span> or mobile I-PASS documentation</span>
                     </div>
-                    
+
                     <div className="max-h-32 overflow-y-auto scrollbar-medical border border-border/20 rounded-lg">
                       <div className="p-3 text-sm text-foreground leading-relaxed">
-                        <p className="whitespace-pre-wrap">{clinicalSummaryText}</p>
+                        <p className="whitespace-pre-wrap">
+                          {clinicalSummaryText}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -506,15 +604,23 @@ export function FigmaDesktopLayout({
             </Collapsible>
 
             {/* Current Situation (I-PASS: I - Illness Severity Assessment) */}
-            <Collapsible open={illnessSeverityExpanded} onOpenChange={setIllnessSeverityExpanded}>
+            <Collapsible
+              open={illnessSeverityExpanded}
+              onOpenChange={setIllnessSeverityExpanded}
+            >
               <div className="border-b border-border/10 bg-background">
                 <CollapsibleTrigger asChild>
                   <div className="p-4 hover:bg-muted/20 cursor-pointer transition-colors">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <AlertTriangle className="w-4 h-4 text-red-600" />
-                        <h3 className="font-semibold text-foreground">Current Situation</h3>
-                        <Badge variant="outline" className="text-xs bg-red-50 border-red-200 text-red-700">
+                        <h3 className="font-semibold text-foreground">
+                          Current Situation
+                        </h3>
+                        <Badge
+                          variant="outline"
+                          className="text-xs bg-red-50 border-red-200 text-red-700"
+                        >
                           I-PASS: I
                         </Badge>
                         {criticalInfo?.needsAttention && (
@@ -529,21 +635,24 @@ export function FigmaDesktopLayout({
                         <ChevronDown className="w-4 h-4 text-muted-foreground" />
                       )}
                     </div>
-                    
+
                     {/* Show preview when collapsed */}
                     {!illnessSeverityExpanded && (
                       <div className="mt-2 text-xs text-muted-foreground">
-                        Patient stable, O2 requirements reduced to 2L, vitals stable...
+                        Patient stable, O2 requirements reduced to 2L, vitals
+                        stable...
                       </div>
                     )}
                   </div>
                 </CollapsibleTrigger>
-                
+
                 <CollapsibleContent>
                   <div className="px-4 pb-4">
                     <div className="max-h-40 overflow-y-auto scrollbar-medical border border-border/20 rounded-lg">
                       <div className="p-3 text-sm text-foreground leading-relaxed">
-                        <p className="whitespace-pre-wrap">{illnessSeverityText}</p>
+                        <p className="whitespace-pre-wrap">
+                          {illnessSeverityText}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -552,15 +661,23 @@ export function FigmaDesktopLayout({
             </Collapsible>
 
             {/* I-PASS Plans (I-PASS: S - Situation Awareness & Contingency) */}
-            <Collapsible open={situationAwarenessExpanded} onOpenChange={setSituationAwarenessExpanded}>
+            <Collapsible
+              open={situationAwarenessExpanded}
+              onOpenChange={setSituationAwarenessExpanded}
+            >
               <div className="border-b border-border/10 bg-background">
                 <CollapsibleTrigger asChild>
                   <div className="p-4 hover:bg-muted/20 cursor-pointer transition-colors">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Eye className="w-4 h-4 text-yellow-600" />
-                        <h3 className="font-semibold text-foreground">I-PASS Plans</h3>
-                        <Badge variant="outline" className="text-xs bg-yellow-50 border-yellow-200 text-yellow-700">
+                        <h3 className="font-semibold text-foreground">
+                          I-PASS Plans
+                        </h3>
+                        <Badge
+                          variant="outline"
+                          className="text-xs bg-yellow-50 border-yellow-200 text-yellow-700"
+                        >
                           I-PASS: S
                         </Badge>
                       </div>
@@ -570,21 +687,24 @@ export function FigmaDesktopLayout({
                         <ChevronDown className="w-4 h-4 text-muted-foreground" />
                       )}
                     </div>
-                    
+
                     {/* Show preview when collapsed */}
                     {!situationAwarenessExpanded && (
                       <div className="mt-2 text-xs text-muted-foreground">
-                        Contingency plans for respiratory distress, discharge planning in progress...
+                        Contingency plans for respiratory distress, discharge
+                        planning in progress...
                       </div>
                     )}
                   </div>
                 </CollapsibleTrigger>
-                
+
                 <CollapsibleContent>
                   <div className="px-4 pb-4">
                     <div className="max-h-40 overflow-y-auto scrollbar-medical border border-border/20 rounded-lg">
                       <div className="p-3 text-sm text-foreground leading-relaxed">
-                        <p className="whitespace-pre-wrap">{situationAwarenessText}</p>
+                        <p className="whitespace-pre-wrap">
+                          {situationAwarenessText}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -598,8 +718,13 @@ export function FigmaDesktopLayout({
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
                     <Target className="w-5 h-5 text-muted-foreground" />
-                    <h3 className="font-semibold text-foreground">Action List</h3>
-                    <Badge variant="outline" className="text-xs bg-green-50 border-green-200 text-green-700">
+                    <h3 className="font-semibold text-foreground">
+                      Action List
+                    </h3>
+                    <Badge
+                      variant="outline"
+                      className="text-xs bg-green-50 border-green-200 text-green-700"
+                    >
                       I-PASS: A
                     </Badge>
                     {pendingActions > 0 && (
@@ -621,39 +746,51 @@ export function FigmaDesktopLayout({
 
                 {/* Action Progress Summary */}
                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                  <span>{actionItemsState.filter(a => a.completed).length} completed</span>
+                  <span>
+                    {actionItemsState.filter((a) => a.completed).length}{" "}
+                    completed
+                  </span>
                   <span>{pendingActions} remaining</span>
                   {highPriorityActions > 0 && (
-                    <span className="text-red-600 font-medium">{highPriorityActions} urgent</span>
+                    <span className="text-red-600 font-medium">
+                      {highPriorityActions} urgent
+                    </span>
                   )}
                 </div>
               </div>
-              
+
               {/* Scrollable Action List */}
               <ScrollArea className="flex-1">
                 <div className="p-4 space-y-3">
                   {actionItemsState.map((action) => (
-                    <div 
+                    <div
                       key={action.id}
                       className="flex items-start gap-3 p-3 bg-background border border-border/30 rounded-lg hover:border-border/50 transition-colors"
                     >
-                      <Checkbox 
+                      <Checkbox
                         checked={action.completed}
                         onCheckedChange={() => handleActionToggle(action.id)}
                         className="mt-1"
                       />
 
-                      <div className={`w-1.5 h-1.5 rounded-full mt-2 ${
-                        action.priority === 'high' ? 'bg-red-500' : 
-                        action.priority === 'medium' ? 'bg-yellow-500' : 'bg-green-500'
-                      }`} />
+                      <div
+                        className={`w-1.5 h-1.5 rounded-full mt-2 ${
+                          action.priority === "high"
+                            ? "bg-red-500"
+                            : action.priority === "medium"
+                              ? "bg-yellow-500"
+                              : "bg-green-500"
+                        }`}
+                      />
 
                       <div className="flex-1 min-w-0">
-                        <h5 className="font-medium text-sm text-foreground mb-1">{action.title}</h5>
+                        <h5 className="font-medium text-sm text-foreground mb-1">
+                          {action.title}
+                        </h5>
                         <p className="text-xs text-muted-foreground leading-relaxed mb-2">
                           {action.description}
                         </p>
-                        
+
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <Badge variant="outline" className="text-xs">
@@ -663,7 +800,9 @@ export function FigmaDesktopLayout({
                               {action.status}
                             </Badge>
                           </div>
-                          <span className="text-xs text-muted-foreground">{action.timeframe}</span>
+                          <span className="text-xs text-muted-foreground">
+                            {action.timeframe}
+                          </span>
                         </div>
                       </div>
 
@@ -700,11 +839,17 @@ export function FigmaDesktopLayout({
                     <div className="w-3 h-3 rounded-full bg-primary/30 mt-1.5 border border-background shadow-sm" />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-1">
-                        <p className="text-xs font-medium text-foreground truncate">{update.type}</p>
-                        <span className="text-xs text-muted-foreground">{update.timestamp}</span>
+                        <p className="text-xs font-medium text-foreground truncate">
+                          {update.type}
+                        </p>
+                        <span className="text-xs text-muted-foreground">
+                          {update.timestamp}
+                        </span>
                       </div>
                       <p className="text-xs text-muted-foreground leading-tight">
-                        {update.details.length > 60 ? `${update.details.substring(0, 60)}...` : update.details}
+                        {update.details.length > 60
+                          ? `${update.details.substring(0, 60)}...`
+                          : update.details}
                       </p>
                       <p className="text-xs font-medium text-muted-foreground mt-1">
                         by {update.author}

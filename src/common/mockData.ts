@@ -6,10 +6,10 @@
 // ========================================
 
 // Export everything from the new store structure for backward compatibility
-export * from '../store/index';
+export * from "../store/index";
 
 // Specific legacy exports that components expect
-export { 
+export {
   mockPatients,
   dailySetupPatients,
   mockCollaborators,
@@ -17,8 +17,8 @@ export {
   getPatientById,
   getPatientsBySeverity,
   getPatientsByStatus,
-  searchPatients
-} from '../store/patients.store';
+  searchPatients,
+} from "../store/patients.store";
 
 export {
   unitsConfig,
@@ -30,15 +30,15 @@ export {
   getUnitName,
   getShiftName,
   getSeverityColor,
-  getStatusColor
-} from '../store/config.store';
+  getStatusColor,
+} from "../store/config.store";
 
 export {
   mockMetrics,
   mockUserProfile,
   calculateTimeOnShift,
-  calculateWeeklyProgress
-} from '../store/user.store';
+  calculateWeeklyProgress,
+} from "../store/user.store";
 
 export {
   shiftSchedule,
@@ -46,8 +46,8 @@ export {
   mockHandoverSessions,
   getCurrentDoctors,
   getIncomingDoctors,
-  getTimeUntilNextHandover
-} from '../store/shift.store';
+  getTimeUntilNextHandover,
+} from "../store/shift.store";
 
 export {
   ipassBlocks,
@@ -55,11 +55,11 @@ export {
   clinicalProtocols,
   getIPassBlock,
   getClinicalTemplate,
-  getSuggestedTemplate
-} from '../store/clinical.store';
+  getSuggestedTemplate,
+} from "../store/clinical.store";
 
 // Export types
-export type { DailySetupData } from './types';
+export type { DailySetupData } from "./types";
 
 // ========================================
 // MIGRATION NOTICE
@@ -68,12 +68,12 @@ export type { DailySetupData } from './types';
 /**
  * @deprecated This file provides backward compatibility.
  * New code should import directly from specific store files:
- * 
+ *
  * - './patients.store' for patient data
- * - './user.store' for user/doctor data  
+ * - './user.store' for user/doctor data
  * - './shift.store' for shift schedules
  * - './clinical.store' for I-PASS and clinical data
  * - './config.store' for configuration and constants
- * 
+ *
  * Use './index' for comprehensive imports.
  */

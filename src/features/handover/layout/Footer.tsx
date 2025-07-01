@@ -1,5 +1,5 @@
-import { patientData } from '@/common/constants';
-import { Button } from '@/components/ui/button';
+import { patientData } from "@/common/constants";
+import { Button } from "@/components/ui/button";
 
 interface FooterProps {
   focusMode: boolean;
@@ -14,7 +14,7 @@ export function Footer({
   fullscreenEditing,
   handoverComplete,
   getTimeUntilHandover,
-  getSessionDuration
+  getSessionDuration,
 }: FooterProps) {
   if (focusMode || fullscreenEditing) return null;
 
@@ -28,16 +28,16 @@ export function Footer({
           <span>•</span>
           <span>Session: {getSessionDuration()}</span>
         </div>
-        <Button 
+        <Button
           className={`w-full sm:w-auto ${
-            handoverComplete 
-              ? 'bg-green-600 hover:bg-green-700 text-white' 
-              : 'bg-gray-900 hover:bg-gray-800 text-white'
+            handoverComplete
+              ? "bg-green-600 hover:bg-green-700 text-white"
+              : "bg-gray-900 hover:bg-gray-800 text-white"
           }`}
           disabled={handoverComplete}
           size="sm"
         >
-          {handoverComplete ? 'Handover Complete' : 'Complete Handover'}
+          {handoverComplete ? "Handover Complete" : "Complete Handover"}
         </Button>
       </div>
     </div>

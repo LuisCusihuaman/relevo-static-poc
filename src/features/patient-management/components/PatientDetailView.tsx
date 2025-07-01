@@ -1,8 +1,12 @@
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Activity,
   AlertTriangle,
@@ -18,13 +22,13 @@ import {
   Plus,
   Stethoscope,
   Target,
-  User
-} from 'lucide-react';
-import { useState } from 'react';
+  User,
+} from "lucide-react";
+import { useState } from "react";
 
 // Import patient data types
-import { type Patient } from '../../../common/types';
-import { getUnitName } from '../../../store/config.store';
+import { type Patient } from "../../../common/types";
+import { getUnitName } from "../../../store/config.store";
 
 interface PatientDetailViewProps {
   patient: Patient;
@@ -33,33 +37,68 @@ interface PatientDetailViewProps {
   onOpenDocumentation: (patientId: number, section?: string) => void;
 }
 
+interface Action {
+  id: number;
+  title: string;
+  description: string;
+  priority: string;
+  status: string;
+  assignedTo: string;
+  dueTime?: string;
+  timeframe?: string;
+  completedTime?: string;
+}
+
+interface IPassSection {
+  lastUpdated: string;
+  updatedBy?: string;
+  content?: string;
+  section?: string;
+  alerts?: { level: string; message: string }[];
+  totalActions?: number;
+  completed?: number;
+  remaining?: number;
+  urgent?: number;
+  pending?: number;
+  actions?: Action[];
+}
+
+interface DetailedIPassData {
+  [key: number]: {
+    clinicalSummary: IPassSection;
+    currentSituation: IPassSection;
+    ipassPlans: IPassSection;
+    actionList: IPassSection;
+  };
+}
+
 // Mock detailed I-PASS data (in real app, this would come from API)
-const mockDetailedIPassData: Record<number, any> = {
+const mockDetailedIPassData: DetailedIPassData = {
   1: {
     clinicalSummary: {
-      lastUpdated: '11:39 AM',
-      updatedBy: 'Dr. Martinez',
+      lastUpdated: "11:39 AM",
+      updatedBy: "Dr. Martinez",
       content: `8-year-old female with acute respiratory failure - Community-acquired pneumonia, Asthma exacerbation. Patient has been responding well to bronchodilator therapy and systemic corticosteroids.
 
 Past Medical History: Asthma (mild persistent), no previous hospitalizations
 
 Current Medications: Albuterol nebulizer q4h, Prednisolone 1mg/kg daily, Azithromycin 10mg/kg daily`,
-      section: 'patient_summary'
+      section: "patient_summary",
     },
     currentSituation: {
-      lastUpdated: '10:15 AM',
+      lastUpdated: "10:15 AM",
       content: `Patient is currently stable but requires close monitoring due to respiratory status changes.
 
 Vital Signs: BP 95/60, HR 110, RR 28, SpO2 96% on 2L O2, Temp 37.2°C
 
 Recent Changes: O2 requirements reduced from 4L to 2L over past 24h. Increased mobility and appetite noted.`,
       alerts: [
-        { level: 'medium', message: 'Monitor respiratory status q2h' },
-        { level: 'low', message: 'Encourage oral intake and mobility' }
-      ]
+        { level: "medium", message: "Monitor respiratory status q2h" },
+        { level: "low", message: "Encourage oral intake and mobility" },
+      ],
     },
     ipassPlans: {
-      lastUpdated: '9:30 AM',
+      lastUpdated: "9:30 AM",
       content: `Contingency plans for respiratory distress, discharge planning in progress...
 
 Discharge Criteria:
@@ -70,10 +109,10 @@ Discharge Criteria:
 Contingency Plans:
 - If increased work of breathing: Increase O2, consider high-flow nasal cannula
 - If fever >38.5°C: Blood cultures, consider antibiotic adjustment`,
-      section: 'synthesis_plans'
+      section: "synthesis_plans",
     },
     actionList: {
-      lastUpdated: '8:45 AM',
+      lastUpdated: "8:45 AM",
       totalActions: 6,
       completed: 1,
       remaining: 3,
@@ -82,65 +121,66 @@ Contingency Plans:
       actions: [
         {
           id: 1,
-          title: 'Respiratory therapy consultation',
-          description: 'Evaluate O2 requirements and weaning potential',
-          priority: 'high',
-          status: 'pending',
-          assignedTo: 'DM',
-          dueTime: 'Within 2 hours',
-          timeframe: 'Within 2 hours'
+          title: "Respiratory therapy consultation",
+          description: "Evaluate O2 requirements and weaning potential",
+          priority: "high",
+          status: "pending",
+          assignedTo: "DM",
+          dueTime: "Within 2 hours",
+          timeframe: "Within 2 hours",
         },
         {
           id: 2,
-          title: 'Monitor O2 saturation',
-          description: 'Check q2h, maintain SpO2 >92%',
-          priority: 'high',
-          status: 'pending', 
-          assignedTo: 'NT',
-          dueTime: 'Ongoing',
-          timeframe: 'q2h'
+          title: "Monitor O2 saturation",
+          description: "Check q2h, maintain SpO2 >92%",
+          priority: "high",
+          status: "pending",
+          assignedTo: "NT",
+          dueTime: "Ongoing",
+          timeframe: "q2h",
         },
         {
           id: 3,
-          title: 'Parent education - discharge prep',
-          description: 'Inhaler technique, signs of deterioration',
-          priority: 'medium',
-          status: 'pending',
-          assignedTo: 'RN',
-          dueTime: 'Before discharge',
-          timeframe: 'Today'
+          title: "Parent education - discharge prep",
+          description: "Inhaler technique, signs of deterioration",
+          priority: "medium",
+          status: "pending",
+          assignedTo: "RN",
+          dueTime: "Before discharge",
+          timeframe: "Today",
         },
         {
           id: 4,
-          title: 'Chest physiotherapy',
-          description: 'Assess need for continued therapy',
-          priority: 'low',
-          status: 'completed',
-          assignedTo: 'PT',
-          completedTime: '7:30 AM'
-        }
-      ]
-    }
+          title: "Chest physiotherapy",
+          description: "Assess need for continued therapy",
+          priority: "low",
+          status: "completed",
+          assignedTo: "PT",
+          completedTime: "7:30 AM",
+        },
+      ],
+    },
   },
   // Add mock data for other patients as needed
   7: {
     clinicalSummary: {
-      lastUpdated: '12:15 PM',
+      lastUpdated: "12:15 PM",
       content: `5-year-old male with severe sepsis, multi-organ dysfunction. Patient admitted 3 days ago with fever, lethargy, and decreased oral intake.`,
-      section: 'patient_summary'
+      section: "patient_summary",
     },
     currentSituation: {
-      lastUpdated: '11:45 AM',
+      lastUpdated: "11:45 AM",
       content: `Patient remains critically ill requiring intensive monitoring and support.
 
 Vital Signs: BP 85/45 (on norepinephrine), HR 140, RR 32, SpO2 98% on mechanical ventilation
 Recent Changes: Lactate trending down from 4.2 to 2.8 mmol/L`,
       alerts: [
-        { level: 'high', message: 'Critical - requires q1h vital signs' },
-        { level: 'high', message: 'Vasopressor dependent' }
-      ]
+        { level: "high", message: "Critical - requires q1h vital signs" },
+        { level: "high", message: "Vasopressor dependent" },
+      ],
     },
     actionList: {
+      lastUpdated: "11:45 AM",
       totalActions: 8,
       completed: 2,
       remaining: 6,
@@ -149,63 +189,69 @@ Recent Changes: Lactate trending down from 4.2 to 2.8 mmol/L`,
       actions: [
         {
           id: 1,
-          title: 'Blood cultures - follow up',
-          description: 'Check results and adjust antibiotics if needed',
-          priority: 'urgent',
-          status: 'pending',
-          assignedTo: 'MD',
-          timeframe: 'STAT'
-        }
-      ]
-    }
-  }
+          title: "Blood cultures - follow up",
+          description: "Check results and adjust antibiotics if needed",
+          priority: "urgent",
+          status: "pending",
+          assignedTo: "MD",
+          timeframe: "STAT",
+        },
+      ],
+    },
+    ipassPlans: {
+      lastUpdated: "12:15 PM",
+      content: "No plans documented yet.",
+    },
+  },
 };
 
-export function PatientDetailView({ 
-  patient, 
-  onBack, 
-  onStartHandover, 
-  onOpenDocumentation 
+export function PatientDetailView({
+  patient,
+  onBack,
+  onStartHandover,
+  onOpenDocumentation,
 }: PatientDetailViewProps) {
-  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['clinical-summary']));
-  
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(
+    new Set(["clinical-summary"]),
+  );
+
   // Get detailed I-PASS data for this patient
   const ipassData = mockDetailedIPassData[patient.id] || {};
-  
+
   // Get severity configuration
   const getSeverityConfig = (severity: string) => {
     switch (severity) {
-      case 'unstable':
-        return { 
-          color: 'text-red-700', 
-          bgColor: 'bg-red-50', 
-          borderColor: 'border-red-200', 
+      case "unstable":
+        return {
+          color: "text-red-700",
+          bgColor: "bg-red-50",
+          borderColor: "border-red-200",
           icon: AlertTriangle,
-          label: 'Unstable'
+          label: "Unstable",
         };
-      case 'watcher':
-        return { 
-          color: 'text-yellow-700', 
-          bgColor: 'bg-yellow-50', 
-          borderColor: 'border-yellow-200', 
+      case "watcher":
+        return {
+          color: "text-yellow-700",
+          bgColor: "bg-yellow-50",
+          borderColor: "border-yellow-200",
           icon: Eye,
-          label: 'Watcher'
+          label: "Watcher",
         };
-      case 'stable':
-        return { 
-          color: 'text-green-700', 
-          bgColor: 'bg-green-50', 
-          borderColor: 'border-green-200', 
+      case "stable":
+        return {
+          color: "text-green-700",
+          bgColor: "bg-green-50",
+          borderColor: "border-green-200",
           icon: CheckCircle,
-          label: 'Stable'
+          label: "Stable",
         };
       default:
-        return { 
-          color: 'text-gray-700', 
-          bgColor: 'bg-gray-50', 
-          borderColor: 'border-gray-200', 
+        return {
+          color: "text-gray-700",
+          bgColor: "bg-gray-50",
+          borderColor: "border-gray-200",
           icon: Activity,
-          label: 'Unknown'
+          label: "Unknown",
         };
     }
   };
@@ -225,20 +271,29 @@ export function PatientDetailView({
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'urgent': return 'text-red-700 bg-red-50 border-red-200';
-      case 'high': return 'text-red-700 bg-red-50 border-red-200';
-      case 'medium': return 'text-yellow-700 bg-yellow-50 border-yellow-200';
-      case 'low': return 'text-blue-700 bg-blue-50 border-blue-200';
-      default: return 'text-gray-700 bg-gray-50 border-gray-200';
+      case "urgent":
+        return "text-red-700 bg-red-50 border-red-200";
+      case "high":
+        return "text-red-700 bg-red-50 border-red-200";
+      case "medium":
+        return "text-yellow-700 bg-yellow-50 border-yellow-200";
+      case "low":
+        return "text-blue-700 bg-blue-50 border-blue-200";
+      default:
+        return "text-gray-700 bg-gray-50 border-gray-200";
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'completed': return 'text-green-700 bg-green-50 border-green-200';
-      case 'pending': return 'text-orange-700 bg-orange-50 border-orange-200';
-      case 'overdue': return 'text-red-700 bg-red-50 border-red-200';
-      default: return 'text-gray-700 bg-gray-50 border-gray-200';
+      case "completed":
+        return "text-green-700 bg-green-50 border-green-200";
+      case "pending":
+        return "text-orange-700 bg-orange-50 border-orange-200";
+      case "overdue":
+        return "text-red-700 bg-red-50 border-red-200";
+      default:
+        return "text-gray-700 bg-gray-50 border-gray-200";
     }
   };
 
@@ -253,7 +308,9 @@ export function PatientDetailView({
               Back
             </Button>
             <div className="h-4 w-px bg-border/50" />
-            <h1 className="font-semibold text-foreground">Patient Information</h1>
+            <h1 className="font-semibold text-foreground">
+              Patient Information
+            </h1>
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -285,13 +342,17 @@ export function PatientDetailView({
               <div className="flex items-start justify-between">
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
-                    <h2 className="text-2xl font-semibold text-foreground">{patient.name}</h2>
-                    <Badge className={`${severityConfig.color} ${severityConfig.bgColor} ${severityConfig.borderColor} border`}>
+                    <h2 className="text-2xl font-semibold text-foreground">
+                      {patient.name}
+                    </h2>
+                    <Badge
+                      className={`${severityConfig.color} ${severityConfig.bgColor} ${severityConfig.borderColor} border`}
+                    >
                       <SeverityIcon className="w-3 h-3 mr-1" />
                       {severityConfig.label}
                     </Badge>
                   </div>
-                  
+
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                     <div className="flex items-center gap-2 text-muted-foreground">
                       <User className="w-4 h-4" />
@@ -307,7 +368,7 @@ export function PatientDetailView({
                     </div>
                     <div className="flex items-center gap-2 text-muted-foreground">
                       <Stethoscope className="w-4 h-4" />
-                      <span>{getUnitName(patient.unit || 'picu')}</span>
+                      <span>{getUnitName(patient.unit || "picu")}</span>
                     </div>
                   </div>
                 </div>
@@ -321,7 +382,9 @@ export function PatientDetailView({
                     Next: Check in 2h (2 hours)
                   </span>
                 </div>
-                <p className="text-sm text-foreground leading-relaxed">{patient.diagnosis}</p>
+                <p className="text-sm text-foreground leading-relaxed">
+                  {patient.diagnosis.primary}
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -329,9 +392,9 @@ export function PatientDetailView({
           {/* I-PASS Sections */}
           <div className="space-y-4">
             {/* Clinical Summary */}
-            <Collapsible 
-              open={expandedSections.has('clinical-summary')}
-              onOpenChange={() => toggleSection('clinical-summary')}
+            <Collapsible
+              open={expandedSections.has("clinical-summary")}
+              onOpenChange={() => toggleSection("clinical-summary")}
             >
               <Card className="border-border/50">
                 <CollapsibleTrigger asChild>
@@ -339,8 +402,13 @@ export function PatientDetailView({
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <FileText className="w-5 h-5 text-primary" />
-                        <CardTitle className="text-lg">Clinical Summary</CardTitle>
-                        <Badge variant="outline" className="text-xs bg-primary/10 text-primary border-primary/30">
+                        <CardTitle className="text-lg">
+                          Clinical Summary
+                        </CardTitle>
+                        <Badge
+                          variant="outline"
+                          className="text-xs bg-primary/10 text-primary border-primary/30"
+                        >
                           I-PASS: P
                         </Badge>
                         <Badge variant="outline" className="text-xs">
@@ -352,22 +420,27 @@ export function PatientDetailView({
                           </span>
                         )}
                       </div>
-                      {expandedSections.has('clinical-summary') ? 
-                        <ChevronUp className="w-4 h-4" /> : 
+                      {expandedSections.has("clinical-summary") ? (
+                        <ChevronUp className="w-4 h-4" />
+                      ) : (
                         <ChevronDown className="w-4 h-4" />
-                      }
+                      )}
                     </div>
                   </CardHeader>
                 </CollapsibleTrigger>
                 <CollapsibleContent>
                   <CardContent className="pt-0">
                     <div className="text-xs text-muted-foreground mb-3">
-                      To edit this summary, use <button 
-                        onClick={() => onOpenDocumentation(patient.id, 'patient_summary')}
+                      To edit this summary, use{" "}
+                      <button
+                        onClick={() =>
+                          onOpenDocumentation(patient.id, "patient_summary")
+                        }
                         className="text-primary hover:underline"
                       >
                         Start Handover
-                      </button> or mobile I-PASS documentation
+                      </button>{" "}
+                      or mobile I-PASS documentation
                     </div>
                     {ipassData.clinicalSummary ? (
                       <div className="prose prose-sm max-w-none">
@@ -386,9 +459,9 @@ export function PatientDetailView({
             </Collapsible>
 
             {/* Current Situation */}
-            <Collapsible 
-              open={expandedSections.has('current-situation')}
-              onOpenChange={() => toggleSection('current-situation')}
+            <Collapsible
+              open={expandedSections.has("current-situation")}
+              onOpenChange={() => toggleSection("current-situation")}
             >
               <Card className="border-border/50">
                 <CollapsibleTrigger asChild>
@@ -396,15 +469,21 @@ export function PatientDetailView({
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <AlertTriangle className="w-5 h-5 text-orange-600" />
-                        <CardTitle className="text-lg">Current Situation</CardTitle>
-                        <Badge variant="outline" className="text-xs bg-orange-50 text-orange-700 border-orange-200">
+                        <CardTitle className="text-lg">
+                          Current Situation
+                        </CardTitle>
+                        <Badge
+                          variant="outline"
+                          className="text-xs bg-orange-50 text-orange-700 border-orange-200"
+                        >
                           I-PASS: I
                         </Badge>
                       </div>
-                      {expandedSections.has('current-situation') ? 
-                        <ChevronUp className="w-4 h-4" /> : 
+                      {expandedSections.has("current-situation") ? (
+                        <ChevronUp className="w-4 h-4" />
+                      ) : (
                         <ChevronDown className="w-4 h-4" />
-                      }
+                      )}
                     </div>
                   </CardHeader>
                 </CollapsibleTrigger>
@@ -417,13 +496,15 @@ export function PatientDetailView({
                         </div>
                         {ipassData.currentSituation.alerts && (
                           <div className="space-y-2">
-                            {ipassData.currentSituation.alerts.map((alert: any, index: number) => (
-                              <div 
-                                key={index}
+                            {ipassData.currentSituation.alerts.map((alert) => (
+                              <div
+                                key={alert.level}
                                 className={`flex items-center gap-2 p-2 rounded-md border text-xs ${
-                                  alert.level === 'high' ? 'bg-red-50 text-red-700 border-red-200' :
-                                  alert.level === 'medium' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' :
-                                  'bg-blue-50 text-blue-700 border-blue-200'
+                                  alert.level === "high"
+                                    ? "bg-red-50 text-red-700 border-red-200"
+                                    : alert.level === "medium"
+                                      ? "bg-yellow-50 text-yellow-700 border-yellow-200"
+                                      : "bg-blue-50 text-blue-700 border-blue-200"
                                 }`}
                               >
                                 <AlertTriangle className="w-3 h-3" />
@@ -444,9 +525,9 @@ export function PatientDetailView({
             </Collapsible>
 
             {/* I-PASS Plans */}
-            <Collapsible 
-              open={expandedSections.has('ipass-plans')}
-              onOpenChange={() => toggleSection('ipass-plans')}
+            <Collapsible
+              open={expandedSections.has("ipass-plans")}
+              onOpenChange={() => toggleSection("ipass-plans")}
             >
               <Card className="border-border/50">
                 <CollapsibleTrigger asChild>
@@ -455,14 +536,18 @@ export function PatientDetailView({
                       <div className="flex items-center gap-3">
                         <Eye className="w-5 h-5 text-blue-600" />
                         <CardTitle className="text-lg">I-PASS Plans</CardTitle>
-                        <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
+                        <Badge
+                          variant="outline"
+                          className="text-xs bg-blue-50 text-blue-700 border-blue-200"
+                        >
                           I-PASS: S
                         </Badge>
                       </div>
-                      {expandedSections.has('ipass-plans') ? 
-                        <ChevronUp className="w-4 h-4" /> : 
+                      {expandedSections.has("ipass-plans") ? (
+                        <ChevronUp className="w-4 h-4" />
+                      ) : (
                         <ChevronDown className="w-4 h-4" />
-                      }
+                      )}
                     </div>
                   </CardHeader>
                 </CollapsibleTrigger>
@@ -470,7 +555,8 @@ export function PatientDetailView({
                   <CardContent className="pt-0">
                     {ipassData.ipassPlans ? (
                       <div className="text-sm text-muted-foreground">
-                        Contingency plans for respiratory distress, discharge planning in progress...
+                        Contingency plans for respiratory distress, discharge
+                        planning in progress...
                       </div>
                     ) : (
                       <div className="text-sm text-muted-foreground italic">
@@ -483,9 +569,9 @@ export function PatientDetailView({
             </Collapsible>
 
             {/* Action List */}
-            <Collapsible 
-              open={expandedSections.has('action-list')}
-              onOpenChange={() => toggleSection('action-list')}
+            <Collapsible
+              open={expandedSections.has("action-list")}
+              onOpenChange={() => toggleSection("action-list")}
             >
               <Card className="border-border/50">
                 <CollapsibleTrigger asChild>
@@ -494,76 +580,94 @@ export function PatientDetailView({
                       <div className="flex items-center gap-3">
                         <Target className="w-5 h-5 text-green-600" />
                         <CardTitle className="text-lg">Action List</CardTitle>
-                        <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
+                        <Badge
+                          variant="outline"
+                          className="text-xs bg-green-50 text-green-700 border-green-200"
+                        >
                           I-PASS: A
                         </Badge>
                         {ipassData.actionList && (
                           <>
-                            <Badge variant="outline" className="text-xs bg-red-50 text-red-700 border-red-200">
+                            <Badge
+                              variant="outline"
+                              className="text-xs bg-red-50 text-red-700 border-red-200"
+                            >
                               {ipassData.actionList.urgent} urgent
                             </Badge>
-                            <Badge variant="outline" className="text-xs bg-orange-50 text-orange-700 border-orange-200">
+                            <Badge
+                              variant="outline"
+                              className="text-xs bg-orange-50 text-orange-700 border-orange-200"
+                            >
                               {ipassData.actionList.pending} pending
                             </Badge>
                           </>
                         )}
-                        <Button variant="outline" size="sm" className="h-6 px-2 text-xs ml-auto mr-4">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-6 px-2 text-xs ml-auto mr-4"
+                        >
                           <Plus className="w-3 h-3 mr-1" />
                           Add Action
                         </Button>
                       </div>
-                      {expandedSections.has('action-list') ? 
-                        <ChevronUp className="w-4 h-4" /> : 
+                      {expandedSections.has("action-list") ? (
+                        <ChevronUp className="w-4 h-4" />
+                      ) : (
                         <ChevronDown className="w-4 h-4" />
-                      }
+                      )}
                     </div>
                   </CardHeader>
                 </CollapsibleTrigger>
                 <CollapsibleContent>
-                  <CardContent className="pt-0">
-                    {ipassData.actionList ? (
-                      <div className="space-y-3">
-                        <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
-                          <span>{ipassData.actionList.completed} completed</span>
-                          <span>{ipassData.actionList.remaining} remaining</span>
-                          <span className="text-red-700 font-medium">{ipassData.actionList.urgent} urgent</span>
-                        </div>
-                        
-                        <div className="space-y-3">
-                          {ipassData.actionList.actions.map((action: any) => (
-                            <div key={action.id} className="border border-border/50 rounded-lg p-3">
-                              <div className="flex items-start justify-between mb-2">
-                                <div className="flex items-center gap-2">
-                                  <div className={`w-2 h-2 rounded-full ${
-                                    action.priority === 'urgent' || action.priority === 'high' ? 'bg-red-500' :
-                                    action.priority === 'medium' ? 'bg-yellow-500' : 'bg-blue-500'
-                                  }`} />
-                                  <h4 className="font-medium text-sm text-foreground">{action.title}</h4>
-                                  <Badge className={`text-xs ${getPriorityColor(action.priority)}`}>
-                                    {action.priority}
-                                  </Badge>
-                                  <Badge className={`text-xs ${getStatusColor(action.status)}`}>
-                                    {action.status}
-                                  </Badge>
-                                </div>
-                                <span className="text-xs font-medium text-muted-foreground">{action.assignedTo}</span>
-                              </div>
-                              <p className="text-sm text-muted-foreground mb-2">{action.description}</p>
-                              <div className="text-xs text-muted-foreground">
-                                {action.status === 'completed' ? 
-                                  `Completed: ${action.completedTime}` :
-                                  `Due: ${action.timeframe}`
-                                }
-                              </div>
+                  <CardContent className="pt-4 space-y-4">
+                    {ipassData.actionList?.actions?.map((action) => (
+                      <div
+                        key={action.id}
+                        className={`p-3 border rounded-lg ${getStatusColor(action.status)}`}
+                      >
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <div
+                                className={`w-2 h-2 rounded-full ${
+                                  action.priority === "urgent" ||
+                                  action.priority === "high"
+                                    ? "bg-red-500"
+                                    : action.priority === "medium"
+                                      ? "bg-yellow-500"
+                                      : "bg-blue-500"
+                                }`}
+                              />
+                              <h4 className="font-medium text-sm text-foreground">
+                                {action.title}
+                              </h4>
+                              <Badge
+                                className={`text-xs ${getPriorityColor(action.priority)}`}
+                              >
+                                {action.priority}
+                              </Badge>
+                              <Badge
+                                className={`text-xs ${getStatusColor(action.status)}`}
+                              >
+                                {action.status}
+                              </Badge>
                             </div>
-                          ))}
+                            <p className="text-sm text-muted-foreground mb-2">
+                              {action.description}
+                            </p>
+                          </div>
+                          <span className="text-xs font-medium text-muted-foreground">
+                            {action.assignedTo}
+                          </span>
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {action.status === "completed"
+                            ? `Completed: ${action.completedTime}`
+                            : `Due: ${action.timeframe}`}
                         </div>
                       </div>
-                    ) : (
-                      <div className="text-sm text-muted-foreground italic">
-                        No action items documented yet.
-                      </div>
-                    )}
+                    ))}
                   </CardContent>
                 </CollapsibleContent>
               </Card>

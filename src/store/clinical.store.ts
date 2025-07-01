@@ -1,7 +1,7 @@
 // RELEVO - Clinical Store
 // I-PASS blocks, clinical documentation, and medical protocols
 
-import { type IPassBlock, type QuickAction } from '../common/types';
+import { type IPassBlock, type QuickAction } from "../common/types";
 
 // ========================================
 // I-PASS BLOCK DEFINITIONS
@@ -9,11 +9,11 @@ import { type IPassBlock, type QuickAction } from '../common/types';
 
 export const ipassBlocks: IPassBlock[] = [
   {
-    id: 'illness_severity',
-    name: 'Illness Severity',
-    shortName: 'Severity',
-    icon: 'AlertTriangle', // String identifier instead of React component
-    color: 'bg-red-100 border-red-300 text-red-700',
+    id: "illness_severity",
+    name: "Illness Severity",
+    shortName: "Severity",
+    icon: "AlertTriangle", // String identifier instead of React component
+    color: "bg-red-100 border-red-300 text-red-700",
     placeholder: `Document patient stability level and critical actions...
 
 Examples:
@@ -24,25 +24,25 @@ Examples:
 Tap quick actions below or start typing freely...`,
     quickActions: [
       {
-        label: 'Set Severity',
-        text: 'Illness Severity: '
+        label: "Set Severity",
+        text: "Illness Severity: ",
       },
       {
-        label: 'Key Concerns',
-        text: 'Key Concerns:\n• '
+        label: "Key Concerns",
+        text: "Key Concerns:\n• ",
       },
       {
-        label: 'Critical Actions',
-        text: 'Critical Actions:\n• '
-      }
-    ]
+        label: "Critical Actions",
+        text: "Critical Actions:\n• ",
+      },
+    ],
   },
   {
-    id: 'patient_summary',
-    name: 'Patient Summary',
-    shortName: 'Summary',
-    icon: 'User', // String identifier instead of React component
-    color: 'bg-blue-100 border-blue-300 text-blue-700',
+    id: "patient_summary",
+    name: "Patient Summary",
+    shortName: "Summary",
+    icon: "User", // String identifier instead of React component
+    color: "bg-blue-100 border-blue-300 text-blue-700",
     placeholder: `Document patient overview, diagnosis, and current status...
 
 Examples:
@@ -53,25 +53,25 @@ Examples:
 Tap quick actions below or start typing freely...`,
     quickActions: [
       {
-        label: 'Demographics',
-        text: 'Patient Summary:\nAge: \nAdmission: \nDiagnosis: '
+        label: "Demographics",
+        text: "Patient Summary:\nAge: \nAdmission: \nDiagnosis: ",
       },
       {
-        label: 'Hospital Course',
-        text: 'Hospital Course:\n• '
+        label: "Hospital Course",
+        text: "Hospital Course:\n• ",
       },
       {
-        label: 'Current Status',
-        text: 'Current Status:\n• '
-      }
-    ]
+        label: "Current Status",
+        text: "Current Status:\n• ",
+      },
+    ],
   },
   {
-    id: 'action_list',
-    name: 'Action List',
-    shortName: 'Actions',
-    icon: 'Target', // String identifier instead of React component
-    color: 'bg-green-100 border-green-300 text-green-700',
+    id: "action_list",
+    name: "Action List",
+    shortName: "Actions",
+    icon: "Target", // String identifier instead of React component
+    color: "bg-green-100 border-green-300 text-green-700",
     placeholder: `Document tasks, interventions, and follow-up items...
 
 Examples:
@@ -82,25 +82,25 @@ Examples:
 Tap quick actions below or start typing freely...`,
     quickActions: [
       {
-        label: 'Immediate',
-        text: 'Immediate Actions:\n• '
+        label: "Immediate",
+        text: "Immediate Actions:\n• ",
       },
       {
-        label: 'Ongoing Tasks',
-        text: 'Ongoing:\n• '
+        label: "Ongoing Tasks",
+        text: "Ongoing:\n• ",
       },
       {
-        label: 'Pending Results',
-        text: 'Pending:\n• '
-      }
-    ]
+        label: "Pending Results",
+        text: "Pending:\n• ",
+      },
+    ],
   },
   {
-    id: 'situation_awareness',
-    name: 'Situation Awareness',
-    shortName: 'Awareness',
-    icon: 'Eye', // String identifier instead of React component
-    color: 'bg-yellow-100 border-yellow-300 text-yellow-700',
+    id: "situation_awareness",
+    name: "Situation Awareness",
+    shortName: "Awareness",
+    icon: "Eye", // String identifier instead of React component
+    color: "bg-yellow-100 border-yellow-300 text-yellow-700",
     placeholder: `Document contingency plans and anticipatory guidance...
 
 Examples:
@@ -111,19 +111,19 @@ Examples:
 Tap quick actions below or start typing freely...`,
     quickActions: [
       {
-        label: 'Anticipate',
-        text: 'Anticipate:\n• '
+        label: "Anticipate",
+        text: "Anticipate:\n• ",
       },
       {
-        label: 'If-Then Plans',
-        text: 'If-Then Planning:\n• If [condition], then [action]\n• '
+        label: "If-Then Plans",
+        text: "If-Then Planning:\n• If [condition], then [action]\n• ",
       },
       {
-        label: 'Communication',
-        text: 'Communication:\n• '
-      }
-    ]
-  }
+        label: "Communication",
+        text: "Communication:\n• ",
+      },
+    ],
+  },
 ];
 
 // ========================================
@@ -133,8 +133,13 @@ Tap quick actions below or start typing freely...`,
 export interface ClinicalTemplate {
   id: string;
   name: string;
-  category: 'respiratory' | 'cardiac' | 'neurological' | 'general' | 'emergency';
-  severity: 'stable' | 'watcher' | 'unstable';
+  category:
+    | "respiratory"
+    | "cardiac"
+    | "neurological"
+    | "general"
+    | "emergency";
+  severity: "stable" | "watcher" | "unstable";
   blocks: {
     illness_severity?: string;
     patient_summary?: string;
@@ -146,10 +151,10 @@ export interface ClinicalTemplate {
 
 export const clinicalTemplates: ClinicalTemplate[] = [
   {
-    id: 'respiratory-watcher',
-    name: 'Respiratory Distress - Watcher',
-    category: 'respiratory',
-    severity: 'watcher',
+    id: "respiratory-watcher",
+    name: "Respiratory Distress - Watcher",
+    category: "respiratory",
+    severity: "watcher",
     blocks: {
       illness_severity: `Illness Severity: Watcher
 
@@ -198,15 +203,20 @@ If-Then Planning:
 
 Communication:
 • Update family q8h on respiratory status
-• Notify attending if oxygen requirements change`
+• Notify attending if oxygen requirements change`,
     },
-    commonDiagnoses: ['Pneumonia', 'Asthma Exacerbation', 'Bronchiolitis', 'Respiratory Failure']
+    commonDiagnoses: [
+      "Pneumonia",
+      "Asthma Exacerbation",
+      "Bronchiolitis",
+      "Respiratory Failure",
+    ],
   },
   {
-    id: 'cardiac-stable',
-    name: 'Post-Operative Cardiac - Stable',
-    category: 'cardiac',
-    severity: 'stable',
+    id: "cardiac-stable",
+    name: "Post-Operative Cardiac - Stable",
+    category: "cardiac",
+    severity: "stable",
     blocks: {
       illness_severity: `Illness Severity: Stable
 
@@ -248,10 +258,15 @@ Pending:
 
 Communication:
 • Family updates on recovery progress
-• Coordinate with surgical team for discharge planning`
+• Coordinate with surgical team for discharge planning`,
     },
-    commonDiagnoses: ['VSD Repair', 'ASD Repair', 'Tetralogy of Fallot', 'Cardiac Surgery']
-  }
+    commonDiagnoses: [
+      "VSD Repair",
+      "ASD Repair",
+      "Tetralogy of Fallot",
+      "Cardiac Surgery",
+    ],
+  },
 ];
 
 // ========================================
@@ -270,60 +285,56 @@ export interface ClinicalProtocol {
 
 export const clinicalProtocols: ClinicalProtocol[] = [
   {
-    id: 'respiratory-distress',
-    name: 'Respiratory Distress Protocol',
-    category: 'respiratory',
+    id: "respiratory-distress",
+    name: "Respiratory Distress Protocol",
+    category: "respiratory",
     steps: [
-      'Assess airway, breathing, circulation',
-      'Apply oxygen via appropriate delivery method',
-      'Monitor oxygen saturation continuously',
-      'Position patient for optimal breathing',
-      'Prepare for potential intubation if indicated',
-      'Notify attending physician',
-      'Document interventions and response'
+      "Assess airway, breathing, circulation",
+      "Apply oxygen via appropriate delivery method",
+      "Monitor oxygen saturation continuously",
+      "Position patient for optimal breathing",
+      "Prepare for potential intubation if indicated",
+      "Notify attending physician",
+      "Document interventions and response",
     ],
     triggers: [
-      'Respiratory rate >30 or <10',
-      'Oxygen saturation <90%',
-      'Increased work of breathing',
-      'Cyanosis',
-      'Altered mental status with respiratory symptoms'
+      "Respiratory rate >30 or <10",
+      "Oxygen saturation <90%",
+      "Increased work of breathing",
+      "Cyanosis",
+      "Altered mental status with respiratory symptoms",
     ],
     contraindications: [
-      'Pneumothorax (relative - requires chest tube first)',
-      'Severe facial trauma affecting airway'
+      "Pneumothorax (relative - requires chest tube first)",
+      "Severe facial trauma affecting airway",
     ],
     emergencyContacts: [
-      'PICU Attending: ext 2345',
-      'Respiratory Therapy: ext 3456',
-      'Anesthesia (for intubation): ext 4567'
-    ]
+      "PICU Attending: ext 2345",
+      "Respiratory Therapy: ext 3456",
+      "Anesthesia (for intubation): ext 4567",
+    ],
   },
   {
-    id: 'cardiac-arrest',
-    name: 'Pediatric Cardiac Arrest Protocol',
-    category: 'emergency',
+    id: "cardiac-arrest",
+    name: "Pediatric Cardiac Arrest Protocol",
+    category: "emergency",
     steps: [
-      'Call for help - activate code blue',
-      'Begin CPR immediately (30:2 ratio)',
-      'Apply monitors/defibrillator',
-      'Establish IV/IO access',
-      'Administer epinephrine 0.01 mg/kg',
-      'Continue CPR cycles',
-      'Consider reversible causes (H&T)',
-      'Post-arrest care if ROSC achieved'
+      "Call for help - activate code blue",
+      "Begin CPR immediately (30:2 ratio)",
+      "Apply monitors/defibrillator",
+      "Establish IV/IO access",
+      "Administer epinephrine 0.01 mg/kg",
+      "Continue CPR cycles",
+      "Consider reversible causes (H&T)",
+      "Post-arrest care if ROSC achieved",
     ],
-    triggers: [
-      'Unresponsive patient',
-      'No pulse',
-      'Agonal breathing or apnea'
-    ],
+    triggers: ["Unresponsive patient", "No pulse", "Agonal breathing or apnea"],
     emergencyContacts: [
-      'Code Blue Team: 911',
-      'PICU Attending: ext 2345',
-      'Pharmacy: ext 5678'
-    ]
-  }
+      "Code Blue Team: 911",
+      "PICU Attending: ext 2345",
+      "Pharmacy: ext 5678",
+    ],
+  },
 ];
 
 // ========================================
@@ -335,14 +346,14 @@ export const clinicalProtocols: ClinicalProtocol[] = [
  * Components will need to resolve these to actual React components
  */
 export const iconMap = {
-  AlertTriangle: 'AlertTriangle',
-  User: 'User',
-  Target: 'Target',
-  Eye: 'Eye',
-  FileText: 'FileText',
-  Activity: 'Activity',
-  Search: 'Search',
-  Calendar: 'Calendar'
+  AlertTriangle: "AlertTriangle",
+  User: "User",
+  Target: "Target",
+  Eye: "Eye",
+  FileText: "FileText",
+  Activity: "Activity",
+  Search: "Search",
+  Calendar: "Calendar",
 } as const;
 
 // ========================================
@@ -353,17 +364,22 @@ export const iconMap = {
  * Get I-PASS block by ID
  */
 export const getIPassBlock = (blockId: string): IPassBlock | undefined => {
-  return ipassBlocks.find(block => block.id === blockId);
+  return ipassBlocks.find((block) => block.id === blockId);
 };
 
 /**
  * Get clinical template by severity and category
  */
 export const getClinicalTemplate = (
-  severity: 'stable' | 'watcher' | 'unstable',
-  category?: 'respiratory' | 'cardiac' | 'neurological' | 'general' | 'emergency'
+  severity: "stable" | "watcher" | "unstable",
+  category?:
+    | "respiratory"
+    | "cardiac"
+    | "neurological"
+    | "general"
+    | "emergency",
 ): ClinicalTemplate[] => {
-  return clinicalTemplates.filter(template => {
+  return clinicalTemplates.filter((template) => {
     const severityMatch = template.severity === severity;
     const categoryMatch = !category || template.category === category;
     return severityMatch && categoryMatch;
@@ -373,11 +389,13 @@ export const getClinicalTemplate = (
 /**
  * Get suggested template based on diagnosis
  */
-export const getSuggestedTemplate = (diagnosis: string): ClinicalTemplate | undefined => {
-  return clinicalTemplates.find(template =>
-    template.commonDiagnoses.some(commonDx =>
-      diagnosis.toLowerCase().includes(commonDx.toLowerCase())
-    )
+export const getSuggestedTemplate = (
+  diagnosis: string,
+): ClinicalTemplate | undefined => {
+  return clinicalTemplates.find((template) =>
+    template.commonDiagnoses.some((commonDx) =>
+      diagnosis.toLowerCase().includes(commonDx.toLowerCase()),
+    ),
   );
 };
 
@@ -385,18 +403,18 @@ export const getSuggestedTemplate = (diagnosis: string): ClinicalTemplate | unde
  * Get clinical protocol by category
  */
 export const getClinicalProtocol = (category: string): ClinicalProtocol[] => {
-  return clinicalProtocols.filter(protocol => protocol.category === category);
+  return clinicalProtocols.filter((protocol) => protocol.category === category);
 };
 
 /**
  * Format I-PASS entry timestamp
  */
 export const formatIPassTimestamp = (timestamp: Date): string => {
-  return new Intl.DateTimeFormat('en-US', {
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   }).format(timestamp);
 };
 
@@ -406,20 +424,20 @@ export const formatIPassTimestamp = (timestamp: Date): string => {
 export const generateContextualQuickAction = (
   action: QuickAction,
   patientName?: string,
-  patientAge?: number
+  patientAge?: number,
 ): QuickAction => {
   let contextualText = action.text;
-  
-  if (patientName && action.text.includes('Patient Summary:')) {
+
+  if (patientName && action.text.includes("Patient Summary:")) {
     contextualText = contextualText.replace(
-      'Patient Summary:',
-      `Patient Summary:\nName: ${patientName}\nAge: ${patientAge || '[AGE]'}`
+      "Patient Summary:",
+      `Patient Summary:\nName: ${patientName}\nAge: ${patientAge || "[AGE]"}`,
     );
   }
-  
+
   return {
     ...action,
-    text: contextualText
+    text: contextualText,
   };
 };
 
@@ -437,43 +455,39 @@ export interface ClinicalScore {
 
 export const clinicalScores: ClinicalScore[] = [
   {
-    id: 'pews',
-    name: 'Pediatric Early Warning Score (PEWS)',
-    category: 'general',
+    id: "pews",
+    name: "Pediatric Early Warning Score (PEWS)",
+    category: "general",
     parameters: [
-      'Heart Rate',
-      'Respiratory Rate',
-      'Systolic Blood Pressure',
-      'Oxygen Saturation',
-      'Level of Consciousness',
-      'Temperature'
+      "Heart Rate",
+      "Respiratory Rate",
+      "Systolic Blood Pressure",
+      "Oxygen Saturation",
+      "Level of Consciousness",
+      "Temperature",
     ],
     interpretation: {
-      '0-1': 'Low risk - routine monitoring',
-      '2-3': 'Medium risk - increased monitoring',
-      '4+': 'High risk - urgent medical review'
-    }
+      "0-1": "Low risk - routine monitoring",
+      "2-3": "Medium risk - increased monitoring",
+      "4+": "High risk - urgent medical review",
+    },
   },
   {
-    id: 'gcs',
-    name: 'Glasgow Coma Scale (Pediatric)',
-    category: 'neurological',
-    parameters: [
-      'Eye Opening',
-      'Verbal Response',
-      'Motor Response'
-    ],
+    id: "gcs",
+    name: "Glasgow Coma Scale (Pediatric)",
+    category: "neurological",
+    parameters: ["Eye Opening", "Verbal Response", "Motor Response"],
     interpretation: {
-      '13-15': 'Mild impairment',
-      '9-12': 'Moderate impairment',
-      '3-8': 'Severe impairment'
-    }
-  }
+      "13-15": "Mild impairment",
+      "9-12": "Moderate impairment",
+      "3-8": "Severe impairment",
+    },
+  },
 ];
 
 /**
  * Get clinical scores by category
  */
 export const getClinicalScores = (category: string): ClinicalScore[] => {
-  return clinicalScores.filter(score => score.category === category);
+  return clinicalScores.filter((score) => score.category === category);
 };

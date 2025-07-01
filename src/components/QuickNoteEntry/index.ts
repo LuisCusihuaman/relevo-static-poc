@@ -1,2 +1,2 @@
 // QuickNoteEntry Component Exports
-export { QuickNoteEntry } from './QuickNoteEntry'; 
+export { QuickNoteEntry } from "./QuickNoteEntry";

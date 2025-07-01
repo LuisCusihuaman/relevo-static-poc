@@ -1,2 +1,2 @@
 // CommandPalette Component Exports
-export { CommandPalette, useCommandPalette } from './CommandPalette'; 
+export { CommandPalette, useCommandPalette } from "./CommandPalette";

@@ -1,5 +1,5 @@
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Activity,
   AlertTriangle,
@@ -9,11 +9,15 @@ import {
   Eye,
   FileText,
   Play,
-  Users
-} from 'lucide-react';
+  Users,
+} from "lucide-react";
 
 // Import proper Patient type and alert utilities
-import { type Patient, getAlertCount, getCriticalAlertCount } from '../../../common/types';
+import {
+  type Patient,
+  getAlertCount,
+  getCriticalAlertCount,
+} from "../../../common/types";
 
 interface SimplePatientCardProps {
   patient: Patient;
@@ -21,21 +25,45 @@ interface SimplePatientCardProps {
   onPatientSelect?: (patientId: number) => void; // NEW: Optional patient selection handler
 }
 
-export function SimplePatientCard({ patient, onOpenHandover, onPatientSelect }: SimplePatientCardProps) {
+export function SimplePatientCard({
+  patient,
+  onOpenHandover,
+  onPatientSelect,
+}: SimplePatientCardProps) {
   // Get alert counts using proper Alert system
   const criticalAlerts = getCriticalAlertCount(patient.alerts);
   const totalAlerts = getAlertCount(patient.alerts);
 
   const getSeverityConfig = (severity: string) => {
     switch (severity) {
-      case 'unstable':
-        return { color: 'text-red-700', bgColor: 'bg-red-50', borderColor: 'border-red-200', icon: AlertTriangle };
-      case 'watcher':
-        return { color: 'text-yellow-700', bgColor: 'bg-yellow-50', borderColor: 'border-yellow-200', icon: Eye };
-      case 'stable':
-        return { color: 'text-green-700', bgColor: 'bg-green-50', borderColor: 'border-green-200', icon: CheckCircle };
+      case "unstable":
+        return {
+          color: "text-red-700",
+          bgColor: "bg-red-50",
+          borderColor: "border-red-200",
+          icon: AlertTriangle,
+        };
+      case "watcher":
+        return {
+          color: "text-yellow-700",
+          bgColor: "bg-yellow-50",
+          borderColor: "border-yellow-200",
+          icon: Eye,
+        };
+      case "stable":
+        return {
+          color: "text-green-700",
+          bgColor: "bg-green-50",
+          borderColor: "border-green-200",
+          icon: CheckCircle,
+        };
       default:
-        return { color: 'text-gray-700', bgColor: 'bg-gray-50', borderColor: 'border-gray-200', icon: Activity };
+        return {
+          color: "text-gray-700",
+          bgColor: "bg-gray-50",
+          borderColor: "border-gray-200",
+          icon: Activity,
+        };
     }
   };
 
@@ -44,17 +72,24 @@ export function SimplePatientCard({ patient, onOpenHandover, onPatientSelect }: 
 
   // Helper function to format section names for display
   const formatSectionName = (section: string) => {
-    const formatted = section.replace('_', ' ').split(' ').map(word => 
-      word.charAt(0).toUpperCase() + word.slice(1)
-    ).join(' ');
-    
+    const formatted = section
+      .replace("_", " ")
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+
     // Make it more clear what this means
     switch (section) {
-      case 'illness_severity': return 'Severity assessed';
-      case 'patient_summary': return 'Summary updated';
-      case 'action_list': return 'Actions documented';
-      case 'situation_awareness': return 'Situation noted';
-      default: return formatted;
+      case "illness_severity":
+        return "Severity assessed";
+      case "patient_summary":
+        return "Summary updated";
+      case "action_list":
+        return "Actions documented";
+      case "situation_awareness":
+        return "Situation noted";
+      default:
+        return formatted;
     }
   };
 
@@ -67,26 +102,39 @@ export function SimplePatientCard({ patient, onOpenHandover, onPatientSelect }: 
 
   return (
     // UPDATED: Make card clickable when onPatientSelect is provided
-    <div 
+    <div
       className={`bg-background rounded-lg p-4 transition-colors ${
-        onPatientSelect 
-          ? 'hover:bg-muted/30 cursor-pointer' 
-          : 'hover:bg-muted/30'
+        onPatientSelect
+          ? "hover:bg-muted/30 cursor-pointer"
+          : "hover:bg-muted/30"
       }`}
       onClick={onPatientSelect ? handleCardClick : undefined}
+      onKeyDown={
+        onPatientSelect
+          ? (e) => (e.key === "Enter" || e.key === " ") && handleCardClick()
+          : undefined
+      }
+      role={onPatientSelect ? "button" : undefined}
+      tabIndex={onPatientSelect ? 0 : undefined}
     >
       <div className="space-y-3">
         {/* Header Row - Streamlined */}
         <div className="flex items-start justify-between">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
-              <h3 className="font-semibold text-foreground text-base truncate">{patient.name}</h3>
-              {patient.status === 'pending' && patient.name === 'Maria Rodriguez' && (
-                <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
-                  <ArrowRight className="w-3 h-3 mr-1" />
-                  Incoming
-                </Badge>
-              )}
+              <h3 className="font-semibold text-foreground text-base truncate">
+                {patient.name}
+              </h3>
+              {patient.status === "pending" &&
+                patient.name === "Maria Rodriguez" && (
+                  <Badge
+                    variant="outline"
+                    className="text-xs bg-blue-50 text-blue-700 border-blue-200"
+                  >
+                    <ArrowRight className="w-3 h-3 mr-1" />
+                    Incoming
+                  </Badge>
+                )}
               {/* NEW: Visual indicator when card is clickable */}
               {onPatientSelect && (
                 <ChevronRight className="w-4 h-4 text-muted-foreground ml-auto" />
@@ -102,15 +150,18 @@ export function SimplePatientCard({ patient, onOpenHandover, onPatientSelect }: 
           </div>
 
           {/* Medical Priority - Clean severity badge only */}
-          <Badge className={`text-xs font-medium ${severityConfig.color} ${severityConfig.bgColor} ${severityConfig.borderColor} border-2`}>
+          <Badge
+            className={`text-xs font-medium ${severityConfig.color} ${severityConfig.bgColor} ${severityConfig.borderColor} border-2`}
+          >
             <SeverityIcon className="w-3 h-3 mr-1" />
-            {patient.illnessSeverity.charAt(0).toUpperCase() + patient.illnessSeverity.slice(1)}
+            {patient.illnessSeverity.charAt(0).toUpperCase() +
+              patient.illnessSeverity.slice(1)}
           </Badge>
         </div>
 
         {/* Diagnosis - Clean and prominent */}
         <p className="text-sm text-foreground leading-relaxed font-medium">
-          {patient.diagnosis}
+          {patient.diagnosis.primary}
         </p>
 
         {/* Bottom Row - Clean information layout */}
@@ -123,7 +174,7 @@ export function SimplePatientCard({ patient, onOpenHandover, onPatientSelect }: 
                 <span className="font-medium">{criticalAlerts} Critical</span>
               </div>
             )}
-            
+
             {/* Multiple Alerts - Only if no critical but many alerts */}
             {criticalAlerts === 0 && totalAlerts > 2 && (
               <div className="flex items-center gap-1 text-yellow-700">
@@ -149,9 +200,11 @@ export function SimplePatientCard({ patient, onOpenHandover, onPatientSelect }: 
                 <span className="text-xs">{patient.collaborators} active</span>
               </div>
             )}
-            
+
             {/* Last Update Time */}
-            <span className="text-xs text-muted-foreground">{patient.lastUpdate}</span>
+            <span className="text-xs text-muted-foreground">
+              {patient.lastUpdate}
+            </span>
           </div>
 
           {/* Action Button - Clean and prominent */}

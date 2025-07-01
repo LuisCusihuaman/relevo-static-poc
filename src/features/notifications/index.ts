@@ -1,2 +1,2 @@
 // Notifications Feature Exports
-export { NotificationsView } from './components/NotificationsView'; 
+export { NotificationsView } from "./components/NotificationsView";

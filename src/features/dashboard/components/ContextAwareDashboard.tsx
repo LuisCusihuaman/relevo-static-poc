@@ -1,8 +1,17 @@
-import { useState, useEffect } from 'react';
-import { Calendar, Clock, Users, AlertTriangle, Activity, MessageSquare, FileText, Shield } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Activity,
+  AlertTriangle,
+  Calendar,
+  Clock,
+  FileText,
+  MessageSquare,
+  Shield,
+  Users,
+} from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface DoctorContext {
   id: string;
@@ -24,21 +33,21 @@ interface UnitStatus {
 
 export function ContextAwareDashboard() {
   const [currentDoctor] = useState<DoctorContext>({
-    id: 'dr_chen_001',
-    name: 'Dr. Sarah Chen',
-    role: 'Pediatric ICU Attending',
-    unit: 'PICU',
-    shift: 'Morning (08:00-16:00)',
-    assignedPatients: [1, 2, 3, 5]
+    id: "dr_chen_001",
+    name: "Dr. Sarah Chen",
+    role: "Pediatric ICU Attending",
+    unit: "PICU",
+    shift: "Morning (08:00-16:00)",
+    assignedPatients: [1, 2, 3, 5],
   });
 
   const [unitStatus] = useState<UnitStatus>({
-    name: 'Pediatric ICU',
+    name: "Pediatric ICU",
     capacity: 12,
     occupied: 9,
     critical: 3,
     staffOnDuty: 8,
-    lastHandover: '08:00 AM Today'
+    lastHandover: "08:00 AM Today",
   });
 
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -51,17 +60,41 @@ export function ContextAwareDashboard() {
   }, []);
 
   const upcomingTasks = [
-    { time: '10:00', task: 'Handover session with Dr. Torres', priority: 'high' },
-    { time: '11:30', task: 'Family meeting - Room PICU-01', priority: 'medium' },
-    { time: '14:00', task: 'Review discharge plans', priority: 'low' },
-    { time: '15:30', task: 'Medication rounds', priority: 'medium' }
+    {
+      time: "10:00",
+      task: "Handover session with Dr. Torres",
+      priority: "high",
+    },
+    {
+      time: "11:30",
+      task: "Family meeting - Room PICU-01",
+      priority: "medium",
+    },
+    { time: "14:00", task: "Review discharge plans", priority: "low" },
+    { time: "15:30", task: "Medication rounds", priority: "medium" },
   ];
 
   const recentActivity = [
-    { time: '15 min ago', activity: 'Updated care plan for Maria Rodriguez', user: 'Dr. Sarah Chen' },
-    { time: '23 min ago', activity: 'New comment on Carlos Gonzalez handover', user: 'Dr. Michael Torres' },
-    { time: '1 hour ago', activity: 'Completed discharge documentation', user: 'Dr. Lisa Park' },
-    { time: '2 hours ago', activity: 'Started collaborative handover session', user: 'Dr. Sarah Chen' }
+    {
+      time: "15 min ago",
+      activity: "Updated care plan for Maria Rodriguez",
+      user: "Dr. Sarah Chen",
+    },
+    {
+      time: "23 min ago",
+      activity: "New comment on Carlos Gonzalez handover",
+      user: "Dr. Michael Torres",
+    },
+    {
+      time: "1 hour ago",
+      activity: "Completed discharge documentation",
+      user: "Dr. Lisa Park",
+    },
+    {
+      time: "2 hours ago",
+      activity: "Started collaborative handover session",
+      user: "Dr. Sarah Chen",
+    },
   ];
 
   return (
@@ -71,7 +104,9 @@ export function ContextAwareDashboard() {
         <CardHeader className="pb-4">
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="text-2xl mb-2">Welcome back, {currentDoctor.name}</CardTitle>
+              <CardTitle className="text-2xl mb-2">
+                Welcome back, {currentDoctor.name}
+              </CardTitle>
               <div className="flex items-center gap-4 text-sm text-muted-foreground">
                 <div className="flex items-center gap-1">
                   <Shield className="w-4 h-4" />
@@ -97,7 +132,7 @@ export function ContextAwareDashboard() {
             </div>
           </div>
         </CardHeader>
-        
+
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {/* Assigned Patients */}
@@ -105,7 +140,9 @@ export function ContextAwareDashboard() {
               <div className="text-2xl font-semibold text-primary mb-1">
                 {currentDoctor.assignedPatients.length}
               </div>
-              <div className="text-sm text-muted-foreground">Assigned Patients</div>
+              <div className="text-sm text-muted-foreground">
+                Assigned Patients
+              </div>
             </div>
 
             {/* Unit Capacity */}
@@ -121,7 +158,9 @@ export function ContextAwareDashboard() {
               <div className="text-2xl font-semibold text-destructive mb-1">
                 {unitStatus.critical}
               </div>
-              <div className="text-sm text-muted-foreground">Critical Status</div>
+              <div className="text-sm text-muted-foreground">
+                Critical Status
+              </div>
             </div>
 
             {/* Staff on Duty */}
@@ -141,21 +180,32 @@ export function ContextAwareDashboard() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Clock className="w-5 h-5" />
-              Today's Schedule
+              Today&apos;s Schedule
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
               {upcomingTasks.map((task, index) => (
-                <div key={index} className="flex items-center gap-3 p-3 rounded-lg border">
+                <div
+                  key={index}
+                  className="flex items-center gap-3 p-3 rounded-lg border"
+                >
                   <div className="text-sm font-medium text-primary min-w-[3rem]">
                     {task.time}
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-foreground">{task.task}</p>
+                    <p className="text-sm font-medium text-foreground">
+                      {task.task}
+                    </p>
                   </div>
-                  <Badge 
-                    variant={task.priority === 'high' ? 'destructive' : task.priority === 'medium' ? 'default' : 'secondary'}
+                  <Badge
+                    variant={
+                      task.priority === "high"
+                        ? "destructive"
+                        : task.priority === "medium"
+                          ? "default"
+                          : "secondary"
+                    }
                     className="text-xs"
                   >
                     {task.priority}
@@ -163,7 +213,7 @@ export function ContextAwareDashboard() {
                 </div>
               ))}
             </div>
-            
+
             <Button className="w-full mt-4" variant="outline" size="sm">
               <Calendar className="w-4 h-4 mr-2" />
               View Full Schedule
@@ -182,10 +232,15 @@ export function ContextAwareDashboard() {
           <CardContent>
             <div className="space-y-3">
               {recentActivity.map((activity, index) => (
-                <div key={index} className="flex gap-3 p-3 rounded-lg bg-muted/30">
+                <div
+                  key={index}
+                  className="flex gap-3 p-3 rounded-lg bg-muted/30"
+                >
                   <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-foreground">{activity.activity}</p>
+                    <p className="text-sm text-foreground">
+                      {activity.activity}
+                    </p>
                     <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
                       <span>{activity.time}</span>
                       <span>•</span>
@@ -195,7 +250,7 @@ export function ContextAwareDashboard() {
                 </div>
               ))}
             </div>
-            
+
             <Button className="w-full mt-4" variant="outline" size="sm">
               <FileText className="w-4 h-4 mr-2" />
               View All Activity
@@ -218,12 +273,16 @@ export function ContextAwareDashboard() {
               <h4 className="font-medium text-foreground">Unit Status</h4>
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Current Patients:</span>
+                  <span className="text-muted-foreground">
+                    Current Patients:
+                  </span>
                   <span className="font-medium">{unitStatus.occupied}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">Available Beds:</span>
-                  <span className="font-medium">{unitStatus.capacity - unitStatus.occupied}</span>
+                  <span className="font-medium">
+                    {unitStatus.capacity - unitStatus.occupied}
+                  </span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">Staff Members:</span>
@@ -245,7 +304,9 @@ export function ContextAwareDashboard() {
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">Status:</span>
-                  <Badge variant="default" className="text-xs">Normal Operations</Badge>
+                  <Badge variant="default" className="text-xs">
+                    Normal Operations
+                  </Badge>
                 </div>
               </div>
             </div>
@@ -253,15 +314,27 @@ export function ContextAwareDashboard() {
             <div className="space-y-3">
               <h4 className="font-medium text-foreground">Quick Actions</h4>
               <div className="space-y-2">
-                <Button variant="outline" size="sm" className="w-full justify-start">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full justify-start"
+                >
                   <Users className="w-4 h-4 mr-2" />
                   Start Handover
                 </Button>
-                <Button variant="outline" size="sm" className="w-full justify-start">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full justify-start"
+                >
                   <MessageSquare className="w-4 h-4 mr-2" />
                   Team Chat
                 </Button>
-                <Button variant="outline" size="sm" className="w-full justify-start">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full justify-start"
+                >
                   <AlertTriangle className="w-4 h-4 mr-2" />
                   Report Issue
                 </Button>

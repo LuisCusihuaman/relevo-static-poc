@@ -1,17 +1,33 @@
-import { useState, useEffect } from 'react';
-import { MapPin, CheckCircle, Circle, AlertCircle, User, Building2, Heart, Baby, Stethoscope, Activity, Scissors, ChevronLeft, ChevronRight, Clock, Calendar } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { PatientSelectionCard } from './PatientSelectionCard';
-import { 
-  type DailySetupData, 
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Activity,
+  AlertCircle,
+  Baby,
+  Building2,
+  Calendar,
+  CheckCircle,
+  ChevronLeft,
+  ChevronRight,
+  Circle,
+  Clock,
+  Heart,
+  MapPin,
+  Scissors,
+  Stethoscope,
+  User,
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import {
+  type DailySetupData,
   dailySetupPatients,
+  shiftsConfig,
   unitsConfig,
-  shiftsConfig
-} from '../../../common/mockData';
+} from "../../../common/mockData";
+import { PatientSelectionCard } from "./PatientSelectionCard";
 
 interface DailySetupProps {
   onSetupComplete: (setup: DailySetupData) => void;
@@ -19,29 +35,35 @@ interface DailySetupProps {
   isEditing?: boolean; // NEW: Flag to indicate editing mode
 }
 
-export function DailySetup({ onSetupComplete, existingSetup, isEditing = false }: DailySetupProps) {
+export function DailySetup({
+  onSetupComplete,
+  existingSetup,
+  isEditing = false,
+}: DailySetupProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
-  
+
   // Setup data - NEW: Initialize with existing data if editing
-  const [doctorName, setDoctorName] = useState(existingSetup?.doctorName || '');
-  const [unit, setUnit] = useState(existingSetup?.unit || '');
-  const [shift, setShift] = useState(existingSetup?.shift || '');
-  const [selectedPatients, setSelectedPatients] = useState<number[]>(existingSetup?.selectedPatients || []);
+  const [doctorName, setDoctorName] = useState(existingSetup?.doctorName || "");
+  const [unit, setUnit] = useState(existingSetup?.unit || "");
+  const [shift, setShift] = useState(existingSetup?.shift || "");
+  const [selectedPatients, setSelectedPatients] = useState<number[]>(
+    existingSetup?.selectedPatients || [],
+  );
   const [showValidationError, setShowValidationError] = useState(false);
 
   // Helper function to get medical icons for different units
   const getUnitIcon = (unitId: string) => {
     switch (unitId) {
-      case 'picu':
+      case "picu":
         return Heart; // Pediatric Intensive Care - Heart for critical care
-      case 'nicu':
+      case "nicu":
         return Baby; // Neonatal ICU - Baby icon
-      case 'general':
+      case "general":
         return Stethoscope; // General Pediatrics - Classic medical icon
-      case 'cardiology':
+      case "cardiology":
         return Activity; // Cardiology - Heart activity/EKG
-      case 'surgery':
+      case "surgery":
         return Scissors; // Surgery - Surgical scissors
       default:
         return Building2; // Fallback
@@ -51,15 +73,15 @@ export function DailySetup({ onSetupComplete, existingSetup, isEditing = false }
   useEffect(() => {
     const checkIsMobile = () => setIsMobile(window.innerWidth < 768);
     checkIsMobile();
-    window.addEventListener('resize', checkIsMobile);
-    return () => window.removeEventListener('resize', checkIsMobile);
+    window.addEventListener("resize", checkIsMobile);
+    return () => window.removeEventListener("resize", checkIsMobile);
   }, []);
 
   const handlePatientToggle = (patientId: number) => {
-    setSelectedPatients(prev => 
-      prev.includes(patientId) 
-        ? prev.filter(id => id !== patientId)
-        : [...prev, patientId]
+    setSelectedPatients((prev) =>
+      prev.includes(patientId)
+        ? prev.filter((id) => id !== patientId)
+        : [...prev, patientId],
     );
     if (showValidationError) {
       setShowValidationError(false);
@@ -70,9 +92,9 @@ export function DailySetup({ onSetupComplete, existingSetup, isEditing = false }
     if (selectedPatients.length === dailySetupPatients.length) {
       setSelectedPatients([]);
     } else {
-      setSelectedPatients(dailySetupPatients.map(p => p.id));
+      setSelectedPatients(dailySetupPatients.map((p) => p.id));
     }
-    
+
     if (showValidationError) {
       setShowValidationError(false);
     }
@@ -80,11 +102,16 @@ export function DailySetup({ onSetupComplete, existingSetup, isEditing = false }
 
   const canProceedToNextStep = () => {
     switch (currentStep) {
-      case 0: return doctorName.trim() !== '';
-      case 1: return unit !== '';
-      case 2: return shift !== '';
-      case 3: return selectedPatients.length > 0;
-      default: return false;
+      case 0:
+        return doctorName.trim() !== "";
+      case 1:
+        return unit !== "";
+      case 2:
+        return shift !== "";
+      case 3:
+        return selectedPatients.length > 0;
+      default:
+        return false;
     }
   };
 
@@ -93,24 +120,24 @@ export function DailySetup({ onSetupComplete, existingSetup, isEditing = false }
       setShowValidationError(true);
       return;
     }
-    
+
     if (canProceedToNextStep()) {
       if (currentStep === 3) {
         onSetupComplete({
           unit,
           shift,
           selectedPatients,
-          doctorName: doctorName.trim()
+          doctorName: doctorName.trim(),
         });
       } else {
-        setCurrentStep(prev => prev + 1);
+        setCurrentStep((prev) => prev + 1);
       }
     }
   };
 
   const handleBackStep = () => {
     if (currentStep > 0) {
-      setCurrentStep(prev => prev - 1);
+      setCurrentStep((prev) => prev - 1);
       setShowValidationError(false);
     }
   };
@@ -124,19 +151,20 @@ export function DailySetup({ onSetupComplete, existingSetup, isEditing = false }
             <div className="text-center space-y-4">
               <div className="w-16 h-16 bg-white border border-border rounded-xl flex items-center justify-center mx-auto shadow-sm">
                 <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-                  <span className="text-primary-foreground font-semibold text-lg">R</span>
+                  <span className="text-primary-foreground font-semibold text-lg">
+                    R
+                  </span>
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <h1 className="text-2xl font-semibold text-foreground">
-                  {isEditing ? 'Update Your Setup' : 'Welcome to RELEVO'}
+                  {isEditing ? "Update Your Setup" : "Welcome to RELEVO"}
                 </h1>
                 <p className="text-muted-foreground">
-                  {isEditing 
-                    ? 'Modify your shift and patient assignments'
-                    : 'Digital medical handover platform for Hospital Garrahan'
-                  }
+                  {isEditing
+                    ? "Modify your shift and patient assignments"
+                    : "Digital medical handover platform for Hospital Garrahan"}
                 </p>
                 {!isEditing && (
                   <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground pt-1">
@@ -147,11 +175,14 @@ export function DailySetup({ onSetupComplete, existingSetup, isEditing = false }
                 )}
               </div>
             </div>
-            
+
             {/* Clean Professional Name Input */}
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="doctorName" className="text-base font-medium flex items-center gap-2">
+                <Label
+                  htmlFor="doctorName"
+                  className="text-base font-medium flex items-center gap-2"
+                >
                   <User className="w-4 h-4 text-primary" />
                   Your Name
                 </Label>
@@ -162,13 +193,11 @@ export function DailySetup({ onSetupComplete, existingSetup, isEditing = false }
                   value={doctorName}
                   onChange={(e) => setDoctorName(e.target.value)}
                   className="h-12 text-base border-border focus:border-primary bg-white"
-                  autoFocus={!isEditing} // Only auto-focus if not editing
                 />
                 <p className="text-sm text-muted-foreground">
-                  {isEditing 
-                    ? 'Update your name if needed'
-                    : 'This will be used to identify your documentation and handover sessions'
-                  }
+                  {isEditing
+                    ? "Update your name if needed"
+                    : "This will be used to identify your documentation and handover sessions"}
                 </p>
               </div>
             </div>
@@ -180,22 +209,26 @@ export function DailySetup({ onSetupComplete, existingSetup, isEditing = false }
           <div className="space-y-6">
             {/* Clean Step Header */}
             <div className="text-center space-y-2">
-              <h2 className="text-xl font-semibold text-foreground">Hello, {doctorName}!</h2>
+              <h2 className="text-xl font-semibold text-foreground">
+                Hello, {doctorName}!
+              </h2>
               <p className="text-muted-foreground">
-                {isEditing ? 'Update your unit assignment' : 'Let\'s configure your shift details'}
+                {isEditing
+                  ? "Update your unit assignment"
+                  : "Let's configure your shift details"}
               </p>
             </div>
-            
+
             <div className="space-y-4">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
                   <MapPin className="w-5 h-5 text-primary" />
                 </div>
                 <h3 className="font-medium text-foreground">
-                  {isEditing ? 'Change your unit' : 'Select your unit'}
+                  {isEditing ? "Change your unit" : "Select your unit"}
                 </h3>
               </div>
-              
+
               {/* MOBILE SCROLLABLE UNIT LIST */}
               <div className="space-y-3 mobile-scroll-fix">
                 {unitsConfig.map((unitOption) => {
@@ -206,19 +239,29 @@ export function DailySetup({ onSetupComplete, existingSetup, isEditing = false }
                       onClick={() => setUnit(unitOption.id)}
                       className={`w-full p-4 rounded-xl border-2 transition-all text-left medical-card-hover ${
                         unit === unitOption.id
-                          ? 'border-primary bg-primary/5'
-                          : 'border-border hover:border-border/80 hover:bg-muted/50'
+                          ? "border-primary bg-primary/5"
+                          : "border-border hover:border-border/80 hover:bg-muted/50"
                       }`}
                     >
                       <div className="flex items-center gap-3">
-                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                          unit === unitOption.id ? 'bg-primary/10' : 'bg-muted/50'
-                        }`}>
-                          <UnitIcon className={`w-5 h-5 ${unit === unitOption.id ? 'text-primary' : 'text-muted-foreground'}`} />
+                        <div
+                          className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                            unit === unitOption.id
+                              ? "bg-primary/10"
+                              : "bg-muted/50"
+                          }`}
+                        >
+                          <UnitIcon
+                            className={`w-5 h-5 ${unit === unitOption.id ? "text-primary" : "text-muted-foreground"}`}
+                          />
                         </div>
                         <div className="flex-1">
-                          <div className="font-medium text-foreground">{unitOption.name}</div>
-                          <div className="text-sm text-muted-foreground">{unitOption.description}</div>
+                          <div className="font-medium text-foreground">
+                            {unitOption.name}
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            {unitOption.description}
+                          </div>
                         </div>
                         {unit === unitOption.id && (
                           <CheckCircle className="w-5 h-5 text-primary" />
@@ -237,10 +280,12 @@ export function DailySetup({ onSetupComplete, existingSetup, isEditing = false }
           <div className="space-y-6">
             <div className="text-center space-y-2">
               <h3 className="text-xl font-semibold text-foreground">
-                {isEditing ? 'Update your shift' : 'Select your shift'}
+                {isEditing ? "Update your shift" : "Select your shift"}
               </h3>
               <p className="text-muted-foreground">
-                {isEditing ? 'Change your shift assignment if needed' : 'When will you be providing care?'}
+                {isEditing
+                  ? "Change your shift assignment if needed"
+                  : "When will you be providing care?"}
               </p>
             </div>
 
@@ -249,7 +294,9 @@ export function DailySetup({ onSetupComplete, existingSetup, isEditing = false }
                 <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
                   <Clock className="w-5 h-5 text-primary" />
                 </div>
-                <h3 className="font-medium text-foreground">Available shifts</h3>
+                <h3 className="font-medium text-foreground">
+                  Available shifts
+                </h3>
               </div>
 
               {/* MOBILE SCROLLABLE SHIFT LIST */}
@@ -260,19 +307,29 @@ export function DailySetup({ onSetupComplete, existingSetup, isEditing = false }
                     onClick={() => setShift(shiftOption.id)}
                     className={`w-full p-4 rounded-xl border-2 transition-all text-left medical-card-hover ${
                       shift === shiftOption.id
-                        ? 'border-primary bg-primary/5'
-                        : 'border-border hover:border-border/80 hover:bg-muted/50'
+                        ? "border-primary bg-primary/5"
+                        : "border-border hover:border-border/80 hover:bg-muted/50"
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                        shift === shiftOption.id ? 'bg-primary/10' : 'bg-muted/50'
-                      }`}>
-                        <Calendar className={`w-5 h-5 ${shift === shiftOption.id ? 'text-primary' : 'text-muted-foreground'}`} />
+                      <div
+                        className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                          shift === shiftOption.id
+                            ? "bg-primary/10"
+                            : "bg-muted/50"
+                        }`}
+                      >
+                        <Calendar
+                          className={`w-5 h-5 ${shift === shiftOption.id ? "text-primary" : "text-muted-foreground"}`}
+                        />
                       </div>
                       <div className="flex-1">
-                        <div className="font-medium text-foreground">{shiftOption.name}</div>
-                        <div className="text-sm text-muted-foreground">{shiftOption.time}</div>
+                        <div className="font-medium text-foreground">
+                          {shiftOption.name}
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          {shiftOption.time}
+                        </div>
                       </div>
                       {shift === shiftOption.id && (
                         <CheckCircle className="w-5 h-5 text-primary" />
@@ -292,34 +349,36 @@ export function DailySetup({ onSetupComplete, existingSetup, isEditing = false }
             <div className="flex-shrink-0 space-y-6">
               <div className="text-center space-y-3">
                 <h3 className="text-xl font-semibold text-foreground">
-                  {isEditing ? 'Update your patients' : 'Select your patients'}
+                  {isEditing ? "Update your patients" : "Select your patients"}
                 </h3>
-                
+
                 {/* PROMINENT COUNTER */}
-                <Badge 
-                  variant="outline" 
+                <Badge
+                  variant="outline"
                   className={`text-base px-4 py-2 ${
-                    selectedPatients.length > 0 
-                      ? 'bg-primary/10 border-primary/30 text-primary' 
-                      : 'bg-muted/30 border-border/50 text-muted-foreground'
+                    selectedPatients.length > 0
+                      ? "bg-primary/10 border-primary/30 text-primary"
+                      : "bg-muted/30 border-border/50 text-muted-foreground"
                   }`}
                 >
-                  {selectedPatients.length} of {dailySetupPatients.length} patients selected
+                  {selectedPatients.length} of {dailySetupPatients.length}{" "}
+                  patients selected
                 </Badge>
-                
+
                 {/* NEW: Show current selection status for editing */}
                 {isEditing && existingSetup && (
                   <p className="text-sm text-muted-foreground">
-                    Previously had {existingSetup.selectedPatients.length} patients assigned
+                    Previously had {existingSetup.selectedPatients.length}{" "}
+                    patients assigned
                   </p>
                 )}
               </div>
 
               {/* SIMPLIFIED CONTROLS */}
               <div className="flex items-center justify-end">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
+                <Button
+                  variant="outline"
+                  size="sm"
                   onClick={handleSelectAll}
                   className="gap-2"
                 >
@@ -336,25 +395,40 @@ export function DailySetup({ onSetupComplete, existingSetup, isEditing = false }
                   )}
                 </Button>
               </div>
-              
+
               {/* VALIDATION ERROR */}
               {showValidationError && (
                 <div className="p-4 rounded-lg bg-red-50 border border-red-200 text-red-700 flex items-center gap-3">
                   <AlertCircle className="w-5 h-5 flex-shrink-0" />
                   <div>
-                    <p className="font-medium text-sm">Please select at least one patient</p>
-                    <p className="text-sm">You need to assign yourself to patients to continue</p>
+                    <p className="font-medium text-sm">
+                      Please select at least one patient
+                    </p>
+                    <p className="text-sm">
+                      You need to assign yourself to patients to continue
+                    </p>
                   </div>
                 </div>
               )}
             </div>
-            
+
             {/* PATIENT LIST */}
             <div className="flex-1 min-h-0 mt-6">
               <div className="h-full overflow-y-auto mobile-scroll-fix">
                 <div className="space-y-3 pb-4">
                   {dailySetupPatients.map((patient) => (
-                    <div key={patient.id} onClick={() => handlePatientToggle(patient.id)}>
+                    <div
+                      key={patient.id}
+                      onClick={() => handlePatientToggle(patient.id)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          handlePatientToggle(patient.id);
+                        }
+                      }}
+                      role="button"
+                      tabIndex={0}
+                      className="cursor-pointer"
+                    >
                       <PatientSelectionCard
                         patient={patient}
                         isSelected={selectedPatients.includes(patient.id)}
@@ -375,49 +449,54 @@ export function DailySetup({ onSetupComplete, existingSetup, isEditing = false }
 
   const getStepTitle = () => {
     switch (currentStep) {
-      case 0: return isEditing ? 'Update Information' : 'Your Information';
-      case 1: return isEditing ? 'Update Unit' : 'Unit Selection';
-      case 2: return isEditing ? 'Update Shift' : 'Shift Selection';
-      case 3: return isEditing ? 'Update Patients' : 'Patient Selection';
-      default: return 'Setup';
+      case 0:
+        return isEditing ? "Update Information" : "Your Information";
+      case 1:
+        return isEditing ? "Update Unit" : "Unit Selection";
+      case 2:
+        return isEditing ? "Update Shift" : "Shift Selection";
+      case 3:
+        return isEditing ? "Update Patients" : "Patient Selection";
+      default:
+        return "Setup";
     }
   };
 
   if (isMobile) {
     return (
-      <div 
+      <div
         className="bg-background flex flex-col"
-        style={{ 
-          height: '100dvh',
-          maxHeight: '100dvh'
+        style={{
+          height: "100dvh",
+          maxHeight: "100dvh",
         }}
       >
         {/* Mobile Header - With Safe Area */}
-        <div 
+        <div
           className="flex-shrink-0 p-4 bg-white border-b border-border"
           style={{
-            paddingTop: 'max(env(safe-area-inset-top), 16px)'
+            paddingTop: "max(env(safe-area-inset-top), 16px)",
           }}
         >
           <div className="flex items-center justify-between mb-4">
             <div>
               <h1 className="font-semibold text-primary">RELEVO</h1>
               <p className="text-xs text-muted-foreground">
-                {isEditing ? 'Update Setup' : 'Medical Handover Setup'}
+                {isEditing ? "Update Setup" : "Medical Handover Setup"}
               </p>
             </div>
             <div className="text-sm text-muted-foreground">
               Step {currentStep + 1} of 4
             </div>
           </div>
-          
+
           {/* Clean Progress Bar */}
           <div className="flex gap-2">
             {[0, 1, 2, 3].map((step) => (
               <div
                 key={step}
                 className={`h-2 flex-1 rounded-full transition-colors ${
-                  step <= currentStep ? 'bg-primary' : 'bg-muted'
+                  step <= currentStep ? "bg-primary" : "bg-muted"
                 }`}
               />
             ))}
@@ -427,17 +506,15 @@ export function DailySetup({ onSetupComplete, existingSetup, isEditing = false }
         {/* Content - ENHANCED MOBILE SCROLLING WITH PROPER BOTTOM SPACING */}
         <div className="flex-1 flex flex-col min-h-0">
           <div className="flex-1 overflow-y-auto mobile-scroll-fix">
-            <div className="p-4 pb-32">
-              {renderStepContent()}
-            </div>
+            <div className="p-4 pb-32">{renderStepContent()}</div>
           </div>
         </div>
 
         {/* Floating Action Buttons - Like Main App Bottom Nav */}
-        <div 
+        <div
           className="fixed bottom-0 left-0 right-0 z-30"
           style={{
-            paddingBottom: 'max(env(safe-area-inset-bottom), 12px)'
+            paddingBottom: "max(env(safe-area-inset-bottom), 12px)",
           }}
         >
           <div className="bg-background/95 backdrop-blur-md mx-3 mb-3 rounded-2xl px-3 py-4 border border-border/40 shadow-lg">
@@ -454,7 +531,7 @@ export function DailySetup({ onSetupComplete, existingSetup, isEditing = false }
                   Back
                 </Button>
               )}
-              
+
               {/* Next/Complete Button - Takes remaining space */}
               <Button
                 onClick={handleNextStep}
@@ -462,10 +539,11 @@ export function DailySetup({ onSetupComplete, existingSetup, isEditing = false }
                 className="flex-1 gap-2 h-12 rounded-xl"
                 size="lg"
               >
-                {currentStep === 3 
-                  ? (isEditing ? 'Save Changes' : 'Start Using RELEVO')
-                  : 'Continue'
-                }
+                {currentStep === 3
+                  ? isEditing
+                    ? "Save Changes"
+                    : "Start Using RELEVO"
+                  : "Continue"}
                 <ChevronRight className="w-4 h-4" />
               </Button>
             </div>
@@ -474,11 +552,11 @@ export function DailySetup({ onSetupComplete, existingSetup, isEditing = false }
 
         {/* Validation Help Text */}
         {currentStep === 3 && selectedPatients.length === 0 && (
-          <div 
+          <div
             className="fixed bottom-0 left-0 right-0 z-20 bg-red-50 border-t border-red-200 px-4 py-2"
             style={{
-              paddingBottom: 'max(env(safe-area-inset-bottom), 12px)',
-              marginBottom: '96px' // Space for floating buttons
+              paddingBottom: "max(env(safe-area-inset-bottom), 12px)",
+              marginBottom: "96px", // Space for floating buttons
             }}
           >
             <p className="text-xs text-red-700 text-center">
@@ -503,17 +581,18 @@ export function DailySetup({ onSetupComplete, existingSetup, isEditing = false }
             </div>
             <div>
               <CardTitle className="text-2xl text-foreground">
-                {isEditing ? 'Update RELEVO Setup' : 'RELEVO Setup'}
+                {isEditing ? "Update RELEVO Setup" : "RELEVO Setup"}
               </CardTitle>
               <p className="text-muted-foreground">
-                {currentStep === 0 
-                  ? (isEditing ? 'Modify your configuration' : 'Configure your handover session')
-                  : `${isEditing ? 'Update' : 'Configure'} your handover session, ${doctorName}`
-                }
+                {currentStep === 0
+                  ? isEditing
+                    ? "Modify your configuration"
+                    : "Configure your handover session"
+                  : `${isEditing ? "Update" : "Configure"} your handover session, ${doctorName}`}
               </p>
             </div>
           </div>
-          
+
           <div className="flex items-center justify-between">
             <Badge variant="outline" className="text-primary">
               {getStepTitle()}
@@ -522,14 +601,14 @@ export function DailySetup({ onSetupComplete, existingSetup, isEditing = false }
               Step {currentStep + 1} of 4
             </div>
           </div>
-          
+
           {/* Clean Progress Bar */}
           <div className="flex gap-2">
             {[0, 1, 2, 3].map((step) => (
               <div
                 key={step}
                 className={`h-2 flex-1 rounded-full transition-colors ${
-                  step <= currentStep ? 'bg-primary' : 'bg-muted'
+                  step <= currentStep ? "bg-primary" : "bg-muted"
                 }`}
               />
             ))}
@@ -541,22 +620,26 @@ export function DailySetup({ onSetupComplete, existingSetup, isEditing = false }
           {currentStep === 1 ? (
             <div className="space-y-6">
               <div className="text-center space-y-2">
-                <h2 className="text-xl font-semibold text-foreground">Hello, {doctorName}!</h2>
+                <h2 className="text-xl font-semibold text-foreground">
+                  Hello, {doctorName}!
+                </h2>
                 <p className="text-muted-foreground">
-                  {isEditing ? 'Update your unit assignment' : 'Let\'s configure your shift details'}
+                  {isEditing
+                    ? "Update your unit assignment"
+                    : "Let's configure your shift details"}
                 </p>
               </div>
-              
+
               <div className="space-y-4">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
                     <MapPin className="w-5 h-5 text-primary" />
                   </div>
                   <h3 className="font-medium text-foreground">
-                    {isEditing ? 'Change your unit' : 'Select your unit'}
+                    {isEditing ? "Change your unit" : "Select your unit"}
                   </h3>
                 </div>
-                
+
                 {/* Compact Grid Layout for Units */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                   {unitsConfig.map((unitOption) => {
@@ -567,19 +650,29 @@ export function DailySetup({ onSetupComplete, existingSetup, isEditing = false }
                         onClick={() => setUnit(unitOption.id)}
                         className={`p-3 rounded-lg border-2 transition-all text-left ${
                           unit === unitOption.id
-                            ? 'border-primary bg-primary/5'
-                            : 'border-border hover:border-border/80 hover:bg-muted/50'
+                            ? "border-primary bg-primary/5"
+                            : "border-border hover:border-border/80 hover:bg-muted/50"
                         }`}
                       >
                         <div className="flex items-center gap-3">
-                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                            unit === unitOption.id ? 'bg-primary/10' : 'bg-muted/50'
-                          }`}>
-                            <UnitIcon className={`w-4 h-4 ${unit === unitOption.id ? 'text-primary' : 'text-muted-foreground'}`} />
+                          <div
+                            className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                              unit === unitOption.id
+                                ? "bg-primary/10"
+                                : "bg-muted/50"
+                            }`}
+                          >
+                            <UnitIcon
+                              className={`w-4 h-4 ${unit === unitOption.id ? "text-primary" : "text-muted-foreground"}`}
+                            />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <div className="font-medium text-foreground text-sm">{unitOption.name}</div>
-                            <div className="text-xs text-muted-foreground truncate">{unitOption.description}</div>
+                            <div className="font-medium text-foreground text-sm">
+                              {unitOption.name}
+                            </div>
+                            <div className="text-xs text-muted-foreground truncate">
+                              {unitOption.description}
+                            </div>
                           </div>
                           {unit === unitOption.id && (
                             <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
@@ -595,10 +688,12 @@ export function DailySetup({ onSetupComplete, existingSetup, isEditing = false }
             <div className="space-y-6">
               <div className="text-center space-y-2">
                 <h3 className="text-xl font-semibold text-foreground">
-                  {isEditing ? 'Update your shift' : 'Select your shift'}
+                  {isEditing ? "Update your shift" : "Select your shift"}
                 </h3>
                 <p className="text-muted-foreground">
-                  {isEditing ? 'Change your shift assignment if needed' : 'When will you be providing care?'}
+                  {isEditing
+                    ? "Change your shift assignment if needed"
+                    : "When will you be providing care?"}
                 </p>
               </div>
 
@@ -607,7 +702,9 @@ export function DailySetup({ onSetupComplete, existingSetup, isEditing = false }
                   <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
                     <Clock className="w-5 h-5 text-primary" />
                   </div>
-                  <h3 className="font-medium text-foreground">Available shifts</h3>
+                  <h3 className="font-medium text-foreground">
+                    Available shifts
+                  </h3>
                 </div>
 
                 {/* Compact Grid Layout for Shifts */}
@@ -618,19 +715,29 @@ export function DailySetup({ onSetupComplete, existingSetup, isEditing = false }
                       onClick={() => setShift(shiftOption.id)}
                       className={`p-3 rounded-lg border-2 transition-all text-left ${
                         shift === shiftOption.id
-                          ? 'border-primary bg-primary/5'
-                          : 'border-border hover:border-border/80 hover:bg-muted/50'
+                          ? "border-primary bg-primary/5"
+                          : "border-border hover:border-border/80 hover:bg-muted/50"
                       }`}
                     >
                       <div className="flex items-center gap-3">
-                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                          shift === shiftOption.id ? 'bg-primary/10' : 'bg-muted/50'
-                        }`}>
-                          <Calendar className={`w-4 h-4 ${shift === shiftOption.id ? 'text-primary' : 'text-muted-foreground'}`} />
+                        <div
+                          className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                            shift === shiftOption.id
+                              ? "bg-primary/10"
+                              : "bg-muted/50"
+                          }`}
+                        >
+                          <Calendar
+                            className={`w-4 h-4 ${shift === shiftOption.id ? "text-primary" : "text-muted-foreground"}`}
+                          />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="font-medium text-foreground text-sm">{shiftOption.name}</div>
-                          <div className="text-xs text-muted-foreground">{shiftOption.time}</div>
+                          <div className="font-medium text-foreground text-sm">
+                            {shiftOption.name}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            {shiftOption.time}
+                          </div>
                         </div>
                         {shift === shiftOption.id && (
                           <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
@@ -646,33 +753,35 @@ export function DailySetup({ onSetupComplete, existingSetup, isEditing = false }
             <div className="space-y-6">
               <div className="text-center space-y-3">
                 <h3 className="text-xl font-semibold text-foreground">
-                  {isEditing ? 'Update your patients' : 'Select your patients'}
+                  {isEditing ? "Update your patients" : "Select your patients"}
                 </h3>
-                
+
                 {/* PROMINENT COUNTER - DESKTOP */}
-                <Badge 
-                  variant="outline" 
+                <Badge
+                  variant="outline"
                   className={`text-base px-4 py-2 ${
-                    selectedPatients.length > 0 
-                      ? 'bg-primary/10 border-primary/30 text-primary' 
-                      : 'bg-muted/30 border-border/50 text-muted-foreground'
+                    selectedPatients.length > 0
+                      ? "bg-primary/10 border-primary/30 text-primary"
+                      : "bg-muted/30 border-border/50 text-muted-foreground"
                   }`}
                 >
-                  {selectedPatients.length} of {dailySetupPatients.length} patients selected
+                  {selectedPatients.length} of {dailySetupPatients.length}{" "}
+                  patients selected
                 </Badge>
-                
+
                 {/* NEW: Show current selection status for editing */}
                 {isEditing && existingSetup && (
                   <p className="text-sm text-muted-foreground">
-                    Previously had {existingSetup.selectedPatients.length} patients assigned
+                    Previously had {existingSetup.selectedPatients.length}{" "}
+                    patients assigned
                   </p>
                 )}
               </div>
 
               <div className="flex items-center justify-end">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
+                <Button
+                  variant="outline"
+                  size="sm"
                   onClick={handleSelectAll}
                   className="gap-2"
                 >
@@ -689,14 +798,18 @@ export function DailySetup({ onSetupComplete, existingSetup, isEditing = false }
                   )}
                 </Button>
               </div>
-              
+
               {/* Validation Error */}
               {showValidationError && (
                 <div className="p-4 rounded-lg bg-red-50 border border-red-200 text-red-700 flex items-center gap-3">
                   <AlertCircle className="w-5 h-5 flex-shrink-0" />
                   <div>
-                    <p className="font-medium text-sm">Please select at least one patient</p>
-                    <p className="text-sm">You need to assign yourself to patients to continue</p>
+                    <p className="font-medium text-sm">
+                      Please select at least one patient
+                    </p>
+                    <p className="text-sm">
+                      You need to assign yourself to patients to continue
+                    </p>
                   </div>
                 </div>
               )}
@@ -707,7 +820,18 @@ export function DailySetup({ onSetupComplete, existingSetup, isEditing = false }
                   <div className="max-h-[380px] overflow-y-auto scrollbar-hidden">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                       {dailySetupPatients.map((patient) => (
-                        <div key={patient.id} onClick={() => handlePatientToggle(patient.id)}>
+                        <div
+                          key={patient.id}
+                          onClick={() => handlePatientToggle(patient.id)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              handlePatientToggle(patient.id);
+                            }
+                          }}
+                          role="button"
+                          tabIndex={0}
+                          className="cursor-pointer"
+                        >
                           <PatientSelectionCard
                             patient={patient}
                             isSelected={selectedPatients.includes(patient.id)}
@@ -738,16 +862,17 @@ export function DailySetup({ onSetupComplete, existingSetup, isEditing = false }
             ) : (
               <div></div>
             )}
-            
+
             <Button
               onClick={handleNextStep}
               disabled={!canProceedToNextStep()}
               className="gap-2"
             >
-              {currentStep === 3 
-                ? (isEditing ? 'Save Changes' : 'Complete Setup')
-                : 'Continue'
-              }
+              {currentStep === 3
+                ? isEditing
+                  ? "Save Changes"
+                  : "Complete Setup"
+                : "Continue"}
               <ChevronRight className="w-4 h-4" />
             </Button>
           </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 export function useHandoverSession() {
   const [handoverStartTime] = useState(new Date(Date.now() - 12 * 60 * 1000)); // Started 12 minutes ago
@@ -9,11 +9,11 @@ export function useHandoverSession() {
     const now = new Date();
     const handoverTime = new Date();
     handoverTime.setHours(17, 0, 0, 0); // 17:00
-    
+
     const diffMs = handoverTime.getTime() - now.getTime();
     const diffMins = Math.ceil(diffMs / (1000 * 60));
-    
-    if (diffMins <= 0) return 'Handover time';
+
+    if (diffMins <= 0) return "Handover time";
     if (diffMins < 60) return `${diffMins} min`;
     const hours = Math.floor(diffMins / 60);
     const mins = diffMins % 60;
@@ -33,7 +33,9 @@ export function useHandoverSession() {
   useEffect(() => {
     const interval = setInterval(() => {
       const now = new Date();
-      const duration = Math.floor((now.getTime() - handoverStartTime.getTime()) / (1000 * 60));
+      const duration = Math.floor(
+        (now.getTime() - handoverStartTime.getTime()) / (1000 * 60),
+      );
       setSessionDuration(duration);
     }, 60000); // Update every minute
 
@@ -43,6 +45,6 @@ export function useHandoverSession() {
   return {
     sessionDuration,
     getTimeUntilHandover,
-    getSessionDuration
+    getSessionDuration,
   };
 }

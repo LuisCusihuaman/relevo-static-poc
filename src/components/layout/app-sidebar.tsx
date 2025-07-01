@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import {
   Calendar,
   Users,
@@ -15,8 +15,8 @@ import {
   ChevronRight,
   Search,
   Clock,
-  Shield
-} from "lucide-react"
+  Shield,
+} from "lucide-react";
 
 import {
   Sidebar,
@@ -31,7 +31,7 @@ import {
   SidebarGroupContent,
   SidebarRail,
   useSidebar,
-} from '@/components/ui/sidebar'
+} from "@/components/ui/sidebar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -40,40 +40,44 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+} from "@/components/ui/dropdown-menu";
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
-  currentDoctor?: string
-  unit?: string
-  shift?: string
-  onNavigate?: (section: string) => void
-  onOpenCommandPalette?: () => void
-  activeTab?: string
-  patientCount?: number
+  currentDoctor?: string;
+  unit?: string;
+  shift?: string;
+  onNavigate?: (section: string) => void;
+  onOpenCommandPalette?: () => void;
+  activeTab?: string;
+  patientCount?: number;
 }
 
-export function AppSidebar({ 
+export function AppSidebar({
   currentDoctor = "Dr. Eduardo Martinez",
-  unit = "PICU", 
+  unit = "PICU",
   shift = "Morning",
   onNavigate,
   onOpenCommandPalette,
   activeTab = "schedule",
   patientCount = 0,
-  ...props 
+  ...props
 }: AppSidebarProps) {
-  const { isMobile } = useSidebar()
+  const { isMobile } = useSidebar();
 
   // Get doctor initials for avatar
   const getDoctorInitials = (name: string) => {
-    return name.split(' ').map(n => n[0]).join('').toUpperCase();
-  }
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase();
+  };
 
   const handleNavigation = (section: string) => {
     if (onNavigate) {
-      onNavigate(section)
+      onNavigate(section);
     }
-  }
+  };
 
   const mainNavigationItems = [
     {
@@ -81,16 +85,16 @@ export function AppSidebar({
       id: "schedule",
       icon: Calendar,
       isActive: activeTab === "schedule",
-      description: "Today's handover schedule"
+      description: "Today's handover schedule",
     },
     {
       title: "Patients",
-      id: "patients", 
+      id: "patients",
       icon: Users,
       isActive: activeTab === "patients",
-      description: "Your assigned patients"
-    }
-  ]
+      description: "Your assigned patients",
+    },
+  ];
 
   const toolsItems = [
     {
@@ -98,44 +102,44 @@ export function AppSidebar({
       icon: Search,
       action: () => onOpenCommandPalette?.(),
       description: "Find patients across units",
-      shortcut: "⌘K"
+      shortcut: "⌘K",
     },
     {
       title: "I-PASS Documentation",
       icon: FileText,
       action: () => handleNavigation("documentation"),
-      description: "Clinical documentation"
-    }
-  ]
+      description: "Clinical documentation",
+    },
+  ];
 
   const settingsItems = [
     {
       title: "Profile & Settings",
       icon: Settings,
       action: () => handleNavigation("profile"),
-      description: "Account preferences"
+      description: "Account preferences",
     },
     {
-      title: "Notifications", 
+      title: "Notifications",
       icon: Bell,
       action: () => handleNavigation("notifications"),
-      description: "Alerts and updates"
+      description: "Alerts and updates",
     },
     {
       title: "Help & Support",
       icon: HelpCircle,
       action: () => handleNavigation("help"),
-      description: "Documentation and support"
-    }
-  ]
+      description: "Documentation and support",
+    },
+  ];
 
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton 
-              size="lg" 
+            <SidebarMenuButton
+              size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
@@ -143,7 +147,9 @@ export function AppSidebar({
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">RELEVO</span>
-                <span className="truncate text-xs">Medical Handover Platform</span>
+                <span className="truncate text-xs">
+                  Medical Handover Platform
+                </span>
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -158,7 +164,7 @@ export function AppSidebar({
             <SidebarMenu>
               {mainNavigationItems.map((item) => (
                 <SidebarMenuItem key={item.id}>
-                  <SidebarMenuButton 
+                  <SidebarMenuButton
                     isActive={item.isActive}
                     tooltip={item.description}
                     onClick={() => handleNavigation(item.id)}
@@ -182,7 +188,9 @@ export function AppSidebar({
                   <Shield className="size-4 text-primary" />
                   <div className="flex flex-col">
                     <span className="text-xs font-medium">{unit} Unit</span>
-                    <span className="text-xs text-muted-foreground">{shift} Shift</span>
+                    <span className="text-xs text-muted-foreground">
+                      {shift} Shift
+                    </span>
                   </div>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -190,8 +198,12 @@ export function AppSidebar({
                 <SidebarMenuButton className="pointer-events-none">
                   <Clock className="size-4 text-green-600" />
                   <div className="flex flex-col">
-                    <span className="text-xs font-medium">{patientCount} Patients Assigned</span>
-                    <span className="text-xs text-muted-foreground">2 urgent items</span>
+                    <span className="text-xs font-medium">
+                      {patientCount} Patients Assigned
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      2 urgent items
+                    </span>
                   </div>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -206,7 +218,7 @@ export function AppSidebar({
             <SidebarMenu>
               {toolsItems.map((item, index) => (
                 <SidebarMenuItem key={index}>
-                  <SidebarMenuButton 
+                  <SidebarMenuButton
                     tooltip={item.description}
                     onClick={item.action}
                   >
@@ -214,8 +226,11 @@ export function AppSidebar({
                     <span>{item.title}</span>
                     {item.shortcut && (
                       <div className="ml-auto flex items-center gap-0.5">
-                        {item.shortcut.split('').map((key, i) => (
-                          <kbd key={i} className="px-1 py-0.5 text-xs bg-muted rounded">
+                        {item.shortcut.split("").map((key, i) => (
+                          <kbd
+                            key={i}
+                            className="px-1 py-0.5 text-xs bg-muted rounded"
+                          >
                             {key}
                           </kbd>
                         ))}
@@ -235,7 +250,7 @@ export function AppSidebar({
             <SidebarMenu>
               {settingsItems.map((item, index) => (
                 <SidebarMenuItem key={index}>
-                  <SidebarMenuButton 
+                  <SidebarMenuButton
                     tooltip={item.description}
                     onClick={item.action}
                   >
@@ -264,8 +279,12 @@ export function AppSidebar({
                     </span>
                   </div>
                   <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">{currentDoctor}</span>
-                    <span className="truncate text-xs">Senior Practitioner</span>
+                    <span className="truncate font-semibold">
+                      {currentDoctor}
+                    </span>
+                    <span className="truncate text-xs">
+                      Senior Practitioner
+                    </span>
                   </div>
                   <ChevronRight className="ml-auto size-4" />
                 </SidebarMenuButton>
@@ -284,8 +303,12 @@ export function AppSidebar({
                       </span>
                     </div>
                     <div className="grid flex-1 text-left text-sm leading-tight">
-                      <span className="truncate font-semibold">{currentDoctor}</span>
-                      <span className="truncate text-xs">Senior Practitioner</span>
+                      <span className="truncate font-semibold">
+                        {currentDoctor}
+                      </span>
+                      <span className="truncate text-xs">
+                        Senior Practitioner
+                      </span>
                     </div>
                   </div>
                 </DropdownMenuLabel>
@@ -295,7 +318,9 @@ export function AppSidebar({
                     <User className="size-4" />
                     Profile & Settings
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleNavigation("notifications")}>
+                  <DropdownMenuItem
+                    onClick={() => handleNavigation("notifications")}
+                  >
                     <Bell className="size-4" />
                     Notifications
                   </DropdownMenuItem>
@@ -319,8 +344,8 @@ export function AppSidebar({
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
-      
+
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }

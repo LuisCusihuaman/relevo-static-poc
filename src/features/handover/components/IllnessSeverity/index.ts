@@ -1,1 +1,1 @@
-export { IllnessSeverity } from './IllnessSeverity';
+export { IllnessSeverity } from "./IllnessSeverity";

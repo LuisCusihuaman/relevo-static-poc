@@ -1,7 +1,7 @@
 // RELEVO - Shift Store
 // Shift schedules, staff management, and handover coordination
 
-import { type ShiftDoctor } from '../common/types';
+import { type ShiftDoctor } from "../common/types";
 
 // ========================================
 // SHIFT SCHEDULE DATA
@@ -9,50 +9,50 @@ import { type ShiftDoctor } from '../common/types';
 
 export const shiftSchedule: ShiftDoctor[] = [
   {
-    id: '1',
-    name: 'Dr. Eduardo Martinez',
-    role: 'Senior Resident',
-    status: 'current',
-    shiftStart: '07:00',
-    shiftEnd: '15:00',
-    specialty: 'PICU'
+    id: "1",
+    name: "Dr. Eduardo Martinez",
+    role: "resident",
+    status: "on-duty",
+    shiftStart: "07:00",
+    shiftEnd: "15:00",
+    specialty: "PICU",
   },
   {
-    id: '2',
-    name: 'Dr. Sarah Chen',
-    role: 'Attending Physician',
-    status: 'current',
-    shiftStart: '07:00',
-    shiftEnd: '19:00',
-    specialty: 'PICU'
+    id: "2",
+    name: "Dr. Sarah Chen",
+    role: "attending",
+    status: "on-duty",
+    shiftStart: "07:00",
+    shiftEnd: "19:00",
+    specialty: "PICU",
   },
   {
-    id: '3',
-    name: 'Dr. Michael Torres',
-    role: 'Resident',
-    status: 'current',
-    shiftStart: '07:00',
-    shiftEnd: '15:00',
-    specialty: 'PICU'
+    id: "3",
+    name: "Dr. Michael Torres",
+    role: "resident",
+    status: "on-duty",
+    shiftStart: "07:00",
+    shiftEnd: "15:00",
+    specialty: "PICU",
   },
   {
-    id: '4',
-    name: 'Dr. Lisa Park',
-    role: 'Senior Resident',
-    status: 'incoming',
-    shiftStart: '15:00',
-    shiftEnd: '23:00',
-    specialty: 'PICU'
+    id: "4",
+    name: "Dr. Lisa Park",
+    role: "resident",
+    status: "on-call",
+    shiftStart: "15:00",
+    shiftEnd: "23:00",
+    specialty: "PICU",
   },
   {
-    id: '5',
-    name: 'Dr. Anna Kim',
-    role: 'Resident',
-    status: 'incoming',
-    shiftStart: '15:00',
-    shiftEnd: '23:00',
-    specialty: 'PICU'
-  }
+    id: "5",
+    name: "Dr. Anna Kim",
+    role: "resident",
+    status: "on-call",
+    shiftStart: "15:00",
+    shiftEnd: "23:00",
+    specialty: "PICU",
+  },
 ];
 
 // ========================================
@@ -64,106 +64,106 @@ export interface ExtendedShiftDoctor extends ShiftDoctor {
   phone?: string;
   email?: string;
   patientLoad: number;
-  experience: 'Junior' | 'Senior' | 'Attending';
+  experience: "Junior" | "Senior" | "Attending";
   certifications: string[];
   currentLocation?: string;
   isOnCall: boolean;
-  handoverStatus: 'pending' | 'in-progress' | 'completed';
+  handoverStatus: "pending" | "in-progress" | "completed";
   lastHandover?: Date;
 }
 
 export const extendedShiftSchedule: ExtendedShiftDoctor[] = [
   {
-    id: '1',
-    name: 'Dr. Eduardo Martinez',
-    role: 'Senior Resident',
-    status: 'current',
-    shiftStart: '07:00',
-    shiftEnd: '15:00',
-    specialty: 'PICU',
-    department: 'Pediatric Critical Care',
-    phone: '+54 11 1234-5678',
-    email: 'eduardo.martinez@garrahan.gov.ar',
+    id: "1",
+    name: "Dr. Eduardo Martinez",
+    role: "resident",
+    status: "on-duty",
+    shiftStart: "07:00",
+    shiftEnd: "15:00",
+    specialty: "PICU",
+    department: "Pediatric Critical Care",
+    phone: "+54 11 1234-5678",
+    email: "eduardo.martinez@garrahan.gov.ar",
     patientLoad: 5,
-    experience: 'Senior',
-    certifications: ['PALS', 'BLS', 'Pediatric Critical Care'],
-    currentLocation: 'PICU Floor 3',
+    experience: "Senior",
+    certifications: ["PALS", "BLS", "Pediatric Critical Care"],
+    currentLocation: "PICU Floor 3",
     isOnCall: false,
-    handoverStatus: 'pending'
+    handoverStatus: "pending",
   },
   {
-    id: '2',
-    name: 'Dr. Sarah Chen',
-    role: 'Attending Physician',
-    status: 'current',
-    shiftStart: '07:00',
-    shiftEnd: '19:00',
-    specialty: 'PICU',
-    department: 'Pediatric Critical Care',
-    phone: '+54 11 2345-6789',
-    email: 'sarah.chen@garrahan.gov.ar',
+    id: "2",
+    name: "Dr. Sarah Chen",
+    role: "attending",
+    status: "on-duty",
+    shiftStart: "07:00",
+    shiftEnd: "19:00",
+    specialty: "PICU",
+    department: "Pediatric Critical Care",
+    phone: "+54 11 2345-6789",
+    email: "sarah.chen@garrahan.gov.ar",
     patientLoad: 8,
-    experience: 'Attending',
-    certifications: ['PALS', 'BLS', 'Board Certified Pediatrics'],
-    currentLocation: 'PICU Rounds',
+    experience: "Attending",
+    certifications: ["PALS", "BLS", "Board Certified Pediatrics"],
+    currentLocation: "PICU Rounds",
     isOnCall: true,
-    handoverStatus: 'completed',
-    lastHandover: new Date(Date.now() - 2 * 60 * 60 * 1000)
+    handoverStatus: "completed",
+    lastHandover: new Date(Date.now() - 2 * 60 * 60 * 1000),
   },
   {
-    id: '3',
-    name: 'Dr. Michael Torres',
-    role: 'Resident',
-    status: 'current',
-    shiftStart: '07:00',
-    shiftEnd: '15:00',
-    specialty: 'PICU',
-    department: 'Pediatric Critical Care',
-    phone: '+54 11 3456-7890',
-    email: 'michael.torres@garrahan.gov.ar',
+    id: "3",
+    name: "Dr. Michael Torres",
+    role: "resident",
+    status: "on-duty",
+    shiftStart: "07:00",
+    shiftEnd: "15:00",
+    specialty: "PICU",
+    department: "Pediatric Critical Care",
+    phone: "+54 11 3456-7890",
+    email: "michael.torres@garrahan.gov.ar",
     patientLoad: 4,
-    experience: 'Junior',
-    certifications: ['PALS', 'BLS'],
-    currentLocation: 'Patient Rooms',
+    experience: "Junior",
+    certifications: ["PALS", "BLS"],
+    currentLocation: "Patient Rooms",
     isOnCall: false,
-    handoverStatus: 'in-progress'
+    handoverStatus: "in-progress",
   },
   {
-    id: '4',
-    name: 'Dr. Lisa Park',
-    role: 'Senior Resident',
-    status: 'incoming',
-    shiftStart: '15:00',
-    shiftEnd: '23:00',
-    specialty: 'PICU',
-    department: 'Pediatric Critical Care',
-    phone: '+54 11 4567-8901',
-    email: 'lisa.park@garrahan.gov.ar',
+    id: "4",
+    name: "Dr. Lisa Park",
+    role: "resident",
+    status: "on-call",
+    shiftStart: "15:00",
+    shiftEnd: "23:00",
+    specialty: "PICU",
+    department: "Pediatric Critical Care",
+    phone: "+54 11 4567-8901",
+    email: "lisa.park@garrahan.gov.ar",
     patientLoad: 0,
-    experience: 'Senior',
-    certifications: ['PALS', 'BLS', 'Pediatric Critical Care'],
-    currentLocation: 'Break Room',
+    experience: "Senior",
+    certifications: ["PALS", "BLS", "Pediatric Critical Care"],
+    currentLocation: "Break Room",
     isOnCall: false,
-    handoverStatus: 'pending'
+    handoverStatus: "pending",
   },
   {
-    id: '5',
-    name: 'Dr. Anna Kim',
-    role: 'Resident',
-    status: 'incoming',
-    shiftStart: '15:00',
-    shiftEnd: '23:00',
-    specialty: 'PICU',
-    department: 'Pediatric Critical Care',
-    phone: '+54 11 5678-9012',
-    email: 'anna.kim@garrahan.gov.ar',
+    id: "5",
+    name: "Dr. Anna Kim",
+    role: "resident",
+    status: "on-call",
+    shiftStart: "15:00",
+    shiftEnd: "23:00",
+    specialty: "PICU",
+    department: "Pediatric Critical Care",
+    phone: "+54 11 5678-9012",
+    email: "anna.kim@garrahan.gov.ar",
     patientLoad: 0,
-    experience: 'Junior',
-    certifications: ['PALS', 'BLS'],
-    currentLocation: 'Locker Room',
+    experience: "Junior",
+    certifications: ["PALS", "BLS"],
+    currentLocation: "Locker Room",
     isOnCall: false,
-    handoverStatus: 'pending'
-  }
+    handoverStatus: "pending",
+  },
 ];
 
 // ========================================
@@ -177,8 +177,8 @@ export interface HandoverSession {
   patientIds: number[];
   startTime: Date;
   estimatedDuration: number; // minutes
-  status: 'scheduled' | 'in-progress' | 'completed' | 'cancelled';
-  priority: 'high' | 'medium' | 'low';
+  status: "scheduled" | "in-progress" | "completed" | "cancelled";
+  priority: "high" | "medium" | "low";
   notes?: string;
   completedAt?: Date;
   actualDuration?: number;
@@ -186,26 +186,26 @@ export interface HandoverSession {
 
 export const mockHandoverSessions: HandoverSession[] = [
   {
-    id: 'handover-001',
-    fromDoctor: 'Dr. Eduardo Martinez',
-    toDoctor: 'Dr. Lisa Park',
+    id: "handover-001",
+    fromDoctor: "Dr. Eduardo Martinez",
+    toDoctor: "Dr. Lisa Park",
     patientIds: [1, 2, 4],
     startTime: new Date(Date.now() + 30 * 60 * 1000), // 30 minutes from now
     estimatedDuration: 15,
-    status: 'scheduled',
-    priority: 'high',
-    notes: 'Priority handover - unstable patient in room PICU-01'
+    status: "scheduled",
+    priority: "high",
+    notes: "Priority handover - unstable patient in room PICU-01",
   },
   {
-    id: 'handover-002',
-    fromDoctor: 'Dr. Michael Torres',
-    toDoctor: 'Dr. Anna Kim',
+    id: "handover-002",
+    fromDoctor: "Dr. Michael Torres",
+    toDoctor: "Dr. Anna Kim",
     patientIds: [3, 5],
     startTime: new Date(Date.now() + 45 * 60 * 1000), // 45 minutes from now
     estimatedDuration: 10,
-    status: 'scheduled',
-    priority: 'medium'
-  }
+    status: "scheduled",
+    priority: "medium",
+  },
 ];
 
 // ========================================
@@ -216,42 +216,45 @@ export const mockHandoverSessions: HandoverSession[] = [
  * Get current doctors on duty
  */
 export const getCurrentDoctors = (): ShiftDoctor[] => {
-  return shiftSchedule.filter(doctor => doctor.status === 'current');
+  return shiftSchedule.filter((doctor) => doctor.status === "on-duty");
 };
 
 /**
  * Get incoming doctors for next shift
  */
 export const getIncomingDoctors = (): ShiftDoctor[] => {
-  return shiftSchedule.filter(doctor => doctor.status === 'incoming');
+  return shiftSchedule.filter((doctor) => doctor.status === "on-call");
 };
 
 /**
  * Get outgoing doctors ending their shift
  */
 export const getOutgoingDoctors = (): ShiftDoctor[] => {
-  return shiftSchedule.filter(doctor => doctor.status === 'outgoing');
+  // Return doctors who are off-duty (ending their shift)
+  return shiftSchedule.filter((doctor) => doctor.status === "off-duty");
 };
 
 /**
  * Get doctor by ID
  */
 export const getDoctorById = (id: string): ShiftDoctor | undefined => {
-  return shiftSchedule.find(doctor => doctor.id === id);
+  return shiftSchedule.find((doctor) => doctor.id === id);
 };
 
 /**
  * Get doctors by specialty
  */
 export const getDoctorsBySpecialty = (specialty: string): ShiftDoctor[] => {
-  return shiftSchedule.filter(doctor => doctor.specialty === specialty);
+  return shiftSchedule.filter((doctor) => doctor.specialty === specialty);
 };
 
 /**
  * Get extended doctor information
  */
-export const getExtendedDoctorInfo = (id: string): ExtendedShiftDoctor | undefined => {
-  return extendedShiftSchedule.find(doctor => doctor.id === id);
+export const getExtendedDoctorInfo = (
+  id: string,
+): ExtendedShiftDoctor | undefined => {
+  return extendedShiftSchedule.find((doctor) => doctor.id === id);
 };
 
 // ========================================
@@ -262,17 +265,21 @@ export const getExtendedDoctorInfo = (id: string): ExtendedShiftDoctor | undefin
  * Get active handover sessions
  */
 export const getActiveHandovers = (): HandoverSession[] => {
-  return mockHandoverSessions.filter(session => 
-    session.status === 'in-progress' || session.status === 'scheduled'
+  return mockHandoverSessions.filter(
+    (session) =>
+      session.status === "in-progress" || session.status === "scheduled",
   );
 };
 
 /**
  * Get handovers for a specific doctor
  */
-export const getHandoversForDoctor = (doctorName: string): HandoverSession[] => {
-  return mockHandoverSessions.filter(session => 
-    session.fromDoctor === doctorName || session.toDoctor === doctorName
+export const getHandoversForDoctor = (
+  doctorName: string,
+): HandoverSession[] => {
+  return mockHandoverSessions.filter(
+    (session) =>
+      session.fromDoctor === doctorName || session.toDoctor === doctorName,
   );
 };
 
@@ -281,9 +288,11 @@ export const getHandoversForDoctor = (doctorName: string): HandoverSession[] => 
  */
 export const getTimeUntilNextHandover = (doctorName: string): number | null => {
   const nextHandover = mockHandoverSessions
-    .filter(session => 
-      (session.fromDoctor === doctorName || session.toDoctor === doctorName) &&
-      session.status === 'scheduled'
+    .filter(
+      (session) =>
+        (session.fromDoctor === doctorName ||
+          session.toDoctor === doctorName) &&
+        session.status === "scheduled",
     )
     .sort((a, b) => a.startTime.getTime() - b.startTime.getTime())[0];
 
@@ -318,13 +327,13 @@ export const getShiftChangeNotifications = (): string[] => {
 
   // Check for upcoming shift changes
   if (currentHour >= 14 && currentHour < 15) {
-    notifications.push('Afternoon shift starting in 1 hour');
+    notifications.push("Afternoon shift starting in 1 hour");
   }
   if (currentHour >= 22 && currentHour < 23) {
-    notifications.push('Night shift starting in 1 hour');
+    notifications.push("Night shift starting in 1 hour");
   }
   if (currentHour >= 6 && currentHour < 7) {
-    notifications.push('Morning shift starting in 1 hour');
+    notifications.push("Morning shift starting in 1 hour");
   }
 
   return notifications;
@@ -344,14 +353,16 @@ export interface CoverageInfo {
 }
 
 export const getCurrentCoverage = (unit: string): CoverageInfo => {
-  const currentDoctors = getCurrentDoctors().filter(doc => doc.specialty === unit);
-  
+  const currentDoctors = getCurrentDoctors().filter(
+    (doc) => doc.specialty === unit,
+  );
+
   return {
     unit,
     minimumStaff: 3, // Example minimum
     currentStaff: currentDoctors.length,
     adequateCoverage: currentDoctors.length >= 3,
-    specialtyGaps: currentDoctors.length < 3 ? ['General Coverage'] : [],
-    urgentNeeds: currentDoctors.length < 2 ? ['Additional Resident'] : []
+    specialtyGaps: currentDoctors.length < 3 ? ["General Coverage"] : [],
+    urgentNeeds: currentDoctors.length < 2 ? ["Additional Resident"] : [],
   };
 };

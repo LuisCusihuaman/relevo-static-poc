@@ -1,8 +1,7 @@
-
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
-import { Activity, Calendar, Clock, MapPin, User, Users } from 'lucide-react';
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { Activity, Calendar, Clock, MapPin, User, Users } from "lucide-react";
 
 interface PatientHeaderProps {
   patient: {
@@ -23,20 +22,29 @@ interface PatientHeaderProps {
 export function PatientHeader({ patient }: PatientHeaderProps) {
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'stable': return 'bg-green-100 text-green-800 border-green-200';
-      case 'guarded': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'unstable': return 'bg-orange-100 text-orange-800 border-orange-200';
-      case 'critical': return 'bg-red-100 text-red-800 border-red-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+      case "stable":
+        return "bg-green-100 text-green-800 border-green-200";
+      case "guarded":
+        return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      case "unstable":
+        return "bg-orange-100 text-orange-800 border-orange-200";
+      case "critical":
+        return "bg-red-100 text-red-800 border-red-200";
+      default:
+        return "bg-gray-100 text-gray-800 border-gray-200";
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'in-progress': return 'bg-blue-100 text-blue-800';
-      case 'completed': return 'bg-green-100 text-green-800';
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case "in-progress":
+        return "bg-blue-100 text-blue-800";
+      case "completed":
+        return "bg-green-100 text-green-800";
+      case "pending":
+        return "bg-yellow-100 text-yellow-800";
+      default:
+        return "bg-gray-100 text-gray-800";
     }
   };
 
@@ -48,18 +56,23 @@ export function PatientHeader({ patient }: PatientHeaderProps) {
           <div className="flex items-center space-x-6">
             <Avatar className="w-16 h-16">
               <AvatarFallback className="bg-blue-100 text-blue-600 text-lg">
-                {patient.name.split(' ').map(n => n[0]).join('')}
+                {patient.name
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")}
               </AvatarFallback>
             </Avatar>
-            
+
             <div className="space-y-2">
               <div className="flex items-center space-x-4">
-                <h2 className="text-2xl font-bold text-gray-900">{patient.name}</h2>
+                <h2 className="text-2xl font-bold text-gray-900">
+                  {patient.name}
+                </h2>
                 <Badge className={getSeverityColor(patient.severity)}>
                   {patient.severity.toUpperCase()}
                 </Badge>
               </div>
-              
+
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600">
                 <div className="flex items-center space-x-1">
                   <User className="w-4 h-4" />
@@ -78,10 +91,8 @@ export function PatientHeader({ patient }: PatientHeaderProps) {
                   <span>{patient.primaryTeam}</span>
                 </div>
               </div>
-              
-              <div className="text-xs text-gray-500">
-                MRN: {patient.mrn}
-              </div>
+
+              <div className="text-xs text-gray-500">MRN: {patient.mrn}</div>
             </div>
           </div>
 
@@ -89,27 +100,35 @@ export function PatientHeader({ patient }: PatientHeaderProps) {
           <div className="text-right space-y-2">
             <div className="flex items-center justify-end space-x-2">
               <Clock className="w-4 h-4 text-gray-500" />
-              <span className="text-sm text-gray-600">{patient.currentDateTime}</span>
+              <span className="text-sm text-gray-600">
+                {patient.currentDateTime}
+              </span>
             </div>
-            
+
             <div className="space-y-1">
               <Badge className={getStatusColor(patient.handoverStatus)}>
-                {patient.handoverStatus === 'in-progress' ? 'Handover In Progress' : 'Handover Complete'}
+                {patient.handoverStatus === "in-progress"
+                  ? "Handover In Progress"
+                  : "Handover Complete"}
               </Badge>
-              <div className="text-xs text-gray-500">
-                {patient.shift}
-              </div>
+              <div className="text-xs text-gray-500">{patient.shift}</div>
             </div>
 
             {/* Length of Stay */}
             <div className="text-xs text-gray-500">
-              LOS: {Math.ceil((new Date().getTime() - new Date(patient.admissionDate).getTime()) / (1000 * 3600 * 24))} days
+              LOS:{" "}
+              {Math.ceil(
+                (new Date().getTime() -
+                  new Date(patient.admissionDate).getTime()) /
+                  (1000 * 3600 * 24),
+              )}{" "}
+              days
             </div>
           </div>
         </div>
 
         {/* Active Handover Indicator */}
-        {patient.handoverStatus === 'in-progress' && (
+        {patient.handoverStatus === "in-progress" && (
           <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
             <div className="flex items-center space-x-2">
               <Activity className="w-4 h-4 text-blue-600" />

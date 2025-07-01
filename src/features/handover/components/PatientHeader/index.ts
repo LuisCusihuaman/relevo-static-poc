@@ -1,1 +1,1 @@
-export { PatientHeader } from './PatientHeader';
+export { PatientHeader } from "./PatientHeader";

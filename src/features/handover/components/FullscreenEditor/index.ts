@@ -1,1 +1,1 @@
-export { FullscreenEditor } from './FullscreenEditor';
+export { FullscreenEditor } from "./FullscreenEditor";

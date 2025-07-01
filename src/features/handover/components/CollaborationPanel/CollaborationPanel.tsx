@@ -1,16 +1,10 @@
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Textarea } from '@/components/ui/textarea';
-import {
-  Activity,
-  Bell, MessageSquare,
-  Send,
-  Users,
-  X
-} from 'lucide-react';
-import { useState } from 'react';
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { Activity, Bell, MessageSquare, Send, Users, X } from "lucide-react";
+import { useState } from "react";
 
 interface CollaborationPanelProps {
   onClose: () => void;
@@ -22,99 +16,106 @@ interface CollaborationPanelProps {
 const handoverDiscussion = [
   {
     id: 1,
-    user: 'Dr. Patel',
-    userInitials: 'SP',
-    userColor: 'bg-purple-600',
-    role: 'Evening Attending',
-    message: 'Just reviewed the case. The heart failure seems stable today. Any concerns about the fluid balance?',
-    time: '2 minutes ago',
-    timestamp: '16:43',
-    type: 'message',
-    mentions: []
+    user: "Dr. Patel",
+    userInitials: "SP",
+    userColor: "bg-purple-600",
+    role: "Evening Attending",
+    message:
+      "Just reviewed the case. The heart failure seems stable today. Any concerns about the fluid balance?",
+    time: "2 minutes ago",
+    timestamp: "16:43",
+    type: "message",
+    mentions: [],
   },
   {
     id: 2,
-    user: 'Dr. Johnson',
-    userInitials: 'DJ',
-    userColor: 'bg-blue-600',
-    role: 'Day Attending',
-    message: 'Patient has been net negative 500ml today. Responded well to the lasix adjustment this morning. Current weight is down 2kg from admission.',
-    time: '1 minute ago',
-    timestamp: '16:44',
-    type: 'message',
-    mentions: []
+    user: "Dr. Johnson",
+    userInitials: "DJ",
+    userColor: "bg-blue-600",
+    role: "Day Attending",
+    message:
+      "Patient has been net negative 500ml today. Responded well to the lasix adjustment this morning. Current weight is down 2kg from admission.",
+    time: "1 minute ago",
+    timestamp: "16:44",
+    type: "message",
+    mentions: [],
   },
   {
     id: 3,
-    user: 'Dr. Rodriguez',
-    userInitials: 'MR',
-    userColor: 'bg-emerald-600',
-    role: 'Resident',
-    message: 'Should we continue the current diuretic dose overnight? BUN/Cr stable at 1.2.',
-    time: '30 seconds ago',
-    timestamp: '16:45',
-    type: 'message',
-    mentions: ['Dr. Patel']
-  }
+    user: "Dr. Rodriguez",
+    userInitials: "MR",
+    userColor: "bg-emerald-600",
+    role: "Resident",
+    message:
+      "Should we continue the current diuretic dose overnight? BUN/Cr stable at 1.2.",
+    time: "30 seconds ago",
+    timestamp: "16:45",
+    type: "message",
+    mentions: ["Dr. Patel"],
+  },
 ];
 
 // Mock recent activity for the handover
 const recentActivity = [
   {
     id: 1,
-    user: 'Dr. Patel',
-    userInitials: 'SP',
-    userColor: 'bg-purple-600',
-    action: 'joined handover session',
-    section: 'General',
-    time: '5 minutes ago',
-    type: 'user_joined'
+    user: "Dr. Patel",
+    userInitials: "SP",
+    userColor: "bg-purple-600",
+    action: "joined handover session",
+    section: "General",
+    time: "5 minutes ago",
+    type: "user_joined",
   },
   {
     id: 2,
-    user: 'Dr. Johnson',
-    userInitials: 'DJ',
-    userColor: 'bg-blue-600',
-    action: 'updated illness severity assessment',
-    section: 'Illness Severity',
-    time: '3 minutes ago',
-    type: 'content_updated'
+    user: "Dr. Johnson",
+    userInitials: "DJ",
+    userColor: "bg-blue-600",
+    action: "updated illness severity assessment",
+    section: "Illness Severity",
+    time: "3 minutes ago",
+    type: "content_updated",
   },
   {
     id: 3,
-    user: 'Dr. Rodriguez',
-    userInitials: 'MR',
-    userColor: 'bg-emerald-600',
-    action: 'added action item about morning labs',
-    section: 'Action List',
-    time: '2 minutes ago',
-    type: 'content_added'
+    user: "Dr. Rodriguez",
+    userInitials: "MR",
+    userColor: "bg-emerald-600",
+    action: "added action item about morning labs",
+    section: "Action List",
+    time: "2 minutes ago",
+    type: "content_added",
   },
   {
     id: 4,
-    user: 'Nurse Clara',
-    userInitials: 'CJ',
-    userColor: 'bg-teal-600',
-    action: 'reviewed patient summary',
-    section: 'Patient Summary',
-    time: '1 minute ago',
-    type: 'content_viewed'
-  }
+    user: "Nurse Clara",
+    userInitials: "CJ",
+    userColor: "bg-teal-600",
+    action: "reviewed patient summary",
+    section: "Patient Summary",
+    time: "1 minute ago",
+    type: "content_viewed",
+  },
 ];
 
-export function CollaborationPanel({ onClose, onNavigateToSection, hideHeader = false }: CollaborationPanelProps) {
-  const [newMessage, setNewMessage] = useState('');
-  const [activeTab, setActiveTab] = useState('discussion');
+export function CollaborationPanel({
+  onClose,
+  onNavigateToSection,
+  hideHeader = false,
+}: CollaborationPanelProps) {
+  const [newMessage, setNewMessage] = useState("");
+  const [activeTab, setActiveTab] = useState("discussion");
 
   const handleSendMessage = () => {
     if (newMessage.trim()) {
-      console.log('Sending message:', newMessage);
-      setNewMessage('');
+      console.log("Sending message:", newMessage);
+      setNewMessage("");
     }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
     }
@@ -126,17 +127,19 @@ export function CollaborationPanel({ onClose, onNavigateToSection, hideHeader = 
       {!hideHeader && (
         <div className="p-4 border-b border-gray-200 bg-gray-50">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="font-medium text-gray-900">Handover Collaboration</h3>
-            <Button 
-              variant="ghost" 
-              size="sm" 
+            <h3 className="font-medium text-gray-900">
+              Handover Collaboration
+            </h3>
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={onClose}
               className="h-8 w-8 p-0 hover:bg-gray-200"
             >
               <X className="w-4 h-4" />
             </Button>
           </div>
-          
+
           {/* Real-time status */}
           <div className="flex items-center justify-between text-sm">
             <div className="flex items-center space-x-2">
@@ -162,14 +165,24 @@ export function CollaborationPanel({ onClose, onNavigateToSection, hideHeader = 
       )}
 
       {/* Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
+      <Tabs
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="flex-1 flex flex-col"
+      >
         <div className="px-4 pt-3 border-b border-gray-100">
           <TabsList className="grid w-full grid-cols-2 bg-gray-100">
-            <TabsTrigger value="discussion" className="text-xs data-[state=active]:bg-white">
+            <TabsTrigger
+              value="discussion"
+              className="text-xs data-[state=active]:bg-white"
+            >
               <MessageSquare className="w-3 h-3 mr-1" />
               Discussion
             </TabsTrigger>
-            <TabsTrigger value="activity" className="text-xs data-[state=active]:bg-white">
+            <TabsTrigger
+              value="activity"
+              className="text-xs data-[state=active]:bg-white"
+            >
               <Bell className="w-3 h-3 mr-1" />
               Updates
             </TabsTrigger>
@@ -182,8 +195,12 @@ export function CollaborationPanel({ onClose, onNavigateToSection, hideHeader = 
             <div className="flex items-center space-x-2">
               <Users className="w-4 h-4 text-blue-600" />
               <div className="flex-1">
-                <h4 className="text-sm font-medium text-blue-900">Handover Discussion</h4>
-                <p className="text-xs text-blue-700">Day → Evening shift conversation</p>
+                <h4 className="text-sm font-medium text-blue-900">
+                  Handover Discussion
+                </h4>
+                <p className="text-xs text-blue-700">
+                  Day → Evening shift conversation
+                </p>
               </div>
             </div>
           </div>
@@ -195,15 +212,23 @@ export function CollaborationPanel({ onClose, onNavigateToSection, hideHeader = 
                 <div key={message.id} className="space-y-2">
                   <div className="flex items-start space-x-3">
                     <Avatar className="w-8 h-8 flex-shrink-0">
-                      <AvatarFallback className={`${message.userColor} text-white text-xs`}>
+                      <AvatarFallback
+                        className={`${message.userColor} text-white text-xs`}
+                      >
                         {message.userInitials}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center space-x-2 mb-1">
-                        <span className="text-sm font-medium text-gray-900">{message.user}</span>
-                        <span className="text-xs text-gray-500">{message.role}</span>
-                        <span className="text-xs text-gray-400">{message.time}</span>
+                        <span className="text-sm font-medium text-gray-900">
+                          {message.user}
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          {message.role}
+                        </span>
+                        <span className="text-xs text-gray-400">
+                          {message.time}
+                        </span>
                       </div>
                       <div className="text-sm text-gray-700 leading-relaxed">
                         {message.message}
@@ -248,7 +273,9 @@ export function CollaborationPanel({ onClose, onNavigateToSection, hideHeader = 
             <div className="flex items-center space-x-2">
               <Activity className="w-4 h-4 text-gray-600" />
               <div className="flex-1">
-                <h4 className="text-sm font-medium text-gray-900">Recent Updates</h4>
+                <h4 className="text-sm font-medium text-gray-900">
+                  Recent Updates
+                </h4>
                 <p className="text-xs text-gray-600">Live handover activity</p>
               </div>
             </div>
@@ -260,20 +287,30 @@ export function CollaborationPanel({ onClose, onNavigateToSection, hideHeader = 
                 <div key={activity.id}>
                   <div className="flex items-start space-x-3">
                     <Avatar className="w-7 h-7 flex-shrink-0">
-                      <AvatarFallback className={`${activity.userColor} text-white text-xs`}>
+                      <AvatarFallback
+                        className={`${activity.userColor} text-white text-xs`}
+                      >
                         {activity.userInitials}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center space-x-2">
-                        <span className="text-sm font-medium text-gray-900">{activity.user}</span>
-                        <span className="text-xs text-gray-500">{activity.time}</span>
+                        <span className="text-sm font-medium text-gray-900">
+                          {activity.user}
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          {activity.time}
+                        </span>
                       </div>
                       <div className="text-sm text-gray-600">
                         {activity.action}
-                        {activity.section !== 'General' && (
+                        {activity.section !== "General" && (
                           <button
-                            onClick={() => onNavigateToSection(activity.section.toLowerCase().replace(' ', ''))}
+                            onClick={() =>
+                              onNavigateToSection(
+                                activity.section.toLowerCase().replace(" ", ""),
+                              )
+                            }
                             className="text-blue-600 hover:text-blue-700 ml-1 hover:underline"
                           >
                             in {activity.section}
@@ -282,16 +319,16 @@ export function CollaborationPanel({ onClose, onNavigateToSection, hideHeader = 
                       </div>
                     </div>
                     <div className="flex-shrink-0">
-                      {activity.type === 'content_updated' && (
+                      {activity.type === "content_updated" && (
                         <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                       )}
-                      {activity.type === 'content_added' && (
+                      {activity.type === "content_added" && (
                         <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                       )}
-                      {activity.type === 'user_joined' && (
+                      {activity.type === "user_joined" && (
                         <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
                       )}
-                      {activity.type === 'content_viewed' && (
+                      {activity.type === "content_viewed" && (
                         <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
                       )}
                     </div>

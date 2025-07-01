@@ -1,13 +1,23 @@
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
-import { Switch } from '@/components/ui/switch';
-import { Textarea } from '@/components/ui/textarea';
-import { Bell, Building2, ChevronRight, Clock, KeyRound, MapPin, Settings, Shield, User } from 'lucide-react';
-import { useState } from 'react';
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Bell,
+  Building2,
+  ChevronRight,
+  Clock,
+  KeyRound,
+  MapPin,
+  Settings,
+  Shield,
+  User,
+} from "lucide-react";
+import { useState } from "react";
 
 interface ProfileViewProps {
   doctorName: string;
@@ -17,54 +27,68 @@ interface ProfileViewProps {
   isMobile?: boolean;
 }
 
-type ProfileSection = 'profile' | 'settings' | 'notifications' | 'security' | 'account';
+type ProfileSection =
+  | "profile"
+  | "settings"
+  | "notifications"
+  | "security"
+  | "account";
 
-export function ProfileView({ doctorName, unit, shift, isMobile = false }: ProfileViewProps) {
-  const [activeSection, setActiveSection] = useState<ProfileSection>('profile');
+export function ProfileView({
+  doctorName,
+  unit,
+  shift,
+  isMobile = false,
+}: ProfileViewProps) {
+  const [activeSection, setActiveSection] = useState<ProfileSection>("profile");
   const [displayName, setDisplayName] = useState(doctorName);
-  const [bio, setBio] = useState('');
+  const [bio, setBio] = useState("");
 
   // Get doctor initials for avatar
   const getDoctorInitials = (name: string) => {
-    return name.split(' ').map(n => n[0]).join('').toUpperCase();
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase();
   };
 
   const sidebarItems = [
     {
-      id: 'profile' as ProfileSection,
-      label: 'My Profile',
+      id: "profile" as ProfileSection,
+      label: "My Profile",
       icon: User,
-      description: 'Personal information and preferences'
+      description: "Personal information and preferences",
     },
     {
-      id: 'settings' as ProfileSection,
-      label: 'Application Settings',
+      id: "settings" as ProfileSection,
+      label: "Application Settings",
       icon: Settings,
-      description: 'App preferences and configuration'
+      description: "App preferences and configuration",
     },
     {
-      id: 'notifications' as ProfileSection,
-      label: 'Notifications & Alerts',
+      id: "notifications" as ProfileSection,
+      label: "Notifications & Alerts",
       icon: Bell,
-      description: 'Alert preferences and notification settings'
+      description: "Alert preferences and notification settings",
     },
     {
-      id: 'security' as ProfileSection,
-      label: 'Security & Privacy',
+      id: "security" as ProfileSection,
+      label: "Security & Privacy",
       icon: Shield,
-      description: 'Account security and privacy settings'
+      description: "Account security and privacy settings",
     },
     {
-      id: 'account' as ProfileSection,
-      label: 'Account Settings',
+      id: "account" as ProfileSection,
+      label: "Account Settings",
       icon: KeyRound,
-      description: 'Account management and preferences'
-    }
+      description: "Account management and preferences",
+    },
   ];
 
   const renderSectionContent = () => {
     switch (activeSection) {
-      case 'profile':
+      case "profile":
         return (
           <div className="space-y-6">
             {/* Profile Header */}
@@ -75,18 +99,29 @@ export function ProfileView({ doctorName, unit, shift, isMobile = false }: Profi
                     {getDoctorInitials(doctorName)}
                   </span>
                 </div>
-                <h2 className="text-xl font-semibold text-foreground">{doctorName}</h2>
+                <h2 className="text-xl font-semibold text-foreground">
+                  {doctorName}
+                </h2>
                 <p className="text-muted-foreground">Senior Practitioner</p>
                 <div className="flex items-center justify-center gap-2 mt-3">
-                  <Badge variant="outline" className="bg-primary/5 border-primary/30">
+                  <Badge
+                    variant="outline"
+                    className="bg-primary/5 border-primary/30"
+                  >
                     <MapPin className="w-3 h-3 mr-1" />
                     {unit}
                   </Badge>
-                  <Badge variant="outline" className="bg-muted/30 border-border/50">
+                  <Badge
+                    variant="outline"
+                    className="bg-muted/30 border-border/50"
+                  >
                     <Clock className="w-3 h-3 mr-1" />
                     {shift}
                   </Badge>
-                  <Badge variant="outline" className="bg-green-50 border-green-200 text-green-700">
+                  <Badge
+                    variant="outline"
+                    className="bg-green-50 border-green-200 text-green-700"
+                  >
                     <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
                     Active • On Duty
                   </Badge>
@@ -99,7 +134,9 @@ export function ProfileView({ doctorName, unit, shift, isMobile = false }: Profi
               <CardHeader className="pb-3">
                 <div className="flex items-center gap-2">
                   <Building2 className="w-4 h-4 text-muted-foreground" />
-                  <CardTitle className="text-sm">Hospital Information</CardTitle>
+                  <CardTitle className="text-sm">
+                    Hospital Information
+                  </CardTitle>
                   <Badge variant="outline" className="ml-auto text-xs">
                     Provided by Hospital System
                   </Badge>
@@ -108,28 +145,32 @@ export function ProfileView({ doctorName, unit, shift, isMobile = false }: Profi
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-xs text-muted-foreground">Specialty</Label>
+                    <Label className="text-xs text-muted-foreground">
+                      Specialty
+                    </Label>
                     <div className="medical-input-readonly">
                       Pediatric Critical Care
                     </div>
                   </div>
                   <div>
-                    <Label className="text-xs text-muted-foreground">Experience</Label>
-                    <div className="medical-input-readonly">
-                      5 years
-                    </div>
+                    <Label className="text-xs text-muted-foreground">
+                      Experience
+                    </Label>
+                    <div className="medical-input-readonly">5 years</div>
                   </div>
                   <div>
-                    <Label className="text-xs text-muted-foreground">Department</Label>
+                    <Label className="text-xs text-muted-foreground">
+                      Department
+                    </Label>
                     <div className="medical-input-readonly">
                       Pediatric Intensive Care Unit (PICU)
                     </div>
                   </div>
                   <div>
-                    <Label className="text-xs text-muted-foreground">Employee ID</Label>
-                    <div className="medical-input-readonly">
-                      HG-2024-1157
-                    </div>
+                    <Label className="text-xs text-muted-foreground">
+                      Employee ID
+                    </Label>
+                    <div className="medical-input-readonly">HG-2024-1157</div>
                   </div>
                 </div>
               </CardContent>
@@ -143,8 +184,8 @@ export function ProfileView({ doctorName, unit, shift, isMobile = false }: Profi
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="display-name">Display Name</Label>
-                  <Input 
-                    id="display-name" 
+                  <Input
+                    id="display-name"
                     value={displayName}
                     onChange={(e) => setDisplayName(e.target.value)}
                     className="medical-input"
@@ -154,10 +195,10 @@ export function ProfileView({ doctorName, unit, shift, isMobile = false }: Profi
                     This is how your name appears to other staff members
                   </p>
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="bio">Professional Bio</Label>
-                  <Textarea 
+                  <Textarea
                     id="bio"
                     value={bio}
                     onChange={(e) => setBio(e.target.value)}
@@ -174,12 +215,16 @@ export function ProfileView({ doctorName, unit, shift, isMobile = false }: Profi
           </div>
         );
 
-      case 'settings':
+      case "settings":
         return (
           <div className="space-y-6">
             <div>
-              <h2 className="text-lg font-semibold text-foreground mb-1">Application Settings</h2>
-              <p className="text-sm text-muted-foreground">Configure your RELEVO experience</p>
+              <h2 className="text-lg font-semibold text-foreground mb-1">
+                Application Settings
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Configure your RELEVO experience
+              </p>
             </div>
 
             {/* Interface Preferences */}
@@ -235,7 +280,9 @@ export function ProfileView({ doctorName, unit, shift, isMobile = false }: Profi
                 <div className="medical-setting-row">
                   <div className="medical-setting-info">
                     <div>
-                      <div className="medical-setting-label">Auto-save Drafts</div>
+                      <div className="medical-setting-label">
+                        Auto-save Drafts
+                      </div>
                       <div className="medical-setting-description">
                         Automatically save handover drafts every 30 seconds
                       </div>
@@ -247,7 +294,9 @@ export function ProfileView({ doctorName, unit, shift, isMobile = false }: Profi
                 <div className="medical-setting-row">
                   <div className="medical-setting-info">
                     <div>
-                      <div className="medical-setting-label">I-PASS Template</div>
+                      <div className="medical-setting-label">
+                        I-PASS Template
+                      </div>
                       <div className="medical-setting-description">
                         Use structured I-PASS template for all handovers
                       </div>
@@ -272,12 +321,16 @@ export function ProfileView({ doctorName, unit, shift, isMobile = false }: Profi
           </div>
         );
 
-      case 'notifications':
+      case "notifications":
         return (
           <div className="space-y-6">
             <div>
-              <h2 className="text-lg font-semibold text-foreground mb-1">Notifications & Alerts</h2>
-              <p className="text-sm text-muted-foreground">Manage your notification preferences</p>
+              <h2 className="text-lg font-semibold text-foreground mb-1">
+                Notifications & Alerts
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Manage your notification preferences
+              </p>
             </div>
 
             {/* Critical Alerts */}
@@ -289,7 +342,9 @@ export function ProfileView({ doctorName, unit, shift, isMobile = false }: Profi
                 <div className="medical-setting-row">
                   <div className="medical-setting-info">
                     <div>
-                      <div className="medical-setting-label">High Priority Alerts</div>
+                      <div className="medical-setting-label">
+                        High Priority Alerts
+                      </div>
                       <div className="medical-setting-description">
                         Immediate notifications for critical patient changes
                       </div>
@@ -301,7 +356,9 @@ export function ProfileView({ doctorName, unit, shift, isMobile = false }: Profi
                 <div className="medical-setting-row">
                   <div className="medical-setting-info">
                     <div>
-                      <div className="medical-setting-label">Handover Reminders</div>
+                      <div className="medical-setting-label">
+                        Handover Reminders
+                      </div>
                       <div className="medical-setting-description">
                         Notifications for upcoming handover sessions
                       </div>
@@ -327,7 +384,9 @@ export function ProfileView({ doctorName, unit, shift, isMobile = false }: Profi
             {/* Communication */}
             <Card className="medical-card">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm">Communication Preferences</CardTitle>
+                <CardTitle className="text-sm">
+                  Communication Preferences
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="medical-setting-row">
@@ -345,7 +404,9 @@ export function ProfileView({ doctorName, unit, shift, isMobile = false }: Profi
                 <div className="medical-setting-row">
                   <div className="medical-setting-info">
                     <div>
-                      <div className="medical-setting-label">System Announcements</div>
+                      <div className="medical-setting-label">
+                        System Announcements
+                      </div>
                       <div className="medical-setting-description">
                         Important system updates and maintenance notices
                       </div>
@@ -358,12 +419,16 @@ export function ProfileView({ doctorName, unit, shift, isMobile = false }: Profi
           </div>
         );
 
-      case 'security':
+      case "security":
         return (
           <div className="space-y-6">
             <div>
-              <h2 className="text-lg font-semibold text-foreground mb-1">Security & Privacy</h2>
-              <p className="text-sm text-muted-foreground">Manage your account security settings</p>
+              <h2 className="text-lg font-semibold text-foreground mb-1">
+                Security & Privacy
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Manage your account security settings
+              </p>
             </div>
 
             {/* Account Security */}
@@ -375,7 +440,9 @@ export function ProfileView({ doctorName, unit, shift, isMobile = false }: Profi
                 <div className="medical-setting-row">
                   <div className="medical-setting-info">
                     <div>
-                      <div className="medical-setting-label">Two-Factor Authentication</div>
+                      <div className="medical-setting-label">
+                        Two-Factor Authentication
+                      </div>
                       <div className="medical-setting-description">
                         Additional security layer for your account
                       </div>
@@ -387,7 +454,9 @@ export function ProfileView({ doctorName, unit, shift, isMobile = false }: Profi
                 <div className="medical-setting-row">
                   <div className="medical-setting-info">
                     <div>
-                      <div className="medical-setting-label">Session Timeout</div>
+                      <div className="medical-setting-label">
+                        Session Timeout
+                      </div>
                       <div className="medical-setting-description">
                         Automatically log out after 4 hours of inactivity
                       </div>
@@ -399,7 +468,9 @@ export function ProfileView({ doctorName, unit, shift, isMobile = false }: Profi
                 <div className="medical-setting-row">
                   <div className="medical-setting-info">
                     <div>
-                      <div className="medical-setting-label">Activity Logging</div>
+                      <div className="medical-setting-label">
+                        Activity Logging
+                      </div>
                       <div className="medical-setting-description">
                         Track login attempts and security events
                       </div>
@@ -419,7 +490,9 @@ export function ProfileView({ doctorName, unit, shift, isMobile = false }: Profi
                 <div className="medical-setting-row">
                   <div className="medical-setting-info">
                     <div>
-                      <div className="medical-setting-label">Data Analytics</div>
+                      <div className="medical-setting-label">
+                        Data Analytics
+                      </div>
                       <div className="medical-setting-description">
                         Help improve RELEVO by sharing usage analytics
                       </div>
@@ -431,7 +504,9 @@ export function ProfileView({ doctorName, unit, shift, isMobile = false }: Profi
                 <div className="medical-setting-row">
                   <div className="medical-setting-info">
                     <div>
-                      <div className="medical-setting-label">Error Reporting</div>
+                      <div className="medical-setting-label">
+                        Error Reporting
+                      </div>
                       <div className="medical-setting-description">
                         Automatically send error reports to help fix issues
                       </div>
@@ -444,12 +519,16 @@ export function ProfileView({ doctorName, unit, shift, isMobile = false }: Profi
           </div>
         );
 
-      case 'account':
+      case "account":
         return (
           <div className="space-y-6">
             <div>
-              <h2 className="text-lg font-semibold text-foreground mb-1">Account Settings</h2>
-              <p className="text-sm text-muted-foreground">Manage your account preferences</p>
+              <h2 className="text-lg font-semibold text-foreground mb-1">
+                Account Settings
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Manage your account preferences
+              </p>
             </div>
 
             {/* Account Management */}
@@ -460,8 +539,8 @@ export function ProfileView({ doctorName, unit, shift, isMobile = false }: Profi
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="email">Email Address</Label>
-                  <Input 
-                    id="email" 
+                  <Input
+                    id="email"
                     type="email"
                     value="eduardo@hospitalgarrahan.gov.ar"
                     className="medical-input"
@@ -479,7 +558,7 @@ export function ProfileView({ doctorName, unit, shift, isMobile = false }: Profi
                     <KeyRound className="w-4 h-4 mr-2" />
                     Change Password
                   </Button>
-                  
+
                   <Button variant="outline" className="w-full justify-start">
                     <Settings className="w-4 h-4 mr-2" />
                     Export My Data
@@ -491,13 +570,18 @@ export function ProfileView({ doctorName, unit, shift, isMobile = false }: Profi
             {/* Danger Zone */}
             <Card className="medical-card border-red-200">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm text-red-700">Danger Zone</CardTitle>
+                <CardTitle className="text-sm text-red-700">
+                  Danger Zone
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="p-4 bg-red-50 rounded-lg border border-red-200">
-                  <h4 className="font-medium text-red-800 mb-2">Clear All Data</h4>
+                  <h4 className="font-medium text-red-800 mb-2">
+                    Clear All Data
+                  </h4>
                   <p className="text-sm text-red-700 mb-3">
-                    This will permanently delete all your handover data, notes, and preferences. This action cannot be undone.
+                    This will permanently delete all your handover data, notes,
+                    and preferences. This action cannot be undone.
                   </p>
                   <Button variant="destructive" size="sm">
                     Clear All Data
@@ -526,8 +610,8 @@ export function ProfileView({ doctorName, unit, shift, isMobile = false }: Profi
                 onClick={() => setActiveSection(item.id)}
                 className={`flex items-center gap-2 px-3 py-2 rounded-lg whitespace-nowrap transition-all duration-200 ${
                   activeSection === item.id
-                    ? 'bg-primary/10 border border-primary/20 text-primary'
-                    : 'bg-muted/30 text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                    ? "bg-primary/10 border border-primary/20 text-primary"
+                    : "bg-muted/30 text-muted-foreground hover:text-foreground hover:bg-muted/50"
                 }`}
               >
                 <item.icon className="w-4 h-4" />
@@ -539,9 +623,7 @@ export function ProfileView({ doctorName, unit, shift, isMobile = false }: Profi
 
         {/* Mobile Content - PROPER SCROLLING CONTAINER */}
         <div className="flex-1 overflow-y-auto mobile-scroll-fix">
-          <div className="p-4 pb-8">
-            {renderSectionContent()}
-          </div>
+          <div className="p-4 pb-8">{renderSectionContent()}</div>
         </div>
       </div>
     );
@@ -554,8 +636,12 @@ export function ProfileView({ doctorName, unit, shift, isMobile = false }: Profi
       <div className="flex-shrink-0 pt-6 px-6">
         <div className="max-w-7xl mx-auto mb-6">
           <div>
-            <h1 className="text-2xl font-semibold text-foreground mb-1">Profile Settings</h1>
-            <p className="text-muted-foreground">Manage your RELEVO profile and preferences</p>
+            <h1 className="text-2xl font-semibold text-foreground mb-1">
+              Profile Settings
+            </h1>
+            <p className="text-muted-foreground">
+              Manage your RELEVO profile and preferences
+            </p>
           </div>
         </div>
       </div>
@@ -575,24 +661,34 @@ export function ProfileView({ doctorName, unit, shift, isMobile = false }: Profi
                         onClick={() => setActiveSection(item.id)}
                         className={`w-full text-left p-3 rounded-lg transition-all duration-200 group ${
                           activeSection === item.id
-                            ? 'bg-primary/10 border border-primary/20 text-primary'
-                            : 'hover:bg-muted/30 text-muted-foreground hover:text-foreground'
+                            ? "bg-primary/10 border border-primary/20 text-primary"
+                            : "hover:bg-muted/30 text-muted-foreground hover:text-foreground"
                         }`}
                       >
                         <div className="flex items-center gap-3">
-                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                            activeSection === item.id
-                              ? 'bg-primary/10'
-                              : 'bg-muted/30 group-hover:bg-muted/50'
-                          }`}>
-                            <item.icon className={`w-4 h-4 ${
-                              activeSection === item.id ? 'text-primary' : 'text-muted-foreground'
-                            }`} />
+                          <div
+                            className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                              activeSection === item.id
+                                ? "bg-primary/10"
+                                : "bg-muted/30 group-hover:bg-muted/50"
+                            }`}
+                          >
+                            <item.icon
+                              className={`w-4 h-4 ${
+                                activeSection === item.id
+                                  ? "text-primary"
+                                  : "text-muted-foreground"
+                              }`}
+                            />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <div className={`font-medium text-sm ${
-                              activeSection === item.id ? 'text-primary' : 'text-foreground'
-                            }`}>
+                            <div
+                              className={`font-medium text-sm ${
+                                activeSection === item.id
+                                  ? "text-primary"
+                                  : "text-foreground"
+                              }`}
+                            >
                               {item.label}
                             </div>
                             <div className="text-xs text-muted-foreground truncate">
@@ -612,9 +708,7 @@ export function ProfileView({ doctorName, unit, shift, isMobile = false }: Profi
 
             {/* Main Content Area - SCROLLABLE */}
             <div className="col-span-12 lg:col-span-9 overflow-y-auto">
-              <div className="space-y-6 pb-8">
-                {renderSectionContent()}
-              </div>
+              <div className="space-y-6 pb-8">{renderSectionContent()}</div>
             </div>
           </div>
         </div>
