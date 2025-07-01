@@ -7,7 +7,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { 
   Activity, MessageSquare, History, FileText,
   Maximize2, MoreHorizontal, X, ArrowRight, Calendar, MapPin, UserPlus,
-  Stethoscope
+  Stethoscope, ChevronLeft
 } from 'lucide-react';
 import { 
   Tooltip,
@@ -29,6 +29,7 @@ interface HeaderProps {
   getSyncStatusDisplay: () => { icon: React.ReactNode; text: string; color: string };
   getTimeUntilHandover: () => string;
   getSessionDuration: () => string;
+  onBack?: () => void;
 }
 
 export function Header({
@@ -43,7 +44,8 @@ export function Header({
   showHistory,
   getSyncStatusDisplay,
   getTimeUntilHandover,
-  getSessionDuration
+  getSessionDuration,
+  onBack
 }: HeaderProps) {
   const activeUsers = activeCollaborators.filter(user => user.status === 'active' || user.status === 'viewing');
 
@@ -56,6 +58,19 @@ export function Header({
         <div className="flex items-center justify-between w-full max-w-none mx-auto">
           {/* Left Section - Logo + Patient Info */}
           <div className="flex items-center space-x-4 sm:space-x-6 min-w-0 flex-1">
+            {/* Back Button - Only show if onBack prop provided */}
+            {onBack && (
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={onBack}
+                className="flex-shrink-0"
+              >
+                <ChevronLeft className="w-4 h-4 mr-1" />
+                <span className="hidden sm:inline">Back</span>
+              </Button>
+            )}
+            
             {/* Logo */}
             <div className="flex items-center space-x-3 flex-shrink-0">
               <Stethoscope className="w-5 h-5 sm:w-6 sm:h-6 text-gray-900" />

@@ -273,20 +273,8 @@ export default function App() {
   // Show handover view if active
   if (showHandoverView) {
     return (
-      <div className="min-h-screen relative">
-        {/* Back button */}
-        <div className="absolute top-4 left-4 z-50">
-          <Button 
-            variant="outline" 
-            size="sm"
-            onClick={handleCloseHandover}
-            className="bg-white/90 backdrop-blur-sm"
-          >
-            <ChevronLeft className="w-4 h-4 mr-2" />
-            Back to {activeTab === 'schedule' ? 'Schedule' : 'Patients'}
-          </Button>
-        </div>
-        <HandoverSession />
+      <div className="min-h-screen">
+        <HandoverSession onBack={handleCloseHandover} />
       </div>
     );
   }

@@ -29,7 +29,11 @@ import { currentUser, patientData, activeCollaborators } from '@/common/constant
 import type { FullscreenEditingState, ExpandedSections } from '@/common/types';
 import { X } from 'lucide-react';
 
-export default function App() {
+interface HandoverProps {
+  onBack?: () => void;
+}
+
+export default function App({ onBack }: HandoverProps = {}) {
   // Core state
   const [handoverComplete, setHandoverComplete] = useState(false);
   
@@ -166,6 +170,7 @@ export default function App() {
             getSyncStatusDisplay={getSyncStatusDisplay}
             getTimeUntilHandover={getTimeUntilHandover}
             getSessionDuration={getSessionDuration}
+            onBack={onBack}
           />
 
           {/* Main Content */}
