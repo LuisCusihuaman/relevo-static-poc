@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Search, User, Settings, Bell, Plus, Filter, MoreHorizontal, Zap, Command } from 'lucide-react';
+import { Search, User, Settings, Bell, Plus, MoreHorizontal, Zap, Command } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -26,7 +25,6 @@ export function EnhancedDesktopLayout({
   onCommandPalette,
   onQuickAction
 }: EnhancedDesktopLayoutProps) {
-  const [searchQuery, setSearchQuery] = useState('');
   const [notifications] = useState(2);
   const [currentTime, setCurrentTime] = useState(new Date());
 

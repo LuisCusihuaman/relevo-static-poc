@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useState } from 'react';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
 import { X, History, Calendar, Clock, User, ArrowRight, FileText, Eye } from 'lucide-react';
 
 interface HandoverHistoryProps {
@@ -133,7 +131,7 @@ export function HandoverHistory({ onClose, patientData, hideHeader = false }: Ha
 
         <ScrollArea className="flex-1">
           <div className="p-4 space-y-4">
-            {handoverHistory.map((handover, index) => (
+            {handoverHistory.map((handover) => (
               <Card 
                 key={handover.id} 
                 className={`cursor-pointer transition-all border ${

@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { useState, useEffect } from 'react';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { 
-  CheckCircle2, AlertTriangle, AlertOctagon, Shield, 
-  User, Clock, Activity, Edit, Eye, Wifi
+  Thermometer, Heart, Brain, Stethoscope, Clock,
+  CheckCircle2, Edit, Eye, User, Wifi
 } from 'lucide-react';
 
 // Compact severity levels with simpler styling
@@ -14,7 +14,7 @@ const severityLevels = [
     id: 'stable',
     label: 'Stable',
     description: 'Patient condition is stable with minimal intervention needed',
-    icon: CheckCircle2,
+    icon: Thermometer,
     textColor: 'text-emerald-600',
     bgColor: 'bg-emerald-50',
     borderColor: 'border-emerald-300'
@@ -23,7 +23,7 @@ const severityLevels = [
     id: 'guarded',
     label: 'Guarded', 
     description: 'Patient requires close monitoring with potential for change',
-    icon: Shield,
+    icon: Heart,
     textColor: 'text-amber-600',
     bgColor: 'bg-amber-50',
     borderColor: 'border-amber-300'
@@ -32,7 +32,7 @@ const severityLevels = [
     id: 'unstable',
     label: 'Unstable',
     description: 'Patient condition is unstable requiring immediate intervention',
-    icon: AlertTriangle,
+    icon: Brain,
     textColor: 'text-red-600',
     bgColor: 'bg-red-50',
     borderColor: 'border-red-300'
@@ -41,7 +41,7 @@ const severityLevels = [
     id: 'critical',
     label: 'Critical',
     description: 'Patient in critical condition requiring urgent care',
-    icon: AlertOctagon,
+    icon: Stethoscope,
     textColor: 'text-red-700',
     bgColor: 'bg-red-50',
     borderColor: 'border-red-400'
@@ -49,8 +49,6 @@ const severityLevels = [
 ];
 
 interface IllnessSeverityProps {
-  onOpenThread?: (section: string) => void;
-  focusMode?: boolean;
   currentUser?: {
     name: string;
     initials: string;
@@ -64,8 +62,6 @@ interface IllnessSeverityProps {
 }
 
 export function IllnessSeverity({ 
-  onOpenThread, 
-  focusMode = false,
   currentUser = { name: 'Dr. Johnson', initials: 'DJ', role: 'Day Attending' },
   assignedPhysician = { name: 'Dr. Johnson', initials: 'DJ', role: 'Day Attending' }
 }: IllnessSeverityProps) {

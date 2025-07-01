@@ -1,11 +1,9 @@
 import { useState } from 'react';
-import { Search, Plus, Users, Clock, AlertTriangle, Activity, FileText, Stethoscope, User, Target, Eye, ChevronRight, Calendar, CheckCircle2, Circle, Timer, MoreHorizontal, ChevronDown, ChevronUp, Heart, Thermometer } from 'lucide-react';
+import { Plus, Users, Clock, AlertTriangle, FileText, Target, Eye, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Separator } from '@/components/ui/separator';
-import { Progress } from '@/components/ui/progress';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 

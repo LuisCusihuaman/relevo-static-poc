@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { 
-  FileText, Edit, Save, Clock, User, MessageSquare, 
-  Eye, Lock, Shield, Maximize2
+  FileText, Edit, Save, Clock, Lock, Shield
 } from 'lucide-react';
-import type { SyncStatus } from '../../../../../../relevo-app-vite/src/common/types';
+import type { SyncStatus } from '@/common/types';
 
 interface PatientSummaryProps {
   onOpenThread?: (section: string) => void;

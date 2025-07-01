@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
@@ -7,9 +6,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { 
-  X, Plus, Edit, Clock, AlertTriangle, CheckSquare, 
-  FileText, Activity, Users, Save, Star,
-  Stethoscope, Heart, Shield, MessageSquare, Target
+  X, Edit, AlertTriangle, CheckSquare, 
+  FileText, Activity, Save, MessageSquare, Target
 } from 'lucide-react';
 
 interface QuickActionsProps {

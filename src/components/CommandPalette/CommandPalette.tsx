@@ -10,8 +10,7 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
-  CommandList,
-  CommandSeparator
+  CommandList
 } from '@/components/ui/command';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 
@@ -22,10 +21,8 @@ import { unitsConfig, getUnitName } from '../../store/config.store';
 interface CommandPaletteProps {
   isOpen: boolean;
   onClose: () => void;
-  patients: Patient[];
   onPatientSelect: (patientId: number) => void;
   onQuickNote: (patientId: number, type?: string) => void;
-  onNavigate: (section: string) => void;
   currentUnit?: string; // Current user's unit
 }
 
@@ -115,10 +112,8 @@ const hospitalPatients: Patient[] = [
 export function CommandPalette({
   isOpen,
   onClose,
-  patients,
   onPatientSelect,
   onQuickNote,
-  onNavigate,
   currentUnit = 'picu'
 }: CommandPaletteProps) {
   const [query, setQuery] = useState('');

@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
 import { 
-  Search, User, Settings, Bell, Plus, Filter, Menu, Command, 
-  ChevronLeft, ChevronRight, Activity, Users, Calendar, FileText,
-  Stethoscope, Clock, Home, X, AlertTriangle, Edit3, MessageSquare
+  Search, User, Settings, Bell, Command, 
+  Stethoscope, AlertTriangle, MessageSquare,
+  ChevronLeft, ChevronRight, Users, FileText,
+  Activity, Plus
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';

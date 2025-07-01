@@ -182,7 +182,6 @@ export default function App() {
   
   // Selected Items
   const [selectedPatientForDoc, setSelectedPatientForDoc] = useState<number | null>(null);
-  const [selectedPatientForHandover, setSelectedPatientForHandover] = useState<number | null>(null);
   const [lastDocumentedPatient, setLastDocumentedPatient] = useState<number | null>(null);
   const [defaultDocType, setDefaultDocType] = useState('action_list');
 
@@ -210,24 +209,17 @@ export default function App() {
     setShowSetupChange(false);
   };
 
-  const handleChangeSetup = () => {
-    setShowSetupChange(true);
-  };
-
-  const handleStartHandover = (patientId?: number) => {
-    setSelectedPatientForHandover(patientId || null);
+  const handleStartHandover = () => {
     setShowHandoverView(true);
     setSelectedPatientDetail(null);
   };
 
-  const handlePatientHandover = (patientId: number) => {
-    setSelectedPatientForHandover(patientId);
+  const handlePatientHandover = () => {
     setShowHandoverView(true);
   };
 
   const handleCloseHandover = () => {
     setShowHandoverView(false);
-    setSelectedPatientForHandover(null);
   };
 
   const handlePatientSelect = (patientId: number) => {

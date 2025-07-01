@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ChevronRight, Users, Calendar, MapPin, CheckCircle, Circle, AlertCircle, User, Building2, Clock, Heart, Baby, Stethoscope, Activity, Scissors, ChevronLeft, ChevronDown } from 'lucide-react';
+import { MapPin, CheckCircle, Circle, AlertCircle, User, Building2, Heart, Baby, Stethoscope, Activity, Scissors, ChevronLeft, ChevronRight, Clock, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';

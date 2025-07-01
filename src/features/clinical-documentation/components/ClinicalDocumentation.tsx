@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { X, Save, ChevronUp, ChevronDown, Eye, Target, AlertTriangle, Plus, Clock, CheckCircle, Circle, Trash2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -10,7 +10,7 @@ import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { Input } from '@/components/ui/input';
 
 // Import centralized composable types
-import { type ClinicalPatient, type QuickAction, type IPassBlock } from '../../../common/types';
+import { type ClinicalPatient, type IPassBlock } from '../../../common/types';
 
 interface ClinicalDocumentationProps {
   isOpen: boolean;
