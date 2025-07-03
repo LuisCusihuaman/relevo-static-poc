@@ -81,30 +81,25 @@ paths:
           in: path
           required: true
           schema: { type: string, description: "The ID of the hospital unit." }
+        - name: page
+          in: query
+          description: "Page number for pagination."
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          description: "Number of items per page for pagination."
+          schema:
+            type: integer
+            default: 25
       responses:
         '200':
-          description: "A list of patients in the specified unit available for assignment."
+          description: "A paginated list of patients in the specified unit available for assignment."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/PatientRosterItem'
-              examples:
-                example1:
-                  value:
-                    - id: "pat-abc-1"
-                      name: "John Doe"
-                      mrn: "MRN12345"
-                      dob: "2000-01-15"
-                      unitId: "unit-1"
-                      roomNumber: "101"
-                    - id: "pat-xyz-2"
-                      name: "Jane Smith"
-                      mrn: "MRN67890"
-                      dob: "1995-05-20"
-                      unitId: "unit-1"
-                      roomNumber: "102"
+                $ref: '#/components/schemas/PaginatedPatientsRoster'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -141,26 +136,26 @@ paths:
       summary: "Get Assigned Patients"
       description: |
         Retrieves the list of patients currently assigned to the authenticated clinician, used to populate the main Shift Hub and Patient Management views.
+      parameters:
+        - name: page
+          in: query
+          description: "Page number for pagination."
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          description: "Number of items per page for pagination."
+          schema:
+            type: integer
+            default: 25
       responses:
         '200':
-          description: "A list of the clinician's patients with their handover status."
+          description: "A paginated list of the clinician's patients with their handover status."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/PatientSummaryCard'
-              examples:
-                example1:
-                  value:
-                    - id: "pat-123"
-                      name: "Patient A"
-                      handoverStatus: "InProgress"
-                      handoverId: "hvo-abc-1"
-                    - id: "pat-456"
-                      name: "Patient B"
-                      handoverStatus: "NotStarted"
-                      handoverId: null
+                $ref: '#/components/schemas/PaginatedPatientSummaryCards'
         '401':
           $ref: '#/components/responses/Unauthorized'
 
@@ -213,30 +208,25 @@ paths:
           in: path
           required: true
           schema: { type: string, format: uuid }
+        - name: page
+          in: query
+          description: "Page number for pagination."
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          description: "Number of items per page for pagination."
+          schema:
+            type: integer
+            default: 25
       responses:
         '200':
-          description: "A list of the patient's handover sessions."
+          description: "A paginated list of the patient's handover sessions."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/PatientHandoverTimelineItem'
-              examples:
-                example1:
-                  value:
-                    - handoverId: "hvo-abc-1"
-                      status: "InProgress"
-                      createdAt: "2024-07-02T16:45:00Z"
-                      completedAt: null
-                      shiftName: "Day -> Evening"
-                      illnessSeverity: "Stable"
-                    - handoverId: "hvo-xyz-9"
-                      status: "Completed"
-                      createdAt: "2024-07-02T07:30:00Z"
-                      completedAt: "2024-07-02T08:15:00Z"
-                      shiftName: "Night -> Day"
-                      illnessSeverity: "Guarded"
+                $ref: '#/components/schemas/PaginatedPatientHandoverTimeline'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -289,15 +279,26 @@ paths:
       tags: [ User ]
       summary: "Get User Notifications"
       description: "Fetches a list of historical notifications for the authenticated user, supporting the NotificationsView feature."
+      parameters:
+        - name: page
+          in: query
+          description: "Page number for pagination."
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          description: "Number of items per page for pagination."
+          schema:
+            type: integer
+            default: 25
       responses:
         '200':
-          description: "A list of the user's notifications."
+          description: "A paginated list of the user's notifications."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Notification'
+                $ref: '#/components/schemas/PaginatedNotifications'
         '401':
           $ref: '#/components/responses/Unauthorized'
 
@@ -654,28 +655,25 @@ paths:
           in: path
           required: true
           schema: { type: string, format: uuid }
+        - name: page
+          in: query
+          description: "Page number for pagination."
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          description: "Number of items per page for pagination."
+          schema:
+            type: integer
+            default: 25
       responses:
         '200':
-          description: "A list of chat messages for the patient."
+          description: "A paginated list of chat messages for the patient."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ChatMessage'
-              examples:
-                example1:
-                  value:
-                    - id: "msg-1"
-                      userId: "user-clerk-1"
-                      userName: "Dr. Smith"
-                      content: "Patient's labs are back."
-                      timestamp: "2024-07-02T14:00:00Z"
-                    - id: "msg-2"
-                      userId: "user-clerk-2"
-                      userName: "Dr. Jones"
-                      content: "Great, what do they show?"
-                      timestamp: "2024-07-02T14:01:00Z"
+                $ref: '#/components/schemas/PaginatedChatMessages'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -980,6 +978,60 @@ components:
           enum: [ Stable, Watcher, Unstable ]
           description: "The illness severity at the end of the handover."
       required: [ handoverId, status, createdAt, shiftName, illnessSeverity ]
+
+    # PAGINATION SCHEMAS
+    PaginationInfo:
+      type: object
+      properties:
+        totalItems: { type: integer, description: "Total number of items available." }
+        totalPages: { type: integer, description: "Total number of pages." }
+        currentPage: { type: integer, description: "The current page number." }
+        pageSize: { type: integer, description: "Number of items per page." }
+    PaginatedPatientsRoster:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/PaginationInfo'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/PatientRosterItem'
+    PaginatedPatientSummaryCards:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/PaginationInfo'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/PatientSummaryCard'
+    PaginatedPatientHandoverTimeline:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/PaginationInfo'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/PatientHandoverTimelineItem'
+    PaginatedNotifications:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/PaginationInfo'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Notification'
+    PaginatedChatMessages:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/PaginationInfo'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChatMessage'
 
   responses:
     Unauthorized:
