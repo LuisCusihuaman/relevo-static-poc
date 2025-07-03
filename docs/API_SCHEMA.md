@@ -201,6 +201,46 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+  /patients/{patientId}/handovers:
+    get:
+      tags: [ Patients ]
+      summary: "Get Patient Handover Timeline"
+      description: |
+        Retrieves a chronological list of all handover sessions associated with a specific patient. 
+        This is used to build the interactive Patient Timeline for navigating between historical handovers.
+      parameters:
+        - name: patientId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: "A list of the patient's handover sessions."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PatientHandoverTimelineItem'
+              examples:
+                example1:
+                  value:
+                    - handoverId: "hvo-abc-1"
+                      status: "InProgress"
+                      createdAt: "2024-07-02T16:45:00Z"
+                      completedAt: null
+                      shiftName: "Day -> Evening"
+                      illnessSeverity: "Stable"
+                    - handoverId: "hvo-xyz-9"
+                      status: "Completed"
+                      createdAt: "2024-07-02T07:30:00Z"
+                      completedAt: "2024-07-02T08:15:00Z"
+                      shiftName: "Night -> Day"
+                      illnessSeverity: "Guarded"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
 
   /me/profile:
     get:
@@ -348,10 +388,10 @@ paths:
   /handovers/{handoverId}/history:
     get:
       tags: [ Handovers ]
-      summary: "Get Handover History"
+      summary: "Get Handover Activity History"
       description: |
-        Fetches the audit trail for a specific handover session to populate the HandoverHistory view.
-        This data is sourced from the AUDIT_LOGS table.
+        Fetches the human-readable activity log for a single handover session.
+        This data is generated on-demand by transforming raw data from the AUDIT_LOGS table into a user-friendly format.
       parameters:
         - name: handoverId
           in: path
@@ -359,7 +399,7 @@ paths:
           schema: { type: string, format: uuid }
       responses:
         '200':
-          description: "A list of historical events for the handover."
+          description: "A list of historical activity events for the handover."
           content:
             application/json:
               schema:
@@ -905,12 +945,44 @@ components:
         actionItems:
           type: array
           items: { $ref: '#/components/schemas/ActionItem' }
-        situationAwarenessDocId:
-          type: string
-          description: "ID for the Hocuspocus collaborative document."
+        situationAwareness:
+          type: object
+          properties:
+            content:
+              type: string
+              description: "The final content of the Situation Awareness document (e.g., Prosemirror JSON)."
         synthesis:
           $ref: '#/components/schemas/Synthesis'
       required: [ id, patientId, status, illnessSeverity, patientSummary, actionItems, situationAwarenessDocId ]
+    PatientHandoverTimelineItem:
+      type: object
+      description: "A summary of a single handover session for display in a patient's timeline."
+      properties:
+        handoverId:
+          type: string
+          format: uuid
+          description: "The unique ID for the handover session."
+        status:
+          type: string
+          enum: [ InProgress, Completed ]
+          description: "The status of the handover."
+        createdAt:
+          type: string
+          format: date-time
+          description: "The timestamp when the handover was initiated."
+        completedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: "The timestamp when the handover was completed."
+        shiftName:
+          type: string
+          description: "The name of the shift during which the handover occurred."
+        illnessSeverity:
+          type: string
+          enum: [ Stable, Watcher, Unstable ]
+          description: "The illness severity at the end of the handover."
+      required: [ handoverId, status, createdAt, shiftName, illnessSeverity ]
 
   responses:
     Unauthorized:
