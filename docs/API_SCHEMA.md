@@ -270,6 +270,7 @@ paths:
       summary: "Initiate a Handover"
       description: |
         Creates a new, stateful handover session for a specific patient, marking the beginning of the I-PASS workflow.
+        Upon successful creation, this process also initializes an associated collaborative document for 'Situation Awareness'.
       requestBody:
         required: true
         content:
@@ -785,9 +786,15 @@ components:
       type: object
       properties:
         userId: { type: string, description: "The Clerk user ID." }
-        theme: { type: string, enum: [ light, dark ], description: "User's preferred theme." }
-        notificationsEnabled: { type: boolean, description: "Whether user has enabled notifications." }
-      required: [ userId, theme, notificationsEnabled ]
+        roleName: { type: string, description: "The user's display-friendly role name." }
+        permissions:
+          type: array
+          items:
+            type: string
+          description: "A list of specific permissions granted to the user for conditional UI rendering."
+        theme: { type: string, enum: [ light, dark ] }
+        notificationsEnabled: { type: boolean }
+      required: [ userId, roleName, permissions, theme, notificationsEnabled ]
     UserProfileUpdate:
       type: object
       properties:
