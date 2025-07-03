@@ -38,7 +38,7 @@ graph TD
       
       subgraph "I-PASS Section Flow"
         J["<b>I - Illness Severity</b><br/>Set patient stability level.<br/>Input is synced in real-time. 🟡🔴"]
-        K["<b>P - Patient Summary</b><br/>Review patient history, vitals, and notes.<br/>Data is fetched and synced. 🔵🔴"]
+        K["<b>P - Patient Summary</b><br/>Review patient history, and notes.<br/>Data is fetched and synced. 🔵🔴"]
         L["<b>A - Action List</b><br/>Review and update a shared checklist of tasks.<br/>All changes are synced. 🟡🔴"]
         M["<b>S - Situation Awareness</b><br/>Collaboratively document contingency plans.<br/>All changes are synced. 🟡🔴"]
         N["<b>S - Synthesis by Receiver</b><br/>Receiving clinician summarizes and confirms understanding.<br/>Final input is synced and signed off. 🟡🔴"]
@@ -75,7 +75,7 @@ The Shift Hub is a dynamic, real-time feature that serves as the central navigat
 The I-PASS workflow is the application's cornerstone feature, orchestrating a safe and structured transfer of patient care. It is a stateful process, heavily reliant on both real-time synchronization and fetching external patient data.
 
   - **`I` - Illness Severity (🟡🔴)**: The giving clinician makes a subjective assessment of the patient's stability. This selection is a user-driven event (🟡) that is immediately broadcast to all collaborators in real-time (🔴).
-  - **`P` - Patient Summary (🔵🔴)**: This view presents a concise summary of the patient's case, pulling the most recent data from the hospital's EMR (vitals, labs, notes) (🔵). The content itself can be collaboratively discussed and edited in real-time (🔴).
+  - **`P` - Patient Summary (🔵🔴)**: This view presents a concise summary of the patient's case, pulling the most recent data from the hospital's EMR (labs, notes) (🔵). The content itself can be collaboratively discussed and edited in real-time (🔴).
   - **`A` - Action List (🟡🔴)**: A dynamic, shared checklist of pending tasks and follow-ups. Any team member can add, edit, or check off items (🟡), with all changes instantly synced for everyone else (🔴).
   - **`S` - Situation Awareness & Contingency Planning (🟡🔴)**: A collaborative text-editing field where clinicians can jointly document potential risks and "what-if" scenarios. All contributions are synced live (🔴).
   - **`S` - Synthesis by Receiver (🟡🔴)**: The final step. The receiving clinician must summarize the handover in their own words (🟡). This action is synced and serves as the digital signature, completing the handover and updating the patient's status on the main Shift Hub in real-time (🔴).

@@ -18,7 +18,7 @@ graph TD
         direction TB
         START_WORKFLOW["Start Handover for a Patient 🟡"]
         START_WORKFLOW --> I["<b>I - Illness Severity</b><br/>User sets patient stability level.<br/>Selection is synced live. 🟡🔴"]
-        I --> P["<b>P - Patient Summary</b><br/>Review patient chart, history, and vitals.<br/>EMR data is fetched; notes are synced. 🔵🔴"]
+        I --> P["<b>P - Patient Summary</b><br/>Review patient chart, history.<br/>EMR data is fetched; notes are synced. 🔵🔴"]
         P --> A["<b>A - Action List</b><br/>Collaboratively manage a shared checklist.<br/>All updates are synced live. 🟡🔴"]
         A --> S1["<b>S - Situation Awareness</b><br/>Jointly document contingency plans.<br/>All text edits are synced live. 🟡🔴"]
         S1 --> S2["<b>S - Synthesis by Receiver</b><br/>Receiver summarizes to confirm understanding.<br/>Final sign-off is synced live. 🟡🔴"]
