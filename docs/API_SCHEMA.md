@@ -643,20 +643,20 @@ paths:
   # --------------------------------------------------------------------------
   # Collaboration & Search Endpoints
   # --------------------------------------------------------------------------
-  /handovers/{handoverId}/messages:
+   /patients/{patientId}/messages:
     get:
       tags: [ Collaboration ]
       summary: "Get Chat History"
       description: |
         Retrieves the message history for the 'Discussion' tab in the CollaborationPanel.
       parameters:
-        - name: handoverId
+        - name: patientId
           in: path
           required: true
           schema: { type: string, format: uuid }
       responses:
         '200':
-          description: "A list of chat messages."
+          description: "A list of chat messages for the patient."
           content:
             application/json:
               schema:
@@ -684,9 +684,9 @@ paths:
       tags: [ Collaboration ]
       summary: "Persist a Chat Message"
       description: |
-        Saves a new chat message to the database. This endpoint is called by the NestJS service.
+        Saves a new chat message to a patient's discussion thread. Called by the NestJS service.
       parameters:
-        - name: handoverId
+        - name: patientId
           in: path
           required: true
           schema: { type: string, format: uuid }

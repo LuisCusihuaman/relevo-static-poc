@@ -372,20 +372,18 @@ COMMENT ON TABLE COLLAB_DOCUMENTS IS 'Persists the state of collaborative docume
 ```sql
 CREATE TABLE CHAT_MESSAGES (
     MessageId VARCHAR2(255) NOT NULL,
-    HandoverId VARCHAR2(255) NOT NULL,
+    PatientId VARCHAR2(255) NOT NULL, -- VINCULADO AL PACIENTE
     UserId VARCHAR2(255) NOT NULL,
-    UserName VARCHAR2(255), -- Denormalized for quick display
+    UserName VARCHAR2(255),
     Content CLOB NOT NULL,
     Timestamp TIMESTAMP DEFAULT SYSTIMESTAMP NOT NULL,
     -- CONSTRAINTS
     CONSTRAINT pk_chat_messages PRIMARY KEY (MessageId),
-    CONSTRAINT fk_chat_handover FOREIGN KEY (HandoverId) REFERENCES HANDOVERS(HandoverId) ON DELETE CASCADE,
+    CONSTRAINT fk_chat_patient FOREIGN KEY (PatientId) REFERENCES PATIENTS(PatientId) ON DELETE CASCADE,
     CONSTRAINT fk_chat_user FOREIGN KEY (UserId) REFERENCES USERS(UserId)
 );
 
-CREATE INDEX idx_chat_handoverid ON CHAT_MESSAGES(HandoverId);
-
-COMMENT ON TABLE CHAT_MESSAGES IS 'Stores chat message history for the Discussion tab in a handover.';
+CREATE INDEX idx_chat_patientid ON CHAT_MESSAGES(PatientId);
 ```
 
 ### **Table: `NOTIFICATIONS`**
