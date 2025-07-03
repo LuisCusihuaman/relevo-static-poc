@@ -67,8 +67,7 @@ RELEVO Application
 │
 └── 🛠️ Global Tools & Services
     ├── 🔍 Search (`CommandPalette.tsx`) [🔵🟡]
-    │   ├── Keyword Filtering (Client-side) [🟡]
-    │   └── Patient & Navigation Data Fetching [🔵]
+    │   └── Patient Search (Server-side) [🔵]
     │
     ├── 🔔 Notifications System (`NotificationsView.tsx`) [🔴]
     │   ├── Real-time Alert Pushing [🔴]
@@ -188,7 +187,8 @@ These features are nested within the `handover` workflow to enhance the user exp
 
 These are features accessible from multiple points within the application.
 
-- **`CommandPalette` / `search` (🔵🟡)**: A high-efficiency search tool for quick navigation and actions. It fetches a comprehensive list of patients and navigation links (🔵) and performs filtering on the client-side (🟡) for a responsive experience.
+- **`CommandPalette` / `search` (🔵🟡)**: A highly efficient search tool that operates in two modes:
+    - **Patient Search (Server 🔵):** Allows users to search the entire database for patients and action items. It uses the `GET /search` endpoint and relies on Oracle Text indexes to return fast and relevant results.
 - **`Notifications` (🔴)**: An inbox for real-time alerts, such as new lab results or urgent messages, pushed to the user from a central service.
 
 ### Feature Interconnection Matrix
