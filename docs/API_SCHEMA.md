@@ -156,9 +156,11 @@ paths:
                     - id: "pat-123"
                       name: "Patient A"
                       handoverStatus: "InProgress"
+                      handoverId: "hvo-abc-1"
                     - id: "pat-456"
                       name: "Patient B"
                       handoverStatus: "NotStarted"
+                      handoverId: null
         '401':
           $ref: '#/components/responses/Unauthorized'
 
@@ -243,9 +245,9 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 
 
-    # --------------------------------------------------------------------------
-    # Handover Workflow Endpoints
-    # --------------------------------------------------------------------------
+  # --------------------------------------------------------------------------
+  # Handover Workflow Endpoints
+  # --------------------------------------------------------------------------
   /handovers:
     post:
       tags: [ Handovers ]
@@ -558,9 +560,9 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-    # --------------------------------------------------------------------------
-    # Collaboration & Search Endpoints
-    # --------------------------------------------------------------------------
+  # --------------------------------------------------------------------------
+  # Collaboration & Search Endpoints
+  # --------------------------------------------------------------------------
   /handovers/{handoverId}/messages:
     get:
       tags: [ Collaboration ]
@@ -751,6 +753,11 @@ components:
         handoverStatus:
           type: string
           enum: [ NotStarted, InProgress, Completed ]
+        handoverId:
+          type: string
+          format: uuid
+          nullable: true
+          description: "The unique ID of the handover session if one exists. Null otherwise."
       required: [ id, name, handoverStatus ]
     HandoverCreationRequest:
       type: object
