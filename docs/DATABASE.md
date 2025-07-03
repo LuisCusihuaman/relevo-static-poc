@@ -4,7 +4,7 @@ This document provides a comprehensive overview of the Oracle 11g R2 database sc
 
 The schema is designed to support all core functionalities, including patient management, clinical handovers (I-PASS), real-time collaboration, Role-Based Access Control (RBAC), a persistent notification system, and comprehensive auditing for HIPAA compliance.
 
-## 1. Data Relationship Diagram (DRD)
+## 1\. Data Relationship Diagram (DRD)
 
 The following diagram has been updated to include new entities for `ROLES` and `NOTIFICATIONS` and illustrates the complete set of relationships within the database.
 
@@ -130,7 +130,7 @@ erDiagram
 
 ```
 
-## 2. Design Rationale and Key Concepts
+## 2\. Design Rationale and Key Concepts
 
 This section explains the core principles behind the database design, now updated with considerations from the UX and Backend Architecture documents.
 
@@ -138,28 +138,27 @@ This section explains the core principles behind the database design, now update
 
 The schema remains in Third Normal Form (3NF).
 
-- **Role-Based Access Control (RBAC)**: To support the RBAC mentioned in the backend architecture, a `ROLES` lookup table and a `RoleId` foreign key in the `USERS` table have been added. This is a robust and scalable way to manage user permissions.
-- **Junction Tables**: The `ASSIGNMENTS` table remains the key to the many-to-many relationship between `USERS` and `PATIENTS`.
+  - **Role-Based Access Control (RBAC)**: To support the RBAC mentioned in the backend architecture, a `ROLES` lookup table and a `RoleId` foreign key in the `USERS` table have been added. This is a robust and scalable way to manage user permissions.
+  - **Junction Tables**: The `ASSIGNMENTS` table remains the key to the many-to-many relationship between `USERS` and `PATIENTS`.
 
 ### 2.2. Indexing Strategy and Search
 
 The indexing strategy has been expanded to support the global `CommandPalette` search.
 
-- **Full-Text Search**: To power the `CommandPalette` search for both patients and action items, **Oracle Text** context indexes are defined.
-    
+  - **Full-Text Search**: To power the `CommandPalette` search for both patients and action items, **Oracle Text** context indexes are defined.
+
     ```
     -- Index for searching patient name and diagnosis
     CREATE INDEX idx_patients_search ON PATIENTS(FullName, PrimaryDiagnosis)
     INDEXTYPE IS CTXSYS.CONTEXT;
-    
+
     -- Index for searching action item descriptions
     CREATE INDEX idx_actionitems_search ON ACTION_ITEMS(Description)
     INDEXTYPE IS CTXSYS.CONTEXT;
-    
+
     ```
-    
-    The C# backend can now use the `CONTAINS` operator on both `PATIENTS` and `ACTION_ITEMS` tables to provide comprehensive search results as described in the API specification.
-    
+
+    The C\# backend can now use the `CONTAINS` operator on both `PATIENTS` and `ACTION_ITEMS` tables to provide comprehensive search results as described in the API specification.
 
 ### 2.3. Auditing for HIPAA Compliance
 
@@ -167,16 +166,20 @@ The `AUDIT_LOGS` table and its trigger-based population mechanism remain the cor
 
 ### 2.4. Real-time Features and Data Persistence
 
-- **Notifications**: The UX documentation specifies a `NotificationsView`. To support this with persistence, a `NOTIFICATIONS` table has been added. While the NestJS service pushes alerts in real-time, this table stores a history of notifications for a user, allowing them to review past alerts.
-- **Collaborative Content**: The `COLLAB_DOCUMENTS` table is the designated persistence layer for the Hocuspocus-managed `Situation Awareness` content, and `CHAT_MESSAGES` stores the history for the `Discussion` tab, aligning perfectly with the backend architecture.
+  - **Notifications**: The UX documentation specifies a `NotificationsView`. To support this with persistence, a `NOTIFICATIONS` table has been added. While the NestJS service pushes alerts in real-time, this table stores a history of notifications for a user, allowing them to review past alerts.
+  - **Collaborative Content**: The `COLLAB_DOCUMENTS` table is the designated persistence layer for the Hocuspocus-managed `Situation Awareness` content, and `CHAT_MESSAGES` stores the history for the `Discussion` tab, aligning perfectly with the backend architecture.
 
-## 3. Database Security
+### 2.5. Concurrency and Data Integrity
 
-- **Authentication**: Handled by Clerk.
-- **Authorization**: The new `ROLES` table provides the on-premise data structure needed for the C# backend to implement fine-grained authorization logic.
-- **Data Encryption at Rest**: Oracle Transparent Data Encryption (TDE) remains a critical security requirement.
+  - **Patient Assignment Atomicity**: A unique constraint is established on the `ASSIGNMENTS` table across `(PatientId, ShiftId, AssignmentDate)`. This is a critical feature to prevent a race condition where two clinicians might attempt to assign the same patient simultaneously during the "Daily Setup" flow. This constraint guarantees at the database level that a patient can only be assigned to one clinician per shift, ensuring data integrity.
 
-## 4. Oracle 11g R2 Database Schema
+## 3\. Database Security
+
+  - **Authentication**: Handled by Clerk.
+  - **Authorization**: The new `ROLES` table provides the on-premise data structure needed for the C\# backend to implement fine-grained authorization logic.
+  - **Data Encryption at Rest**: Oracle Transparent Data Encryption (TDE) remains a critical security requirement.
+
+## 4\. Oracle 11g R2 Database Schema
 
 This section details the `CREATE TABLE` statements, now including the new `ROLES` and `NOTIFICATIONS` tables.
 
@@ -222,8 +225,6 @@ COMMENT ON COLUMN USERS.RoleId IS 'Foreign key linking to the ROLES table to def
 
 ### **Table: `UNITS`**
 
-
-
 ```
 CREATE TABLE UNITS (
     UnitId VARCHAR2(255) NOT NULL,
@@ -236,8 +237,6 @@ COMMENT ON TABLE UNITS IS 'Lookup table for hospital units (e.g., PICU, NICU).';
 ```
 
 ### **Table: `SHIFTS`**
-
-
 
 ```
 CREATE TABLE SHIFTS (
@@ -253,8 +252,6 @@ COMMENT ON TABLE SHIFTS IS 'Lookup table for available work shifts (e.g., Day Sh
 ```
 
 ### **Table: `PATIENTS`**
-
-
 
 ```
 CREATE TABLE PATIENTS (
@@ -290,8 +287,6 @@ COMMENT ON COLUMN PATIENTS.Medications IS 'Stores a JSON array of current medica
 
 ### **Table: `ASSIGNMENTS`**
 
-
-
 ```
 CREATE TABLE ASSIGNMENTS (
     AssignmentId VARCHAR2(255) NOT NULL,
@@ -304,19 +299,18 @@ CREATE TABLE ASSIGNMENTS (
     CONSTRAINT fk_assignments_user FOREIGN KEY (UserId) REFERENCES USERS(UserId),
     CONSTRAINT fk_assignments_patient FOREIGN KEY (PatientId) REFERENCES PATIENTS(PatientId),
     CONSTRAINT fk_assignments_shift FOREIGN KEY (ShiftId) REFERENCES SHIFTS(ShiftId),
-    CONSTRAINT uq_assignments_user_patient_date UNIQUE (UserId, PatientId, AssignmentDate)
+    CONSTRAINT uq_assignments_patient_shift_date UNIQUE (PatientId, ShiftId, AssignmentDate)
 );
 
 CREATE INDEX idx_assignments_userid ON ASSIGNMENTS(UserId);
 CREATE INDEX idx_assignments_patientid ON ASSIGNMENTS(PatientId);
 
 COMMENT ON TABLE ASSIGNMENTS IS 'Links a clinician (user) to patients for a specific shift and date.';
+COMMENT ON CONSTRAINT uq_assignments_patient_shift_date ON ASSIGNMENTS IS 'Ensures a patient can only be assigned to one user per shift on a given day to prevent race conditions.';
 
 ```
 
 ### **Table: `HANDOVERS`**
-
-
 
 ```
 CREATE TABLE HANDOVERS (
@@ -346,8 +340,6 @@ COMMENT ON TABLE HANDOVERS IS 'Central table for managing the state of an I-PASS
 
 ### **Table: `ACTION_ITEMS`**
 
-
-
 ```
 CREATE TABLE ACTION_ITEMS (
     ActionItemId VARCHAR2(255) NOT NULL,
@@ -369,8 +361,6 @@ COMMENT ON TABLE ACTION_ITEMS IS 'Stores individual tasks within a handover''s s
 
 ### **Table: `COLLAB_DOCUMENTS`**
 
-
-
 ```
 CREATE TABLE COLLAB_DOCUMENTS (
     DocumentId VARCHAR2(255) NOT NULL,
@@ -388,8 +378,6 @@ COMMENT ON TABLE COLLAB_DOCUMENTS IS 'Persists the state of collaborative docume
 ```
 
 ### **Table: `CHAT_MESSAGES`**
-
-
 
 ```
 CREATE TABLE CHAT_MESSAGES (
