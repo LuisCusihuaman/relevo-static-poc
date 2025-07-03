@@ -932,18 +932,6 @@ components:
 security:
   - ClerkAuth: [ ]
 ```
-
-### OTHER API SPECIFICATIONS
-
-| Method | Path | Description | Justification |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/setup/shifts` | **Get Available Shifts**: Fetches a list of available shift times (e.g., "Day," "Night"). | The "Daily Setup" flow requires the user to select their shift to help filter the patient list. The API provides an endpoint for units (`/setup/units`) but not for shifts. |
-| `GET` | `/units/{unitId}/patients` | **Get Available Patients for Assignment**: Retrieves a roster of patients within a specific hospital unit who are available to be assigned to a clinician. | During setup, after selecting a unit, the clinician must "Assign Patients" from an "available list". The current `/me/patients` endpoint only fetches patients *already* assigned, but there is no mechanism to get the initial list of unassigned patients. |
-| `GET` | `/patients/{patientId}` | **Get Patient Details**: Fetches comprehensive, read-only information for a single patient to populate the `PatientDetailView`. | The patient management flow describes a detailed view with "comprehensive patient information" and access to the "full medical record". The existing `/me/patients` endpoint returns only a summary card, which is insufficient for this detailed view. |
-| `GET` | `/me/profile` | **Get User Profile**: Retrieves the current user's preferences, such as theme or notification settings. | The application hub includes a `profile` feature for managing user preferences, which requires an endpoint to fetch the current settings. |
-| `PUT` | `/me/profile` | **Update User Profile**: Updates the current user's preferences. | The `profile` feature allows users to *manage* their preferences, which implies the ability to change and save them. |
-| `PUT` | `/handovers/{handoverId}/situationAwareness` | **Update Situation Awareness (Auto-save)**: Updates the content of the collaborative `Situation Awareness` section. | The workflow documentation explicitly states that `Situation Awareness` is a collaborative text field where "All changes are synced live" and "auto-saved continuously to the database". While real-time text sync is handled by Hocuspocus, the auto-save mechanism requires an HTTP endpoint for the real-time service to persist the document content to the primary database. The `Handover` schema includes a `situationAwarenessDocId` but no endpoint to actually save the associated content.
-
 ### **Webhook & WebSocket Specifications**
 
 The real-time communication specifications now include new events for patient summary updates and action item deletions.
