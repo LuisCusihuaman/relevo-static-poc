@@ -812,11 +812,12 @@ components:
       type: object
       properties:
         id: { type: string }
-        userName: { type: string }
+        userId: { type: string, description: "The permanent ID of the user who performed the action." }
+        userName: { type: string, description: "The display name of the user at the time the action was performed." }
         action: { type: string }
         timestamp: { type: string, format: date-time }
         details: { type: string }
-      required: [ id, userName, action, timestamp ]
+      required: [ id, userId, userName, action, timestamp ]
     UserProfile:
       type: object
       properties:

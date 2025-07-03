@@ -111,6 +111,7 @@ erDiagram
     HUMAN_READABLE_HISTORY {
         NUMBER HistoryId PK
         VARCHAR2(255) HandoverId FK
+        VARCHAR2(255) UserId FK
         VARCHAR2(255) UserName
         VARCHAR2(255) Action
         CLOB Details
@@ -131,6 +132,7 @@ erDiagram
     USERS ||--o{ NOTIFICATIONS : "receives"
     HANDOVERS ||--o{ NOTIFICATIONS : "can trigger"
     HANDOVERS ||--o{ HUMAN_READABLE_HISTORY : "has"
+    USERS ||--o{ HUMAN_READABLE_HISTORY : "generates"
 
 ```
 
@@ -377,9 +379,9 @@ CREATE TABLE CHAT_MESSAGES (
 
 CREATE INDEX idx_chat_patientid ON CHAT_MESSAGES(PatientId);
 
-COMMENT ON TABLE CHAT_MESSAGES IS 'Stores the persistent chat message history for each patient.';
+COMMENT ON TABLE CHAT_MESSAGES IS 'Stores the persistent chat message history for each patient. It uses a hybrid model, storing both UserId (for permanent reference) and a denormalized UserName (for performance and historical accuracy).';
 COMMENT ON COLUMN CHAT_MESSAGES.PatientId IS 'Links the message to the relevant patient, creating a patient-specific discussion thread.';
-
+COMMENT ON COLUMN CHAT_MESSAGES.UserName IS 'Denormalized for performance. Stores the user''s name at the time the message was sent to ensure historical accuracy.';
 ```
 
 ### **Table: `NOTIFICATIONS`**
@@ -467,16 +469,19 @@ CREATE SEQUENCE human_readable_history_seq
 CREATE TABLE HUMAN_READABLE_HISTORY (
     HistoryId NUMBER NOT NULL,
     HandoverId VARCHAR2(255) NOT NULL,
+    UserId VARCHAR2(255) NOT NULL,
     UserName VARCHAR2(255),
     Action VARCHAR2(255) NOT NULL,
     Details CLOB,
     Timestamp TIMESTAMP DEFAULT SYSTIMESTAMP NOT NULL,
     -- CONSTRAINTS
     CONSTRAINT pk_human_readable_history PRIMARY KEY (HistoryId),
-    CONSTRAINT fk_history_handover FOREIGN KEY (HandoverId) REFERENCES HANDOVERS(HandoverId) ON DELETE CASCADE
+    CONSTRAINT fk_history_handover FOREIGN KEY (HandoverId) REFERENCES HANDOVERS(HandoverId) ON DELETE CASCADE,
+    CONSTRAINT fk_history_user FOREIGN KEY (UserId) REFERENCES USERS(UserId)
 );
 
 CREATE INDEX idx_history_handoverid ON HUMAN_READABLE_HISTORY(HandoverId);
+CREATE INDEX idx_history_userid ON HUMAN_READABLE_HISTORY(UserId);
 
 -- A trigger is used to automatically populate the primary key from the sequence.
 CREATE OR REPLACE TRIGGER trg_human_readable_history_pk
@@ -489,5 +494,6 @@ BEGIN
 END;
 /
 
-COMMENT ON TABLE HUMAN_READABLE_HISTORY IS 'Stores pre-formatted, human-readable audit log entries for fast retrieval by the UI, populated by a background job.';
+COMMENT ON TABLE HUMAN_READABLE_HISTORY IS 'Stores pre-formatted, human-readable audit log entries for fast retrieval by the UI. It is populated by a background job and uses a hybrid data model, storing both UserId and the point-in-time UserName for historical accuracy and performance.';
+COMMENT ON COLUMN HUMAN_READABLE_HISTORY.UserName IS 'Denormalized for performance. Stores the user''s name at the time the action was performed to ensure the audit trail is historically accurate.';
 ```
