@@ -945,12 +945,9 @@ components:
         actionItems:
           type: array
           items: { $ref: '#/components/schemas/ActionItem' }
-        situationAwareness:
-          type: object
-          properties:
-            content:
-              type: string
-              description: "The final content of the Situation Awareness document (e.g., Prosemirror JSON)."
+        situationAwarenessDocId:
+          type: string
+          description: "The unique ID for the collaborative Situation Awareness document. The client uses this ID to connect to the real-time Hocuspocus service."
         synthesis:
           $ref: '#/components/schemas/Synthesis'
       required: [ id, patientId, status, illnessSeverity, patientSummary, actionItems, situationAwarenessDocId ]

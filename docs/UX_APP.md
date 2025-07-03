@@ -24,7 +24,7 @@ RELEVO Application
 │   └── Routing Logic (Conditional Rendering)
 │
 ├── 🚀 Setup Phase (`DailySetup.tsx`) [🔵🟡]
-│   ├── 1. Enter Clinician Info (`Input`) [🟡]
+│   ├── 1. Clinician Identity Confirmed (via authentication) [🟡]
 │   ├── 2. Select Unit (`unitsConfig`) [🔵]
 │   ├── 3. Select Shift (`shiftsConfig`) [🔵]
 │   └── 4. Assign Patients (`PatientSelectionCard`) [🔵🟡]
@@ -151,10 +151,10 @@ graph TD
 
 ### 1\. **Setup Phase (`daily-setup`)**
 
-- **Purpose**: The mandatory entry point for any clinician starting their shift. It configures the user's session by gathering necessary credentials and patient assignments.
+- **Purpose**: The mandatory entry point for any clinician starting their shift. It uses the authenticated clinician's identity to configure the session with their selected unit, shift, and patient assignments.
 - **Data Flow**:
     - Initiates API calls (🔵) to fetch foundational hospital data, including lists of medical units, shift times, and available patients.
-    - Captures user input (🟡) for clinician name, credentials, and patient selection. This is a series of standard form submissions.
+    - Captures user input (🟡) for unit, shift, and patient selection. The clinician's identity is automatically established via the active authentication session.
 - **Key Components**: `DailySetup.tsx`, `PatientSelectionCard.tsx`.
 
 ### 2\. **Main Application Hub (`dashboard`)**
