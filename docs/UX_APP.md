@@ -2,7 +2,6 @@
 
 ## Overview
 RELEVO is a digital medical handoff platform for Hospital Garrahan that implements the I-PASS methodology for safe, standardized patient care transitions between medical professionals. This documentation outlines the complete information architecture, user flows, and interaction patterns that enable healthcare professionals to conduct secure, efficient, and collaborative patient handovers. The platform emphasizes real-time collaboration, comprehensive documentation, and seamless workflow integration while maintaining strict medical data privacy and security standards.
-RELEVO is a digital medical handover platform for Hospital Garrahan that implements the I-PASS methodology. This documentation outlines the complete information architecture, user flows, and interaction patterns.
 
 ### **Feature Classification Key**
 
@@ -60,7 +59,7 @@ RELEVO Application
 │       │   ├── Discussion/Chat Tab [🔴]
 │       │   └── Activity Feed Tab [🔴]
 │       │
-│       ├── 📖 Handover History (`HandoverHistory.tsx`) [🔵]
+│       ├── 📖 Patient Timeline (`PatientTimeline.tsx`) [🔵🟡]
 │       │
 │       └── ↔️ Fullscreen Editor (`FullscreenEditor.tsx`) [🔴🔵]
 │           ├── Static Mode (for Patient Summary) [🔵🟡]
@@ -78,7 +77,6 @@ RELEVO Application
     └── 👤 Profile & Settings (`ProfileView.tsx`) [🟡]
         ├── View/Edit User Preferences
         └── View Account Information
-
 ```
 
 ### Feature Interconnection Matrix (Detailed)
@@ -148,12 +146,11 @@ graph TD
 
     %% Final connection to show handover completion updating the dashboard
     F -- Updates Status --> D;
-
 ```
 
 ### Detailed Architecture Description
 
-### 1. **Setup Phase (`daily-setup`)**
+### 1\. **Setup Phase (`daily-setup`)**
 
 - **Purpose**: The mandatory entry point for any clinician starting their shift. It configures the user's session by gathering necessary credentials and patient assignments.
 - **Data Flow**:
@@ -161,7 +158,7 @@ graph TD
     - Captures user input (🟡) for clinician name, credentials, and patient selection. This is a series of standard form submissions.
 - **Key Components**: `DailySetup.tsx`, `PatientSelectionCard.tsx`.
 
-### 2. **Main Application Hub (`dashboard`)**
+### 2\. **Main Application Hub (`dashboard`)**
 
 - **Purpose**: The central navigation and status hub for the clinician's shift. It provides a real-time overview of assigned patients and their handover status.
 - **Data Flow**:
@@ -169,7 +166,7 @@ graph TD
     - Serves as the primary navigation point to all other core features.
 - **Key Components**: `ContextAwareDashboard.tsx`, `AppSidebar.tsx`, `PatientListView.tsx`.
 
-### 3. **Core Handover Workflow (`handover`)**
+### 3\. **Core Handover Workflow (`handover`)**
 
 - **Purpose**: The application's cornerstone feature for conducting structured I-PASS handovers. It is a stateful, collaborative environment.
 - **Data Flow**:
@@ -183,10 +180,11 @@ graph TD
 These features are nested within the `handover` workflow to enhance the user experience.
 
 - **`CollaborationPanel` (🔴🔵)**: A sidebar for real-time chat and an activity feed. It loads initial comment history (🔵) and then receives live messages and presence updates (🔴).
+- **`PatientTimeline` (🔵🟡)**: A new key feature that replaces the static `HandoverHistory` view. This component is an **interactive timeline** that displays a summary of all past and current handover sessions for a patient. It is populated by an initial API call (`GET /patients/{patientId}/handovers`). When a user clicks on a past handover (🟡), it triggers another API call (`GET /handovers/{handoverId}`) to load the complete, read-only state of that historical session into the main content area.
 - **`FullscreenEditor` (🔴🔵)**: A context-aware modal for focused editing. It operates in a static mode (fetching and saving via single actions 🔵🟡) for sections like `Patient Summary` and a real-time collaborative mode (auto-saving and syncing 🔴) for `Situation Awareness`.
 - **`Focus Mode` (🟡)**: A purely client-side UI feature that toggles the visibility of non-essential elements to reduce cognitive load. It does not interact with any external data sources or real-time services.
 
-### 5. **Global Tools**
+### 5\. **Global Tools**
 
 These are features accessible from multiple points within the application.
 
