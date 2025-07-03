@@ -6,7 +6,7 @@ The schema is designed to support all core functionalities, including patient ma
 
 ## 1\. Data Relationship Diagram (DRD)
 
-The following diagram has been updated to include new entities for `ROLES` and `NOTIFICATIONS` and illustrates the complete set of relationships within the database.
+The following diagram has been updated to reflect that chat messages are now directly related to a patient.
 
 ```
 erDiagram
@@ -85,7 +85,7 @@ erDiagram
 
     CHAT_MESSAGES {
         VARCHAR2(255) MessageId PK
-        VARCHAR2(255) HandoverId FK
+        VARCHAR2(255) PatientId FK
         VARCHAR2(255) UserId FK
         VARCHAR2(255) UserName
         CLOB Content
@@ -119,16 +119,18 @@ erDiagram
     SHIFTS ||--o{ ASSIGNMENTS : "has"
     UNITS ||--o{ PATIENTS : "houses"
     PATIENTS ||--o{ HANDOVERS : "has"
+    PATIENTS ||--o{ CHAT_MESSAGES : "has"
     USERS ||--o{ HANDOVERS : "initiates"
     HANDOVERS ||--o{ ACTION_ITEMS : "contains"
     HANDOVERS ||--o{ COLLAB_DOCUMENTS : "has"
-    HANDOVERS ||--o{ CHAT_MESSAGES : "has"
     USERS ||--o{ CHAT_MESSAGES : "sends"
     USERS ||--o{ AUDIT_LOGS : "performs"
     USERS ||--o{ NOTIFICATIONS : "receives"
     HANDOVERS ||--o{ NOTIFICATIONS : "can trigger"
 
 ```
+
+-----
 
 ## 2\. Design Rationale and Key Concepts
 
@@ -166,7 +168,8 @@ The `AUDIT_LOGS` table is the cornerstone of the compliance strategy. Log entrie
 ### 2.4. Real-time Features and Data Persistence
 
   - **Notifications**: The UX documentation specifies a `NotificationsView`. To support this with persistence, a `NOTIFICATIONS` table has been added. While the NestJS service pushes alerts in real-time, this table stores a history of notifications for a user, allowing them to review past alerts.
-  - **Collaborative Content**: The `COLLAB_DOCUMENTS` table is the designated persistence layer for the Hocuspocus-managed `Situation Awareness` content, and `CHAT_MESSAGES` stores the history for the `Discussion` tab, aligning perfectly with the backend architecture.
+  - **Collaborative Content**: The `COLLAB_DOCUMENTS` table is the designated persistence layer for the Hocuspocus-managed `Situation Awareness` content.
+  - **Patient-Scoped Chat**: To provide a continuous and contextually relevant communication channel, `CHAT_MESSAGES` are linked directly to a `PatientId`. This creates a single, persistent discussion thread for each patient throughout their stay.
 
 ### 2.5. Concurrency and Data Integrity
 
@@ -369,12 +372,14 @@ COMMENT ON TABLE COLLAB_DOCUMENTS IS 'Persists the state of collaborative docume
 
 ### **Table: `CHAT_MESSAGES`**
 
+This table stores the persistent chat log for each patient.
+
 ```sql
 CREATE TABLE CHAT_MESSAGES (
     MessageId VARCHAR2(255) NOT NULL,
-    PatientId VARCHAR2(255) NOT NULL, -- VINCULADO AL PACIENTE
+    PatientId VARCHAR2(255) NOT NULL,
     UserId VARCHAR2(255) NOT NULL,
-    UserName VARCHAR2(255),
+    UserName VARCHAR2(255), -- Denormalized for quick display
     Content CLOB NOT NULL,
     Timestamp TIMESTAMP DEFAULT SYSTIMESTAMP NOT NULL,
     -- CONSTRAINTS
@@ -384,6 +389,10 @@ CREATE TABLE CHAT_MESSAGES (
 );
 
 CREATE INDEX idx_chat_patientid ON CHAT_MESSAGES(PatientId);
+
+COMMENT ON TABLE CHAT_MESSAGES IS 'Stores the persistent chat message history for each patient.';
+COMMENT ON COLUMN CHAT_MESSAGES.PatientId IS 'Links the message to the relevant patient, creating a patient-specific discussion thread.';
+
 ```
 
 ### **Table: `NOTIFICATIONS`**
