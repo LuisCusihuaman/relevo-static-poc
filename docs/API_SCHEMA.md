@@ -115,7 +115,7 @@ paths:
       tags: [ Setup ]
       summary: "Assign Patients for a Shift"
       description: |
-        Assigns a list of selected patients to the currently authenticated clinician for their shift. This is the final step of the Daily Setup.
+        Assigns a list of selected patients to the currently authenticated clinician for their selected shift. This is the final step of the Daily Setup.
       requestBody:
         required: true
         content:
@@ -125,6 +125,7 @@ paths:
             examples:
               example1:
                 value:
+                  shiftId: "shift-day"
                   patientIds: [ "pat-123", "pat-456" ]
       responses:
         '204':
@@ -193,12 +194,6 @@ paths:
                     diagnosis: "Asthma Exacerbation"
                     allergies: [ "Penicillin" ]
                     medications: [ "Albuterol", "Prednisone" ]
-                    vitals:
-                      bloodPressure: "110/70"
-                      heartRate: 85
-                      temperature: 37.2
-                      respiratoryRate: 20
-                      lastUpdated: "2024-07-02T10:30:00Z"
                     notes: "Patient stable, requiring nebulizer treatments every 4 hours."
         '401':
           $ref: '#/components/responses/Unauthorized'
@@ -363,7 +358,6 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
-  
   /handovers/{handoverId}/illnessSeverity:
     put:
       tags: [ Handovers ]
@@ -436,7 +430,6 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
-  
   /handovers/{handoverId}/actionItems/{itemId}:
     put:
       tags: [ Handovers ]
@@ -615,12 +608,12 @@ paths:
           in: path
           required: true
           schema: { type: string, format: uuid }
-  requestBody:
-    required: true
-    content:
-      application/json:
-        schema:
-          $ref: '#/components/schemas/ChatMessageCreateRequest'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatMessageCreateRequest'
             examples:
               example1:
                 value:
@@ -648,7 +641,6 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
-  
   /search:
     get:
       tags: [ Search ]
@@ -725,15 +717,6 @@ components:
         diagnosis: { type: string, description: "Primary diagnosis." }
         allergies: { type: array, items: { type: string }, description: "List of known allergies." }
         medications: { type: array, items: { type: string }, description: "List of current medications." }
-        vitals:
-          type: object
-          properties:
-            bloodPressure: { type: string }
-            heartRate: { type: integer }
-            temperature: { type: number, format: float }
-            respiratoryRate: { type: integer }
-            lastUpdated: { type: string, format: date-time }
-          required: [ bloodPressure, heartRate, temperature, respiratoryRate, lastUpdated ]
         notes: { type: string, description: "General clinical notes (mock content)." }
       required: [ id, name, mrn, dob, currentUnit, roomNumber ]
     UserProfile:
@@ -752,11 +735,14 @@ components:
     PatientAssignmentRequest:
       type: object
       properties:
+        shiftId:
+          type: string
+          description: "The ID of the shift for which the patients are being assigned."
         patientIds:
           type: array
           items: { type: string }
           description: "List of patient IDs to assign to the clinician."
-      required: [ patientIds ]
+      required: [ shiftId, patientIds ]
     PatientSummaryCard:
       type: object
       properties:
@@ -793,14 +779,14 @@ components:
         content: { type: string }
         timestamp: { type: string, format: date-time }
       required: [ id, userId, userName, content, timestamp ]
-  ChatMessageCreateRequest:
-    type: object
-    properties:
-      userId: { type: string, description: "Clerk user ID of the sender." }
-      userName: { type: string, description: "Display name of the sender." }
-      content: { type: string }
-      timestamp: { type: string, format: date-time }
-    required: [ userId, userName, content, timestamp ]
+    ChatMessageCreateRequest:
+      type: object
+      properties:
+        userId: { type: string, description: "Clerk user ID of the sender." }
+        userName: { type: string, description: "Display name of the sender." }
+        content: { type: string }
+        timestamp: { type: string, format: date-time }
+      required: [ userId, userName, content, timestamp ]
     SearchResult:
       type: object
       properties:
@@ -810,7 +796,7 @@ components:
         description: { type: string, description: "Secondary text (e.g., patient MRN or unit)." }
       required: [ id, type, title, description ]
 
-      # HANDOVER SUB-COMPONENTS
+    # HANDOVER SUB-COMPONENTS
     IllnessSeverity:
       type: object
       properties:
@@ -829,7 +815,7 @@ components:
         content: { type: string, description: "The receiving clinician's summary of the handover." }
       required: [ content ]
 
-      # MAIN HANDOVER RESOURCE
+    # MAIN HANDOVER RESOURCE
     Handover:
       type: object
       properties:
@@ -868,7 +854,6 @@ components:
       description: "Clerk-issued JSON Web Token (JWT) is required for all endpoints."
 security:
   - ClerkAuth: [ ]
-
 ```
 
 ### OTHER API SPECIFICATIONS
@@ -1227,17 +1212,6 @@ This schema outlines the endpoints and response structures that the `hospital-mo
               "type": "string"
             },
             "description": "List of current medications."
-          },
-          "vitals": {
-            "type": "object",
-            "properties": {
-              "bloodPressure": { "type": "string" },
-              "heartRate": { "type": "integer" },
-              "temperature": { "type": "number", "format": "float" },
-              "respiratoryRate": { "type": "integer" },
-              "lastUpdated": { "type": "string", "format": "date-time" }
-            },
-            "required": ["bloodPressure", "heartRate", "temperature", "respiratoryRate", "lastUpdated"]
           },
           "notes": {
             "type": "string",
