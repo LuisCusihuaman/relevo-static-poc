@@ -244,6 +244,22 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
+  /me/notifications:
+    get:
+      tags: [ User ]
+      summary: "Get User Notifications"
+      description: "Fetches a list of historical notifications for the authenticated user, supporting the NotificationsView feature."
+      responses:
+        '200':
+          description: "A list of the user's notifications."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Notification'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   # --------------------------------------------------------------------------
   # Handover Workflow Endpoints
@@ -328,14 +344,39 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
+  /handovers/{handoverId}/history:
+    get:
+      tags: [ Handovers ]
+      summary: "Get Handover History"
+      description: |
+        Fetches the audit trail for a specific handover session to populate the HandoverHistory view.
+        This data is sourced from the AUDIT_LOGS table.
+      parameters:
+        - name: handoverId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: "A list of historical events for the handover."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/HandoverHistoryEvent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
   /handovers/{handoverId}/patientSummary:
     put:
       tags: [ Handovers ]
       summary: "Update Patient Summary (Static)"
       description: |
-        Updates the content of the Patient Summary section. This is a non-real-time, explicit save action performed from the FullscreenEditor's static mode, typically restricted to the assigned physician.
-        
-        Triggers the `PATIENT_SUMMARY_UPDATED` webhook to notify clients.
+        Updates the content of the Patient Summary section. This is a non-real-time, explicit save action.
+        Triggers a `PATIENT_SUMMARY_UPDATED` webhook.
       parameters:
         - name: handoverId
           in: path
@@ -360,14 +401,14 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+
   /handovers/{handoverId}/illnessSeverity:
     put:
       tags: [ Handovers ]
       summary: "Update Illness Severity"
       description: |
         Sets or updates the patient's stability level.
-        
-        Triggers the `ILLNESS_SEVERITY_UPDATED` webhook to broadcast the change in real-time.
+        Triggers the `ILLNESS_SEVERITY_UPDATED` webhook to broadcast the change.
       parameters:
         - name: handoverId
           in: path
@@ -397,8 +438,7 @@ paths:
       summary: "Create an Action Item"
       description: |
         Adds a new task to the shared Action List.
-        
-        Triggers the `ACTION_ITEM_CREATED` webhook to broadcast the change.
+        Triggers the `ACTION_ITEM_CREATED` webhook.
       parameters:
         - name: handoverId
           in: path
@@ -432,13 +472,14 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+
   /handovers/{handoverId}/actionItems/{itemId}:
     put:
       tags: [ Handovers ]
       summary: "Update an Action Item"
       description: |
         Updates an existing task in the Action List (e.g., marks as complete, edits text).
-        
+
         Triggers the `ACTION_ITEM_UPDATED` webhook.
       parameters:
         - name: handoverId
@@ -473,7 +514,6 @@ paths:
       summary: "Delete an Action Item"
       description: |
         Deletes a task from the shared Action List.
-        
         Triggers the `ACTION_ITEM_DELETED` webhook.
       parameters:
         - name: handoverId
@@ -532,9 +572,8 @@ paths:
       tags: [ Handovers ]
       summary: "Submit Synthesis and Complete Handover"
       description: |
-        The receiving clinician submits their summary and confirms understanding, completing the I-PASS workflow.
-        
-        Triggers both the `SYNTHESIS_COMPLETED` and `HANDOVER_STATUS_CHANGED` webhooks.
+        The receiving clinician submits their summary, completing the I-PASS workflow.
+        Triggers `SYNTHESIS_COMPLETED` and `HANDOVER_STATUS_CHANGED` webhooks.
       parameters:
         - name: handoverId
           in: path
@@ -568,7 +607,7 @@ paths:
       tags: [ Collaboration ]
       summary: "Get Chat History"
       description: |
-        Retrieves the initial message history for the 'Discussion' tab in the CollaborationPanel.
+        Retrieves the message history for the 'Discussion' tab in the CollaborationPanel.
       parameters:
         - name: handoverId
           in: path
@@ -604,7 +643,7 @@ paths:
       tags: [ Collaboration ]
       summary: "Persist a Chat Message"
       description: |
-        Saves a new chat message to the database. This endpoint is called by the NestJS service after a message is first received via WebSocket, not directly by the client.
+        Saves a new chat message to the database. This endpoint is called by the NestJS service.
       parameters:
         - name: handoverId
           in: path
@@ -643,12 +682,13 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+
   /search:
     get:
       tags: [ Search ]
       summary: "Global Search"
       description: |
-        Performs a full-text search across patients to power the CommandPalette (⌘K) feature. Powered by Oracle Text for efficiency.
+        Performs a full-text search across patients and action items to power the CommandPalette. Powered by Oracle Text.
       parameters:
         - name: query
           in: query
@@ -678,6 +718,7 @@ paths:
                       description: "Handover for Jane Smith"
         '401':
           $ref: '#/components/responses/Unauthorized'
+
 components:
   schemas:
     # REQUEST/RESPONSE BODIES
@@ -721,6 +762,25 @@ components:
         medications: { type: array, items: { type: string }, description: "List of current medications." }
         notes: { type: string, description: "General clinical notes (mock content)." }
       required: [ id, name, mrn, dob, currentUnit, roomNumber ]
+    Notification:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        handoverId: { type: string, format: uuid, nullable: true }
+        title: { type: string }
+        message: { type: string }
+        isRead: { type: boolean }
+        createdAt: { type: string, format: date-time }
+      required: [ id, title, message, isRead, createdAt ]
+    HandoverHistoryEvent:
+      type: object
+      properties:
+        id: { type: string }
+        userName: { type: string }
+        action: { type: string }
+        timestamp: { type: string, format: date-time }
+        details: { type: string }
+      required: [ id, userName, action, timestamp ]
     UserProfile:
       type: object
       properties:
@@ -844,6 +904,7 @@ components:
         synthesis:
           $ref: '#/components/schemas/Synthesis'
       required: [ id, patientId, status, illnessSeverity, patientSummary, actionItems, situationAwarenessDocId ]
+
   responses:
     Unauthorized:
       description: "Unauthorized - JWT is missing or invalid."
@@ -853,12 +914,14 @@ components:
       description: "Bad Request - The request body is invalid."
     NotFound:
       description: "Not Found - The specified resource does not exist."
+
   securitySchemes:
     ClerkAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
       description: "Clerk-issued JSON Web Token (JWT) is required for all endpoints."
+
 security:
   - ClerkAuth: [ ]
 ```
