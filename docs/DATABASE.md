@@ -12,14 +12,8 @@ The following diagram has been updated to reflect that chat messages are now dir
 erDiagram
     USERS {
         VARCHAR2(255) UserId PK "Clerk User ID"
-        VARCHAR2(255) RoleId FK
         VARCHAR2(10) Theme
         CHAR(1) NotificationsEnabled
-    }
-
-    ROLES {
-        VARCHAR2(255) RoleId PK
-        VARCHAR2(100) RoleName "e.g., Physician, Nurse"
     }
 
     PATIENTS {
@@ -113,7 +107,6 @@ erDiagram
         TIMESTAMP Timestamp
     }
 
-    USERS ||--|{ ROLES : "has"
     USERS ||--o{ ASSIGNMENTS : "has"
     PATIENTS ||--o{ ASSIGNMENTS : "has"
     SHIFTS ||--o{ ASSIGNMENTS : "has"
@@ -140,7 +133,7 @@ This section explains the core principles behind the database design, now update
 
 The schema remains in Third Normal Form (3NF).
 
-  - **Role-Based Access Control (RBAC)**: To support the RBAC mentioned in the backend architecture, a `ROLES` lookup table and a `RoleId` foreign key in the `USERS` table have been added. This is a robust and scalable way to manage user permissions.
+  - **Role-Based Access Control (RBAC)**: To support the RBAC mentioned in the backend architecture, user roles are managed externally by Clerk and passed to the backend via JWT custom claims. The C# backend is responsible for interpreting these claims to enforce permissions. This decouples role management from the application's primary database.
   - **Junction Tables**: The `ASSIGNMENTS` table remains the key to the many-to-many relationship between `USERS` and `PATIENTS`.
 
 ### 2.2. Indexing Strategy and Search
@@ -178,49 +171,30 @@ The `AUDIT_LOGS` table is the cornerstone of the compliance strategy. Log entrie
 ## 3\. Database Security
 
   - **Authentication**: Handled by Clerk.
-  - **Authorization**: The new `ROLES` table provides the on-premise data structure needed for the C\# backend to implement fine-grained authorization logic.
+  - **Authorization**: User roles are provided in the JWT from Clerk. The C# backend uses these roles to implement fine-grained authorization logic.
   - **Data Encryption at Rest**: Oracle Transparent Data Encryption (TDE) remains a critical security requirement.
 
 ## 4\. Oracle 11g R2 Database Schema
 
 This section details the `CREATE TABLE` statements, now including the new `ROLES` and `NOTIFICATIONS` tables.
 
-### **Table: `ROLES`**
-
-A lookup table for user roles to support RBAC.
-
-```sql
-CREATE TABLE ROLES (
-    RoleId VARCHAR2(255) NOT NULL,
-    RoleName VARCHAR2(100) NOT NULL,
-    -- CONSTRAINTS
-    CONSTRAINT pk_roles PRIMARY KEY (RoleId),
-    CONSTRAINT uq_roles_rolename UNIQUE (RoleName)
-);
-
-COMMENT ON TABLE ROLES IS 'Lookup table for user roles (e.g., Physician, Nurse) to support Role-Based Access Control (RBAC).';
-```
-
 ### **Table: `USERS`**
 
-Stores user profile information, now with a foreign key to the `ROLES` table.
+Stores user profile information. Roles are managed externally.
 
 ```sql
 CREATE TABLE USERS (
     UserId VARCHAR2(255) NOT NULL,
-    RoleId VARCHAR2(255) NOT NULL,
     Theme VARCHAR2(10) DEFAULT 'dark' NOT NULL,
     NotificationsEnabled CHAR(1) DEFAULT 'Y' NOT NULL,
     -- CONSTRAINTS
     CONSTRAINT pk_users PRIMARY KEY (UserId),
-    CONSTRAINT fk_users_role FOREIGN KEY (RoleId) REFERENCES ROLES(RoleId),
     CONSTRAINT chk_users_theme CHECK (Theme IN ('light', 'dark')),
     CONSTRAINT chk_users_notif CHECK (NotificationsEnabled IN ('Y', 'N'))
 );
 
-COMMENT ON TABLE USERS IS 'Stores user profile information, preferences, and role, linked to their Clerk ID.';
+COMMENT ON TABLE USERS IS 'Stores user profile information and preferences, linked to their Clerk ID. Roles are managed in Clerk and passed via JWT claims.';
 COMMENT ON COLUMN USERS.UserId IS 'Primary Key. The unique identifier provided by the Clerk authentication service.';
-COMMENT ON COLUMN USERS.RoleId IS 'Foreign key linking to the ROLES table to define user permissions.';
 ```
 
 ### **Table: `UNITS`**

@@ -391,7 +391,7 @@ paths:
       summary: "Get Handover Activity History"
       description: |
         Fetches the human-readable activity log for a single handover session.
-        This data is generated on-demand by transforming raw data from the AUDIT_LOGS table into a user-friendly format.
+        This data is generated on-demand by transforming raw data from the AUDIT_LOGS table into a user-friendly format. This endpoint is intended to populate the 'Updates' or 'Activity Log' tab in the handover's collaboration view.
       parameters:
         - name: handoverId
           in: path
