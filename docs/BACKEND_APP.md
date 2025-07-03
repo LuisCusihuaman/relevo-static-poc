@@ -87,8 +87,8 @@ graph TD
     NS_HOCUS -.-> |"Persist Chat/Doc State <br> (HTTPS Call)"| CS_ENTRY
     NS_EVENTS -.-> |"Persist Chat/Doc State <br> (HTTPS Call)"| CS_ENTRY
 
-
     %% Integration Flow
+    CS_PATIENT_SVC -.-> |"Fetches Patient Roster<br>(Internal HTTPS Call)"| NS_HOSPITAL_SDK
     NS_HOSPITAL_SDK -- "Fetches Data" --> HOSPITAL_API
     HOSPITAL_API -- "Sends Webhooks" --> NS_WEBHOOKS
 ```
@@ -120,7 +120,7 @@ relevo-workspace/
 This service is the system's core, responsible for all business logic and data persistence. It acts as the authority for clinical data and workflow states.
 
   * **Authentication & Authorization**: Validates JWTs from Clerk on every request. It does **not** handle user sign-up or password management.
-  * **Patient & Clinical Data Management (🔵)**: Manages all CRUD operations for patients, clinical notes, and patient assignments to clinicians.
+  * **Patient & Clinical Data Management (🔵)**: Manages all CRUD operations for patients, clinical notes, and patient assignments to clinicians. To populate initial patient lists for assignment, it fetches roster data via a secure, internal API call to the `nestjs-service` integration hub.
   * **Handover Workflow Logic (🟡)**: Governs the state of the I-PASS handover process (e.g., starting, advancing steps, completing). It handles discrete actions like setting `Illness Severity`, managing the `Action List`, and processing the final `Synthesis by Receiver`.
   * **Data Persistence & Auditing**: Acts as the **sole writer** to the **Oracle Database**. It maintains a comprehensive, immutable audit trail for every state change, crucial for HIPAA compliance.
   * **Search Functionality (🔵)**: Powers the `CommandPalette` search feature, querying across patients and clinical data using Oracle Text for efficiency.
@@ -132,10 +132,10 @@ This service is the system's core, responsible for all business logic and data p
 This service offloads all real-time and integration tasks from the main API. It authenticates WebSocket connections using the same JWTs from Clerk.
 
   * **Real-time Collaboration (🔴)**:
-      * **Collaborative Text Editing**: Hosts the **Hocuspocus server** to power the `FullscreenEditor` in collaborative mode (e.g., for `Situation Awareness`). It manages the real-time synchronization of text edits.
-      * **Live Event Broadcasting**: Manages standard WebSocket connections to broadcast non-text events for the `CollaborationPanel` and `Shift Hub`. This includes presence, status updates, and chat messages.
-  * **Data Persistence for Real-time Events**: For persisting data generated through real-time interactions (like chat messages or collaborative document changes), the NestJS service does not write directly to the database. Instead, it makes secure, server-to-server HTTP calls to the main C\# API. This ensures that all data persistence adheres to the centralized business logic, authorization, and auditing rules of the `relevo-api`.
-  * **External API Integration (🔵)**: Acts as the dedicated gateway for all communication with external hospital systems, keeping these dependencies isolated from the core API.
+      * **Collaborative Text Editing**: Hosts the **Hocuspocus server** to power the `FullscreenEditor` in collaborative mode (e.g., for `Situation Awareness`).
+      * **Live Event Broadcasting**: Manages standard WebSocket connections to broadcast non-text events for the `CollaborationPanel` and `Shift Hub`.
+  * **Data Persistence for Real-time Events**: For persisting data generated through real-time interactions (like chat messages or collaborative document changes), the NestJS service makes secure, server-to-server HTTP calls to the main C\# API. This ensures that all data persistence adheres to the centralized business logic, authorization, and auditing rules of the `relevo-api`.
+  * **External API Integration (🔵)**: Acts as the dedicated gateway for all communication with external hospital systems, keeping these dependencies isolated from the core API. This includes providing an internal API for the C\# backend to securely request data like patient rosters.
   * **Cache Management**: Utilizes in-memory caching to temporarily store data fetched from external hospital APIs or the main C\# API, reducing latency for real-time operations and frequent data requests.
 
 ### **`hospital-mock-api` (NestJS Mock Hospital Systems)**
