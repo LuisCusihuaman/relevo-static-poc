@@ -119,8 +119,8 @@ relevo-workspace/
 
 This service is the system's core, responsible for all business logic and data persistence. It acts as the authority for clinical data and workflow states.
 
-  * **Authentication & Authorization**: Validates JWTs from Clerk on every request. It does not handle user sign-up or password management. User roles (e.g., "Physician", "Nurse") are managed externally within Clerk and included as custom claims within the JWT. The C# backend reads the user's role from the token and dynamically maps it to a specific set of internal application permissions, which are then used to enforce fine-grained access control.
-****  * **Patient & Clinical Data Management (🔵)**: Manages all CRUD operations for patients, clinical notes, and patient assignments to clinicians. To populate initial patient lists for assignment, it fetches roster data via a secure, internal API call to the `nestjs-service` integration hub. This includes managing the persistence of **patient-specific discussion threads**.
+* **Authentication & Authorization**: Validates JWTs from Clerk on every request. It does not handle user sign-up or password management. User roles (e.g., "Physician", "Nurse") are managed externally within Clerk and included as custom claims within the JWT. The C# backend reads the user's role from the token and dynamically maps it to a specific set of internal application permissions, which are then used to enforce fine-grained access control.
+  ****  * **Patient & Clinical Data Management (🔵)**: Manages all CRUD operations for patients, clinical notes, and patient assignments to clinicians. To populate initial patient lists for assignment, it fetches roster data via a secure, internal API call to the `nestjs-service` integration hub. This includes managing the persistence of **patient-specific discussion threads**.
   * **Handover Workflow Logic (🟡)**: Governs the state of the I-PASS handover process (e.g., starting, advancing steps, completing). It handles discrete actions like setting `Illness Severity`, managing the `Action List`, and processing the final `Synthesis by Receiver`.
   * **Data Persistence & Auditing**: Acts as the **sole writer** to the **Oracle Database**. It maintains a comprehensive, immutable audit trail for every state change, crucial for HIPAA compliance. The `AuditService` uses EF Core's `ChangeTracker` to automatically generate detailed audit logs for all data modifications, capturing the before-and-after state of the data. To support the Handover History feature, this service is also responsible for interpreting these logs. The transformation is performed **on-demand** when a user requests the history for a specific handover. It uses a **Strategy Pattern**, where specialized handler classes (e.g., implementing an `IAuditLogHandler` interface) convert the raw JSON data from `AUDIT_LOGS` into a human-readable format. This design keeps the transformation logic modular, testable, and easy to extend.
   * **Search Functionality (🔵)**: Powers the `CommandPalette` search feature, querying across patients and clinical data using Oracle Text for efficiency.
@@ -133,12 +133,12 @@ This service is the system's core, responsible for all business logic and data p
 This service offloads all real-time and integration tasks from the main API. It authenticates WebSocket connections using JWTs from Clerk.
 
 * **Real-time Collaboration (🔴)**:
-    * **Patient-Scoped Discussions**: Manages WebSocket connections for live chat discussions. Each patient has a dedicated communication channel (e.g., `patient:${patientId}`) to ensure conversations are context-specific.
+    * **Patient-Scoped Discussions**: Implemented using **Socket.IO**. When a user connects to the chat for a specific patient, they are placed into a dedicated **Socket.IO Room** (e.g., `patient:${patientId}`). This ensures that all chat messages are broadcast only to the clinicians currently viewing that patient, providing a focused and context-specific communication channel.
     * **Collaborative Text Editing**: Hosts the **Hocuspocus server** to power the `FullscreenEditor` in collaborative mode (e.g., for `Situation Awareness`).
-    * **Live Event Broadcasting**: Manages standard WebSocket connections to broadcast non-text events for the `CollaborationPanel` and `Shift Hub`.
-  * **Data Persistence for Real-time Events**: For persisting data generated through real-time interactions (like chat messages or collaborative document changes), the NestJS service makes secure, server-to-server HTTP calls to the main C\# API. This ensures that all data persistence adheres to the centralized business logic, authorization, and auditing rules of the `relevo-api`.
-  * **External API Integration (🔵)**: Acts as the dedicated gateway for all communication with external hospital systems, keeping these dependencies isolated from the core API. This includes providing an internal API for the C\# backend to securely request data like patient rosters.
-  * **Cache Management**: Utilizes in-memory caching to temporarily store data fetched from external hospital APIs or the main C\# API, reducing latency for real-time operations and frequent data requests.
+    * **Live Event Broadcasting**: Manages other real-time events, such as presence indicators and status updates, for the `CollaborationPanel` and `Shift Hub`.
+* **Data Persistence for Real-time Events**: For persisting data from real-time interactions, the NestJS service makes secure, server-to-server HTTP calls to the main C# API. Specifically, after broadcasting a chat message via Socket.IO, it calls the **`POST /patients/{patientId}/messages`** endpoint on the `relevo-api` to ensure the message is saved to the patient's permanent chat log.
+* **External API Integration (🔵)**: Acts as the dedicated gateway for all communication with external hospital systems.
+* **Cache Management**: Utilizes in-memory caching to reduce latency for real-time operations.
 
 ### **`hospital-mock-api` (NestJS Mock Hospital Systems)**
 
@@ -158,10 +158,10 @@ A development-only application that simulates real hospital EMR/EHR APIs. It pro
 
 ### **NestJS Service (`nestjs-service`)**
 
-  * **Runtime**: Node.js 20+ with the NestJS Framework.
-  * **Real-time Collaboration**: **Hocuspocus Server** (`@hocuspocus/server`).
-  * **General Real-time**: **NestJS WebSockets** (`@nestjs/websockets`).
-  * **Authentication/Authorization**: Passport.js with a `passport-jwt` strategy.
+* **Runtime**: Node.js 20+ with the NestJS Framework.
+* **Chat & Real-time Events**: **Socket.IO**, integrated via the **NestJS WebSockets** module (`@nestjs/websockets`).
+* **Collaborative Text Editing**: **Hocuspocus Server** (`@hocuspocus/server`).
+* **Authentication/Authorization**: Passport.js with a `passport-jwt` strategy.
   * **Cache Management**: **NestJS Cache Module** (`@nestjs/cache-manager`) for in-memory caching.
 
 ### **Database & Storage**

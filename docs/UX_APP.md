@@ -179,7 +179,7 @@ graph TD
 
 These features are nested within the `handover` workflow to enhance the user experience.
 
-- **`CollaborationPanel` (🔴🔵)**: A sidebar for real-time chat and an activity feed. It loads initial comment history (🔵) and then receives live messages and presence updates (🔴).
+- **`CollaborationPanel` (🔴🔵)**: A sidebar for real-time chat and an activity feed. It loads initial comment history (🔵) and then receives live messages and presence updates (🔴). State clearly that the "Discussion" tab now displays the persistent chat thread for the currently selected patient, not for the handover session.
 - **`PatientTimeline` (🔵🟡)**: A new key feature that replaces the static `HandoverHistory` view. This component is an **interactive timeline** that displays a summary of all past and current handover sessions for a patient. It is populated by an initial API call (`GET /patients/{patientId}/handovers`). When a user clicks on a past handover (🟡), it triggers another API call (`GET /handovers/{handoverId}`) to load the complete, read-only state of that historical session into the main content area.
 - **`FullscreenEditor` (🔴🔵)**: A context-aware modal for focused editing. It operates in a static mode (fetching and saving via single actions 🔵🟡) for sections like `Patient Summary` and a real-time collaborative mode (auto-saving and syncing 🔴) for `Situation Awareness`.
 - **`Focus Mode` (🟡)**: A purely client-side UI feature that toggles the visibility of non-essential elements to reduce cognitive load. It does not interact with any external data sources or real-time services.
