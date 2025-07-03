@@ -54,6 +54,7 @@ erDiagram
         VARCHAR2(255) HandoverId PK
         VARCHAR2(255) PatientId FK
         VARCHAR2(255) InitiatingUserId FK
+        VARCHAR2(255) SituationAwarenessDocId
         VARCHAR2(20) Status "InProgress, Completed"
         VARCHAR2(20) IllnessSeverity "Stable, Watcher, Unstable"
         CLOB PatientSummary
@@ -297,6 +298,7 @@ CREATE TABLE HANDOVERS (
     HandoverId VARCHAR2(255) NOT NULL,
     PatientId VARCHAR2(255) NOT NULL,
     InitiatingUserId VARCHAR2(255) NOT NULL,
+    SituationAwarenessDocId VARCHAR2(255) NOT NULL,
     Status VARCHAR2(20) DEFAULT 'InProgress' NOT NULL,
     IllnessSeverity VARCHAR2(20) DEFAULT 'Stable' NOT NULL,
     PatientSummary CLOB,
@@ -315,6 +317,7 @@ CREATE INDEX idx_handovers_patientid ON HANDOVERS(PatientId);
 CREATE INDEX idx_handovers_status ON HANDOVERS(Status);
 
 COMMENT ON TABLE HANDOVERS IS 'Central table for managing the state of an I-PASS handover session.';
+COMMENT ON COLUMN HANDOVERS.SituationAwarenessDocId IS 'The document ID for the collaborative Situation Awareness document, linking to COLLAB_DOCUMENTS.DocumentId. An explicit FK constraint is omitted to prevent circular dependencies at creation time.';
 ```
 
 ### **Table: `ACTION_ITEMS`**

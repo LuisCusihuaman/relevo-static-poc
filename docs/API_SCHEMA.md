@@ -697,11 +697,8 @@ paths:
             examples:
               example1:
                 value:
-                  id: "msg-new"
-                  userId: "user-clerk-1"
-                  userName: "Dr. Smith"
+****                  userName: "Dr. Smith"
                   content: "Okay, I'll review them now."
-                  timestamp: "2024-07-02T14:05:00Z"
       responses:
         '201':
           description: "Message persisted."
@@ -894,11 +891,9 @@ components:
     ChatMessageCreateRequest:
       type: object
       properties:
-        userId: { type: string, description: "Clerk user ID of the sender." }
         userName: { type: string, description: "Display name of the sender." }
         content: { type: string }
-        timestamp: { type: string, format: date-time }
-      required: [ userId, userName, content, timestamp ]
+      required: [ userName, content ]
     SearchResult:
       type: object
       properties:
@@ -1068,13 +1063,13 @@ The C\# API triggers this internal endpoint to notify the NestJS service of a st
 
 ```json
 {
-  "eventType": "ILLNESS_SEVERITY_UPDATED",
-  "handoverId": "uuid-for-the-handover",
-  "payload": {
-    "userId": "uuid-of-user-who-made-change",
-    "userName": "Dr. Smith",
-    "newSeverity": "Watcher"
-  }
+  "eventType": "ILLNESS_SEVERITY_UPDATED",
+  "handoverId": "uuid-for-the-handover",
+  "payload": {
+    "userId": "uuid-of-user-who-made-change",
+    "userName": "Dr. Smith",
+    "newSeverity": "Watcher"
+  }
 }
 ```
 
@@ -1145,273 +1140,273 @@ This schema outlines the endpoints and response structures that the `hospital-mo
 
 ```json
 {
-  "openapi": "3.0.1",
-  "info": {
-    "title": "RELEVO Mock Hospital Systems API",
-    "description": "Mock API to simulate interactions with external hospital EMR/EHR systems for development purposes. No authentication is required for this mock service.",
-    "version": "v1.0"
-  },
-  "servers": [
-    {
-      "url": "http://localhost:3002/mock-hospital/v1",
-      "description": "Local Mock Hospital API Server"
-    }
-  ],
-  "paths": {
-    "/units": {
-      "get": {
-        "tags": ["Setup Data"],
-        "summary": "Get All Hospital Units",
-        "description": "Retrieves a list of all available hospital units.",
-        "responses": {
-          "200": {
-            "description": "A list of hospital units.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Unit"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/shifts": {
-      "get": {
-        "tags": ["Setup Data"],
-        "summary": "Get Available Shift Times",
-        "description": "Fetches a list of available shift times (e.g., 'Day', 'Night', 'Evening').",
-        "responses": {
-          "200": {
-            "description": "A list of available shifts.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Shift"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/units/{unitId}/patients": {
-      "get": {
-        "tags": ["Patient Data"],
-        "summary": "Get Patients Available for Assignment by Unit",
-        "description": "Retrieves a roster of patients within a specific hospital unit who are available to be assigned to a clinician for a shift.",
-        "parameters": [
-          {
-            "name": "unitId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "The ID of the hospital unit."
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "A list of patients in the specified unit available for assignment.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/PatientRosterItem"
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          }
-        }
-      }
-    },
-    "/patients/{patientId}": {
-      "get": {
-        "tags": ["Patient Data"],
-        "summary": "Get Comprehensive Patient Details",
-        "description": "Fetches comprehensive, read-only information for a single patient, including medical record number, demographics, and basic clinical overview.",
-        "parameters": [
-          {
-            "name": "patientId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "The ID of the patient."
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Comprehensive details for the specified patient.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PatientDetail"
-                }
-              }
-            }
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          }
-        }
-      }
-    }
-  },
-  "components": {
-    "schemas": {
-      "Unit": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "Unique identifier for the hospital unit."
-          },
-          "name": {
-            "type": "string",
-            "description": "Display name of the unit (e.g., 'PICU', 'NICU')."
-          }
-        },
-        "required": ["id", "name"]
-      },
-      "Shift": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "Unique identifier for the shift."
-          },
-          "name": {
-            "type": "string",
-            "description": "Display name of the shift (e.g., 'Day Shift', 'Night Shift')."
-          },
-          "startTime": {
-            "type": "string",
-            "format": "time",
-            "description": "Start time of the shift (e.g., '07:00')."
-          },
-          "endTime": {
-            "type": "string",
-            "format": "time",
-            "description": "End time of the shift (e.g., '19:00')."
-          }
-        },
-        "required": ["id", "name", "startTime", "endTime"]
-      },
-      "PatientRosterItem": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "Patient ID."
-          },
-          "name": {
-            "type": "string",
-            "description": "Patient's full name."
-          },
-          "mrn": {
-            "type": "string",
-            "description": "Medical Record Number."
-          },
-          "dob": {
-            "type": "string",
-            "format": "date",
-            "description": "Date of Birth (YYYY-MM-DD)."
-          },
-          "unitId": {
-            "type": "string",
-            "description": "The ID of the unit the patient is currently in."
-          },
-          "roomNumber": {
-            "type": "string",
-            "description": "Patient's room number."
-          }
-        },
-        "required": ["id", "name", "mrn", "unitId", "roomNumber"]
-      },
-      "PatientDetail": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "Patient ID."
-          },
-          "name": {
-            "type": "string",
-            "description": "Patient's full name."
-          },
-          "mrn": {
-            "type": "string",
-            "description": "Medical Record Number."
-          },
-          "dob": {
-            "type": "string",
-            "format": "date",
-            "description": "Date of Birth (YYYY-MM-DD)."
-          },
-          "gender": {
-            "type": "string",
-            "enum": ["Male", "Female", "Other", "Unknown"],
-            "description": "Patient's gender."
-          },
-          "admissionDate": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Date and time of admission."
-          },
-          "currentUnit": {
-            "type": "string",
-            "description": "Current hospital unit."
-          },
-          "roomNumber": {
-            "type": "string",
-            "description": "Patient's current room number."
-          },
-          "diagnosis": {
-            "type": "string",
-            "description": "Primary diagnosis."
-          },
-          "allergies": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "List of known allergies."
-          },
-          "medications": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "List of current medications."
-          },
-          "notes": {
-            "type": "string",
-            "description": "General clinical notes (mock content)."
-          }
-        },
-        "required": ["id", "name", "mrn", "dob", "currentUnit", "roomNumber"]
-      }
-    },
-    "responses": {
-      "NotFound": {
-        "description": "Not Found - The requested resource was not found."
-      }
-    }
-  }
+  "openapi": "3.0.1",
+  "info": {
+    "title": "RELEVO Mock Hospital Systems API",
+    "description": "Mock API to simulate interactions with external hospital EMR/EHR systems for development purposes. No authentication is required for this mock service.",
+    "version": "v1.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3002/mock-hospital/v1",
+      "description": "Local Mock Hospital API Server"
+    }
+  ],
+  "paths": {
+    "/units": {
+      "get": {
+        "tags": ["Setup Data"],
+        "summary": "Get All Hospital Units",
+        "description": "Retrieves a list of all available hospital units.",
+        "responses": {
+          "200": {
+            "description": "A list of hospital units.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Unit"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shifts": {
+      "get": {
+        "tags": ["Setup Data"],
+        "summary": "Get Available Shift Times",
+        "description": "Fetches a list of available shift times (e.g., 'Day', 'Night', 'Evening').",
+        "responses": {
+          "200": {
+            "description": "A list of available shifts.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Shift"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/units/{unitId}/patients": {
+      "get": {
+        "tags": ["Patient Data"],
+        "summary": "Get Patients Available for Assignment by Unit",
+        "description": "Retrieves a roster of patients within a specific hospital unit who are available to be assigned to a clinician for a shift.",
+        "parameters": [
+          {
+            "name": "unitId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the hospital unit."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of patients in the specified unit available for assignment.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PatientRosterItem"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/patients/{patientId}": {
+      "get": {
+        "tags": ["Patient Data"],
+        "summary": "Get Comprehensive Patient Details",
+        "description": "Fetches comprehensive, read-only information for a single patient, including medical record number, demographics, and basic clinical overview.",
+        "parameters": [
+          {
+            "name": "patientId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the patient."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comprehensive details for the specified patient.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PatientDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Unit": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the hospital unit."
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name of the unit (e.g., 'PICU', 'NICU')."
+          }
+        },
+        "required": ["id", "name"]
+      },
+      "Shift": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the shift."
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name of the shift (e.g., 'Day Shift', 'Night Shift')."
+          },
+          "startTime": {
+            "type": "string",
+            "format": "time",
+            "description": "Start time of the shift (e.g., '07:00')."
+          },
+          "endTime": {
+            "type": "string",
+            "format": "time",
+            "description": "End time of the shift (e.g., '19:00')."
+          }
+        },
+        "required": ["id", "name", "startTime", "endTime"]
+      },
+      "PatientRosterItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Patient ID."
+          },
+          "name": {
+            "type": "string",
+            "description": "Patient's full name."
+          },
+          "mrn": {
+            "type": "string",
+            "description": "Medical Record Number."
+          },
+          "dob": {
+            "type": "string",
+            "format": "date",
+            "description": "Date of Birth (YYYY-MM-DD)."
+          },
+          "unitId": {
+            "type": "string",
+            "description": "The ID of the unit the patient is currently in."
+          },
+          "roomNumber": {
+            "type": "string",
+            "description": "Patient's room number."
+          }
+        },
+        "required": ["id", "name", "mrn", "unitId", "roomNumber"]
+      },
+      "PatientDetail": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Patient ID."
+          },
+          "name": {
+            "type": "string",
+            "description": "Patient's full name."
+          },
+          "mrn": {
+            "type": "string",
+            "description": "Medical Record Number."
+          },
+          "dob": {
+            "type": "string",
+            "format": "date",
+            "description": "Date of Birth (YYYY-MM-DD)."
+          },
+          "gender": {
+            "type": "string",
+            "enum": ["Male", "Female", "Other", "Unknown"],
+            "description": "Patient's gender."
+          },
+          "admissionDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time of admission."
+          },
+          "currentUnit": {
+            "type": "string",
+            "description": "Current hospital unit."
+          },
+          "roomNumber": {
+            "type": "string",
+            "description": "Patient's current room number."
+          },
+          "diagnosis": {
+            "type": "string",
+            "description": "Primary diagnosis."
+          },
+          "allergies": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of known allergies."
+          },
+          "medications": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of current medications."
+          },
+          "notes": {
+            "type": "string",
+            "description": "General clinical notes (mock content)."
+          }
+        },
+        "required": ["id", "name", "mrn", "dob", "currentUnit", "roomNumber"]
+      }
+    },
+    "responses": {
+      "NotFound": {
+        "description": "Not Found - The requested resource was not found."
+      }
+    }
+  }
 }
 ```

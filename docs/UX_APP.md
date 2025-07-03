@@ -222,9 +222,9 @@ graph TB
     
     subgraph "Clinical Workflows"
         DETAIL --> |Start Handover| HANDOVER[HandoverSession]
-        DETAIL --> |Clinical Entry| CLINICAL[ClinicalDocumentation]
+        DETAIL --> |Clinical Entry| HANDOVER
         DASH --> |Quick Handover| HANDOVER
-        SIDEBAR --> |I-PASS Docs| CLINICAL
+        SIDEBAR --> |I-PASS Docs| HANDOVER
     end
     
     subgraph "Data Layer"
@@ -232,13 +232,11 @@ graph TB
         MAIN --> |Setup Data| MSTORE[mockData.store]
         MAIN --> |Clinical Data| CSTORE[clinical.store]
         HANDOVER --> |I-PASS Data| CSTORE
-        CLINICAL --> |Documentation| CSTORE
     end
     
     subgraph "Modal System"
         MAIN --> |Setup Change| DSMODAL[Daily Setup Modal]
         MAIN --> |Search Interface| CMDMODAL[Command Palette Modal]
         HANDOVER --> |I-PASS Session| HMODAL[Handover Modal]
-        CLINICAL --> |Documentation| CMODAL[Clinical Modal]
     end
 ```
