@@ -122,7 +122,7 @@ This service is the system's core, responsible for all business logic and data p
   * **Authentication & Authorization**: Validates JWTs from Clerk on every request. It does **not** handle user sign-up or password management.
   * **Patient & Clinical Data Management (🔵)**: Manages all CRUD operations for patients, clinical notes, and patient assignments to clinicians. To populate initial patient lists for assignment, it fetches roster data via a secure, internal API call to the `nestjs-service` integration hub.
   * **Handover Workflow Logic (🟡)**: Governs the state of the I-PASS handover process (e.g., starting, advancing steps, completing). It handles discrete actions like setting `Illness Severity`, managing the `Action List`, and processing the final `Synthesis by Receiver`.
-  * **Data Persistence & Auditing**: Acts as the **sole writer** to the **Oracle Database**. It maintains a comprehensive, immutable audit trail for every state change, crucial for HIPAA compliance.
+  * **Data Persistence & Auditing**: Acts as the **sole writer** to the **Oracle Database**. It maintains a comprehensive, immutable audit trail for every state change, crucial for HIPAA compliance. The `AuditService` uses EF Core's `ChangeTracker` to automatically generate detailed audit logs for all data modifications, capturing the before-and-after state of the data.
   * **Search Functionality (🔵)**: Powers the `CommandPalette` search feature, querying across patients and clinical data using Oracle Text for efficiency.
   * **Triggering Real-time Events**: After successfully processing a state change (e.g., an updated `Action List` item), it sends a secure, server-to-server HTTP request to the `nestjs-service` to trigger a real-time broadcast to connected clients.
   * **In-Memory Caching**: Implements in-process memory caching for frequently accessed, semi-static data (e.g., hospital unit lists, shift data) to reduce database queries and improve response times for common requests like the **Daily Setup**.
@@ -173,4 +173,4 @@ A development-only application that simulates real hospital EMR/EHR APIs. It pro
   * **Transport Security**: TLS 1.3 for all HTTPS and Secure WebSockets (WSS) traffic.
   * **Authorization**: Role-Based Access Control (RBAC) enforced in the C\# backend.
   * **Data Encryption at Rest**: **Oracle Transparent Data Encryption (TDE)**.
-  * **Auditing**: Immutable logging to the `AuditLogs` table for HIPAA compliance.
+  * **Auditing**: Immutable logging to the `AuditLogs` table is handled by the application's `AuditService` to ensure all data changes are captured for HIPAA compliance.
