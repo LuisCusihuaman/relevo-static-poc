@@ -19,6 +19,7 @@ import {
   Zap,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface EnhancedDesktopLayoutProps {
   children: React.ReactNode;
@@ -41,6 +42,7 @@ export function EnhancedDesktopLayout({
 }: EnhancedDesktopLayoutProps) {
   const [notifications] = useState(2);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const { t } = useTranslation();
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -63,9 +65,9 @@ export function EnhancedDesktopLayout({
                 </span>
               </div>
               <div className="hidden md:block">
-                <h1 className="font-semibold text-lg">RELEVO</h1>
+                <h1 className="font-semibold text-lg">{t("enhancedLayout.title")}</h1>
                 <p className="text-xs text-muted-foreground">
-                  Medical Handover Platform
+                  {t("enhancedLayout.subtitle")}
                 </p>
               </div>
             </div>
@@ -76,10 +78,10 @@ export function EnhancedDesktopLayout({
                 {unit}
               </div>
               <div className="px-3 py-1 bg-secondary rounded-full text-sm">
-                {shift} Shift
+                {shift} {t("enhancedLayout.shift")}
               </div>
               <div className="px-3 py-1 bg-chart-2/10 text-chart-2 rounded-full text-sm">
-                {patientCount} Patients
+                {t("enhancedLayout.patients", { count: patientCount })}
               </div>
               <div className="text-sm text-muted-foreground">
                 {currentTime.toLocaleTimeString([], {
@@ -103,12 +105,12 @@ export function EnhancedDesktopLayout({
               }}
               role="button"
               tabIndex={0}
-              aria-label="Open command palette"
+              aria-label={t("enhancedLayout.commandPaletteAriaLabel")}
             >
               <div className="flex items-center gap-3 px-4 py-2 bg-muted/30 hover:bg-muted/50 rounded-lg transition-colors">
                 <Search className="w-4 h-4 text-muted-foreground" />
                 <span className="text-muted-foreground">
-                  Search patients, create notes...
+                  {t("enhancedLayout.searchPlaceholder")}
                 </span>
                 <div className="ml-auto flex items-center gap-1">
                   <Command className="w-3 h-3 text-muted-foreground" />
@@ -129,7 +131,7 @@ export function EnhancedDesktopLayout({
                 className="gap-2"
               >
                 <Zap className="w-4 h-4" />
-                Start Handover
+                {t("enhancedLayout.startHandover")}
               </Button>
               <Button
                 variant="outline"
@@ -183,15 +185,15 @@ export function EnhancedDesktopLayout({
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuItem>
                   <User className="w-4 h-4 mr-2" />
-                  Profile Settings
+                  {t("enhancedLayout.profileSettings")}
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <Settings className="w-4 h-4 mr-2" />
-                  Preferences
+                  {t("enhancedLayout.preferences")}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={onCommandPalette}>
                   <Command className="w-4 h-4 mr-2" />
-                  Command Palette
+                  {t("enhancedLayout.commandPalette")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -207,7 +209,7 @@ export function EnhancedDesktopLayout({
         <div className="flex items-center gap-2">
           <Button size="sm" onClick={onCommandPalette} className="shadow-lg">
             <Command className="w-4 h-4 mr-2" />
-            Quick Actions
+            {t("enhancedLayout.quickActions")}
           </Button>
         </div>
       </div>
@@ -240,6 +242,7 @@ export function EnhancedPatientList({
   onPatientClick,
   onQuickNote,
 }: EnhancedPatientListProps) {
+  const { t } = useTranslation();
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case "high":
@@ -290,7 +293,9 @@ export function EnhancedPatientList({
                     </Badge>
                     {patient.alertCount > 0 && (
                       <Badge variant="destructive" className="text-xs">
-                        {patient.alertCount} alerts
+                        {t("enhancedLayout.alerts", {
+                          count: patient.alertCount,
+                        })}
                       </Badge>
                     )}
                   </div>
@@ -298,11 +303,21 @@ export function EnhancedPatientList({
                     {patient.diagnosis}
                   </p>
                   <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                    <span>Updated {patient.lastUpdate}</span>
-                    <span>{patient.collaborators} collaborators</span>
+                    <span>
+                      {t("enhancedLayout.lastUpdate", {
+                        lastUpdate: patient.lastUpdate,
+                      })}
+                    </span>
+                    <span>
+                      {t("enhancedLayout.collaborators", {
+                        count: patient.collaborators,
+                      })}
+                    </span>
                     {patient.unreadComments > 0 && (
                       <span className="text-primary">
-                        {patient.unreadComments} new comments
+                        {t("enhancedLayout.newComments", {
+                          count: patient.unreadComments,
+                        })}
                       </span>
                     )}
                   </div>
@@ -317,7 +332,7 @@ export function EnhancedPatientList({
                       onQuickNote?.(patient.id);
                     }}
                   >
-                    Quick Note
+                    {t("enhancedLayout.quickNote")}
                   </Button>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -330,9 +345,9 @@ export function EnhancedPatientList({
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
-                      <DropdownMenuItem>View Details</DropdownMenuItem>
-                      <DropdownMenuItem>Add to Handover</DropdownMenuItem>
-                      <DropdownMenuItem>Share</DropdownMenuItem>
+                      <DropdownMenuItem>{t("enhancedLayout.viewDetails")}</DropdownMenuItem>
+                      <DropdownMenuItem>{t("enhancedLayout.addToHandover")}</DropdownMenuItem>
+                      <DropdownMenuItem>{t("enhancedLayout.share")}</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
@@ -391,7 +406,7 @@ export function EnhancedPatientList({
                   onQuickNote?.(patient.id);
                 }}
               >
-                + Note
+                {t("enhancedLayout.addNote")}
               </Button>
             </div>
           </CardContent>

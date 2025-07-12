@@ -3,24 +3,25 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
-  Bell,
-  Eye,
-  EyeOff,
-  Filter,
-  MoreHorizontal,
-  Plus,
-  Search,
-  Settings,
-  User,
+    Bell,
+    Eye,
+    EyeOff,
+    Filter,
+    MoreHorizontal,
+    Plus,
+    Search,
+    Settings,
+    User,
 } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface ModernLayoutProps {
   children: React.ReactNode;
@@ -43,6 +44,7 @@ export function ModernLayout({
 }: ModernLayoutProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [notifications, _setNotifications] = useState(3);
+  const { t } = useTranslation();
 
   return (
     <div className="min-h-screen bg-background">
@@ -58,9 +60,9 @@ export function ModernLayout({
                 </span>
               </div>
               <div>
-                <h1 className="font-semibold text-lg">RELEVO</h1>
+                <h1 className="font-semibold text-lg">{t("modernLayout.title")}</h1>
                 <p className="text-sm text-muted-foreground">
-                  Hospital Garrahan
+                  {t("modernLayout.hospitalName")}
                 </p>
               </div>
             </div>
@@ -71,10 +73,10 @@ export function ModernLayout({
                 {unit}
               </Badge>
               <Badge variant="outline" className="px-3 py-1">
-                {shift} Shift
+                {shift} {t("modernLayout.shift")}
               </Badge>
               <Badge variant="outline" className="px-3 py-1">
-                {patientCount} Patients
+                {patientCount} {t("modernLayout.patients")}
               </Badge>
             </div>
           </div>
@@ -84,7 +86,7 @@ export function ModernLayout({
             <div className="relative w-full">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
-                placeholder="Search patients, notes, or alerts..."
+                placeholder={t("modernLayout.searchPlaceholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10 bg-muted/30"
@@ -117,7 +119,7 @@ export function ModernLayout({
             {/* Quick Actions */}
             <Button size="sm" className="hidden md:flex">
               <Plus className="w-4 h-4 mr-2" />
-              Add Patient
+              {t("modernLayout.addPatient")}
             </Button>
 
             {/* Notifications */}
@@ -156,11 +158,11 @@ export function ModernLayout({
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuItem>
                   <User className="w-4 h-4 mr-2" />
-                  Profile Settings
+                  {t("modernLayout.profileSettings")}
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <Settings className="w-4 h-4 mr-2" />
-                  Preferences
+                  {t("modernLayout.preferences")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -187,6 +189,7 @@ interface KanbanLayoutProps {
 }
 
 export function KanbanLayout({ sections, onSectionAction }: KanbanLayoutProps) {
+  const { t } = useTranslation();
   return (
     <div className="p-6">
       <div className="flex gap-6 overflow-x-auto pb-4">
@@ -216,12 +219,12 @@ export function KanbanLayout({ sections, onSectionAction }: KanbanLayoutProps) {
                     onClick={() => onSectionAction?.(section.id, "filter")}
                   >
                     <Filter className="w-4 h-4 mr-2" />
-                    Filter Section
+                    {t("modernLayout.filterSection")}
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => onSectionAction?.(section.id, "sort")}
                   >
-                    Sort by Priority
+                    {t("modernLayout.sortByPriority")}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -240,7 +243,7 @@ export function KanbanLayout({ sections, onSectionAction }: KanbanLayoutProps) {
                     />
                   </div>
                   <p className="text-sm">
-                    No items in {section.title.toLowerCase()}
+                    {t("modernLayout.noItems", { title: section.title.toLowerCase() })}
                   </p>
                 </div>
               )}
@@ -253,7 +256,7 @@ export function KanbanLayout({ sections, onSectionAction }: KanbanLayoutProps) {
               onClick={() => onSectionAction?.(section.id, "add")}
             >
               <Plus className="w-4 h-4 mr-2" />
-              Add to {section.title}
+              {t("modernLayout.addTo", { title: section.title })}
             </Button>
           </div>
         ))}

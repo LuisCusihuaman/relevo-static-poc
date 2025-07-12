@@ -2,36 +2,37 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarProvider,
-  SidebarTrigger,
+    Sidebar,
+    SidebarContent,
+    SidebarHeader,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
+    SidebarProvider,
+    SidebarTrigger,
 } from "@/components/ui/sidebar";
 import {
-  Activity,
-  Bell,
-  Clock,
-  Command,
-  FileText,
-  Menu,
-  Plus,
-  Search,
-  Settings,
-  Stethoscope,
-  User,
-  Users,
+    Activity,
+    Bell,
+    Clock,
+    Command,
+    FileText,
+    Menu,
+    Plus,
+    Search,
+    Settings,
+    Stethoscope,
+    User,
+    Users,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface CollapsibleDesktopLayoutProps {
   children: React.ReactNode;
@@ -44,33 +45,6 @@ interface CollapsibleDesktopLayoutProps {
   onCommandPalette: () => void;
   onQuickAction?: (action: string) => void;
 }
-
-const navigationItems = [
-  {
-    title: "Dashboard",
-    icon: Activity,
-    id: "dashboard",
-    description: "Handover overview and schedule",
-  },
-  {
-    title: "Patients",
-    icon: Users,
-    id: "patients",
-    description: "Patient list and clinical information",
-  },
-  {
-    title: "Documentation",
-    icon: FileText,
-    id: "documentation",
-    description: "I-PASS clinical documentation",
-  },
-  {
-    title: "Search",
-    icon: Search,
-    id: "search",
-    description: "Search patients and records",
-  },
-];
 
 export function CollapsibleDesktopLayout({
   children,
@@ -86,6 +60,34 @@ export function CollapsibleDesktopLayout({
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [notifications] = useState(2);
+  const { t } = useTranslation();
+
+  const navigationItems = [
+    {
+      title: t("collapsibleLayout.dashboard"),
+      icon: Activity,
+      id: "dashboard",
+      description: t("collapsibleLayout.dashboardDescription"),
+    },
+    {
+      title: t("collapsibleLayout.patients"),
+      icon: Users,
+      id: "patients",
+      description: t("collapsibleLayout.patientsDescription"),
+    },
+    {
+      title: t("collapsibleLayout.documentation"),
+      icon: FileText,
+      id: "documentation",
+      description: t("collapsibleLayout.documentationDescription"),
+    },
+    {
+      title: t("collapsibleLayout.search"),
+      icon: Search,
+      id: "search",
+      description: t("collapsibleLayout.searchDescription"),
+    },
+  ];
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -108,9 +110,9 @@ export function CollapsibleDesktopLayout({
               </div>
               {sidebarOpen && (
                 <div>
-                  <h1 className="font-semibold text-lg">RELEVO</h1>
+                  <h1 className="font-semibold text-lg">{t("collapsibleLayout.title")}</h1>
                   <p className="text-xs text-muted-foreground">
-                    Medical Handover Platform
+                    {t("collapsibleLayout.subtitle")}
                   </p>
                 </div>
               )}
@@ -129,9 +131,9 @@ export function CollapsibleDesktopLayout({
                     </div>
                     <div className="flex items-center gap-2 text-xs text-muted-foreground ml-4">
                       <Clock className="w-3 h-3" />
-                      <span>{shift} Shift</span>
+                      <span>{shift} {t("collapsibleLayout.shift")}</span>
                       <span>•</span>
-                      <span>{patientCount} Patients</span>
+                      <span>{t("collapsibleLayout.patientsCount", { count: patientCount })}</span>
                     </div>
                     <div className="text-xs text-muted-foreground ml-4">
                       {currentTime.toLocaleTimeString([], {
@@ -172,7 +174,7 @@ export function CollapsibleDesktopLayout({
               {sidebarOpen && (
                 <div className="px-4 py-3 border-t mt-4">
                   <h4 className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wider">
-                    Quick Actions
+                    {t("collapsibleLayout.quickActions")}
                   </h4>
                   <div className="space-y-1">
                     <Button
@@ -182,7 +184,7 @@ export function CollapsibleDesktopLayout({
                       className="w-full justify-start gap-2"
                     >
                       <Stethoscope className="w-4 h-4" />
-                      Start Handover
+                      {t("collapsibleLayout.startHandover")}
                     </Button>
                     <Button
                       variant="ghost"
@@ -191,7 +193,7 @@ export function CollapsibleDesktopLayout({
                       className="w-full justify-start gap-2"
                     >
                       <Command className="w-4 h-4" />
-                      Command Palette
+                      {t("collapsibleLayout.commandPalette")}
                     </Button>
                     <Button
                       variant="ghost"
@@ -200,7 +202,7 @@ export function CollapsibleDesktopLayout({
                       className="w-full justify-start gap-2"
                     >
                       <Plus className="w-4 h-4" />
-                      Add Patient
+                      {t("collapsibleLayout.addPatient")}
                     </Button>
                   </div>
                 </div>
@@ -228,7 +230,7 @@ export function CollapsibleDesktopLayout({
                             {currentDoctor}
                           </div>
                           <div className="text-xs text-muted-foreground">
-                            Online
+                            {t("collapsibleLayout.onlineStatus")}
                           </div>
                         </div>
                       )}
@@ -237,15 +239,15 @@ export function CollapsibleDesktopLayout({
                   <DropdownMenuContent align="end" className="w-56">
                     <DropdownMenuItem>
                       <User className="w-4 h-4 mr-2" />
-                      Profile Settings
+                      {t("collapsibleLayout.profileSettings")}
                     </DropdownMenuItem>
                     <DropdownMenuItem>
                       <Settings className="w-4 h-4 mr-2" />
-                      Preferences
+                      {t("collapsibleLayout.preferences")}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={onCommandPalette}>
                       <Command className="w-4 h-4 mr-2" />
-                      Command Palette
+                      {t("collapsibleLayout.commandPalette")}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -267,28 +269,28 @@ export function CollapsibleDesktopLayout({
                   </Button>
                 </SidebarTrigger>
 
-                {/* Command Palette Trigger */}
-                <div
-                  className="hidden md:flex flex-1 max-w-md cursor-pointer"
-                  onClick={onCommandPalette}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      onCommandPalette();
-                    }
-                  }}
-                  role="button"
-                  tabIndex={0}
-                  aria-label="Open command palette"
-                >
-                  <div className="flex items-center gap-3 px-4 py-2 bg-muted/30 hover:bg-muted/50 rounded-lg transition-colors w-full">
-                    <Search className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">
-                      Search patients, create documentation...
-                    </span>
-                    <div className="ml-auto flex items-center gap-1">
-                      <Command className="w-3 h-3 text-muted-foreground" />
-                      <span className="text-xs text-muted-foreground">K</span>
+              {/* Command Palette Trigger */}
+              <div
+                className="hidden md:flex flex-1 max-w-md cursor-pointer"
+                onClick={onCommandPalette}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onCommandPalette();
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+                aria-label={t("collapsibleLayout.commandPaletteAriaLabel")}
+              >
+                <div className="flex items-center gap-3 px-4 py-2 bg-muted/30 hover:bg-muted/50 rounded-lg transition-colors w-full">
+                  <Search className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-muted-foreground">
+                    {t("collapsibleLayout.searchPlaceholder")}
+                  </span>
+                  <div className="ml-auto flex items-center gap-1">
+                    <Command className="w-3 h-3 text-muted-foreground" />
+                    <span className="text-xs text-muted-foreground">K</span>
                     </div>
                   </div>
                 </div>
@@ -308,7 +310,6 @@ export function CollapsibleDesktopLayout({
                     </Badge>
                   )}
                 </Button>
-
                 {/* Mobile Command Button */}
                 <Button
                   variant="ghost"
@@ -321,7 +322,6 @@ export function CollapsibleDesktopLayout({
               </div>
             </div>
           </header>
-
           {/* Main Content */}
           <main className="flex-1 overflow-hidden">{children}</main>
         </div>

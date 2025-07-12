@@ -41,6 +41,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useTranslation } from "react-i18next";
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   currentDoctor?: string;
@@ -63,6 +64,7 @@ export function AppSidebar({
   ...props
 }: AppSidebarProps) {
   const { isMobile } = useSidebar();
+  const { t } = useTranslation();
 
   // Get doctor initials for avatar
   const getDoctorInitials = (name: string) => {
@@ -81,55 +83,55 @@ export function AppSidebar({
 
   const mainNavigationItems = [
     {
-      title: "Schedule",
+      title: t("appSidebar.schedule"),
       id: "schedule",
       icon: Calendar,
       isActive: activeTab === "schedule",
-      description: "Today's handover schedule",
+      description: t("appSidebar.scheduleDescription"),
     },
     {
-      title: "Patients",
+      title: t("appSidebar.patients"),
       id: "patients",
       icon: Users,
       isActive: activeTab === "patients",
-      description: "Your assigned patients",
+      description: t("appSidebar.patientsDescription"),
     },
   ];
 
   const toolsItems = [
     {
-      title: "Search Patients",
+      title: t("appSidebar.searchPatients"),
       icon: Search,
       action: () => onOpenCommandPalette?.(),
-      description: "Find patients across units",
+      description: t("appSidebar.searchPatientsDescription"),
       shortcut: "⌘K",
     },
     {
-      title: "I-PASS Documentation",
+      title: t("appSidebar.ipassDocumentation"),
       icon: FileText,
       action: () => handleNavigation("documentation"),
-      description: "Clinical documentation",
+      description: t("appSidebar.ipassDocumentationDescription"),
     },
   ];
 
   const settingsItems = [
     {
-      title: "Profile & Settings",
+      title: t("appSidebar.profileSettings"),
       icon: Settings,
       action: () => handleNavigation("profile"),
-      description: "Account preferences",
+      description: t("appSidebar.profileSettingsDescription"),
     },
     {
-      title: "Notifications",
+      title: t("appSidebar.notifications"),
       icon: Bell,
       action: () => handleNavigation("notifications"),
-      description: "Alerts and updates",
+      description: t("appSidebar.notificationsDescription"),
     },
     {
-      title: "Help & Support",
+      title: t("appSidebar.helpSupport"),
       icon: HelpCircle,
       action: () => handleNavigation("help"),
-      description: "Documentation and support",
+      description: t("appSidebar.helpSupportDescription"),
     },
   ];
 
@@ -146,9 +148,9 @@ export function AppSidebar({
                 <Stethoscope className="size-4" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">RELEVO</span>
+                <span className="truncate font-semibold">{t("appSidebar.title")}</span>
                 <span className="truncate text-xs">
-                  Medical Handover Platform
+                  {t("appSidebar.subtitle")}
                 </span>
               </div>
             </SidebarMenuButton>
@@ -159,7 +161,7 @@ export function AppSidebar({
       <SidebarContent>
         {/* Main Navigation */}
         <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          <SidebarGroupLabel>{t("appSidebar.navigation")}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {mainNavigationItems.map((item) => (
@@ -180,16 +182,16 @@ export function AppSidebar({
 
         {/* Current Context */}
         <SidebarGroup>
-          <SidebarGroupLabel>Current Context</SidebarGroupLabel>
+          <SidebarGroupLabel>{t("appSidebar.currentContext")}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton className="pointer-events-none">
                   <Shield className="size-4 text-primary" />
                   <div className="flex flex-col">
-                    <span className="text-xs font-medium">{unit} Unit</span>
+                    <span className="text-xs font-medium">{unit} {t("appSidebar.unit")}</span>
                     <span className="text-xs text-muted-foreground">
-                      {shift} Shift
+                      {shift} {t("appSidebar.shift")}
                     </span>
                   </div>
                 </SidebarMenuButton>
@@ -199,10 +201,10 @@ export function AppSidebar({
                   <Clock className="size-4 text-green-600" />
                   <div className="flex flex-col">
                     <span className="text-xs font-medium">
-                      {patientCount} Patients Assigned
+                      {t("appSidebar.patientsAssigned", { count: patientCount })}
                     </span>
                     <span className="text-xs text-muted-foreground">
-                      2 urgent items
+                      {t("appSidebar.urgentItems", { count: 2 })}
                     </span>
                   </div>
                 </SidebarMenuButton>
@@ -213,7 +215,7 @@ export function AppSidebar({
 
         {/* Tools & Actions */}
         <SidebarGroup>
-          <SidebarGroupLabel>Tools</SidebarGroupLabel>
+          <SidebarGroupLabel>{t("appSidebar.tools")}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {toolsItems.map((item, index) => (
@@ -245,7 +247,7 @@ export function AppSidebar({
 
         {/* Settings */}
         <SidebarGroup>
-          <SidebarGroupLabel>Settings</SidebarGroupLabel>
+          <SidebarGroupLabel>{t("appSidebar.settings")}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {settingsItems.map((item, index) => (
@@ -283,7 +285,7 @@ export function AppSidebar({
                       {currentDoctor}
                     </span>
                     <span className="truncate text-xs">
-                      Senior Practitioner
+                      {t("appSidebar.seniorPractitioner")}
                     </span>
                   </div>
                   <ChevronRight className="ml-auto size-4" />
@@ -307,7 +309,7 @@ export function AppSidebar({
                         {currentDoctor}
                       </span>
                       <span className="truncate text-xs">
-                        Senior Practitioner
+                        {t("appSidebar.seniorPractitioner")}
                       </span>
                     </div>
                   </div>
@@ -316,28 +318,28 @@ export function AppSidebar({
                 <DropdownMenuGroup>
                   <DropdownMenuItem onClick={() => handleNavigation("profile")}>
                     <User className="size-4" />
-                    Profile & Settings
+                    {t("appSidebar.profileSettings")}
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => handleNavigation("notifications")}
                   >
                     <Bell className="size-4" />
-                    Notifications
+                    {t("appSidebar.notifications")}
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <Activity className="size-4" />
-                    Activity Log
+                    {t("appSidebar.activityLog")}
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
                   <HelpCircle className="size-4" />
-                  Help & Support
+                  {t("appSidebar.helpSupport")}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className="text-destructive">
                   <LogOut className="size-4" />
-                  Sign Out
+                  {t("appSidebar.signOut")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

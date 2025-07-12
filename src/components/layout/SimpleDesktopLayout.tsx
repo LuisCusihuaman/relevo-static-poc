@@ -35,6 +35,7 @@ import {
   Users,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 // Import centralized composable types
 import { type ClinicalEntry, type DesktopPatient } from "../../common/types";
@@ -58,6 +59,7 @@ export function SimpleDesktopLayout({
   onClinicalEntry,
   onStartHandover,
 }: SimpleDesktopLayoutProps) {
+  const { t } = useTranslation();
   const [selectedPatient, setSelectedPatient] = useState<DesktopPatient | null>(
     null,
   );
@@ -128,7 +130,7 @@ export function SimpleDesktopLayout({
       : [];
 
   const formatDiagnosis = (diagnosis: DesktopPatient["diagnosis"]) => {
-    if (!diagnosis) return "No diagnosis provided";
+    if (!diagnosis) return t("simpleLayout.noDiagnosis");
     return `${diagnosis.primary}${diagnosis.secondary.length > 0 ? `: ${diagnosis.secondary.join(", ")}` : ""}`;
   };
 
@@ -185,18 +187,18 @@ export function SimpleDesktopLayout({
                 </span>
               </div>
               <div>
-                <h1 className="font-semibold text-lg">RELEVO</h1>
+                <h1 className="font-semibold text-lg">{t("simpleLayout.title")}</h1>
                 <p className="text-xs text-muted-foreground">
-                  Medical Handover Platform
+                  {t("simpleLayout.subtitle")}
                 </p>
               </div>
             </div>
 
             <div className="flex items-center gap-2">
               <Badge variant="outline">{unit}</Badge>
-              <Badge variant="outline">{shift} Shift</Badge>
+              <Badge variant="outline">{shift} {t("simpleLayout.shift")}</Badge>
               <span className="text-sm text-muted-foreground">
-                {patients.length} Patients
+                {t("simpleLayout.patients", { count: patients.length })}
               </span>
               <span className="text-sm text-muted-foreground">
                 {currentTime.toLocaleTimeString([], {
@@ -218,12 +220,12 @@ export function SimpleDesktopLayout({
                   onCommandPalette();
                 }
               }}
-              aria-label="Open command palette to search patients and create documentation"
+              aria-label={t("simpleLayout.commandPaletteLabel")}
             >
               <div className="flex items-center gap-3 px-4 py-2 bg-muted/30 hover:bg-muted/50 rounded-lg transition-colors">
                 <Search className="w-4 h-4 text-muted-foreground" />
                 <span className="text-muted-foreground">
-                  Search patients, create documentation...
+                  {t("simpleLayout.searchPlaceholder")}
                 </span>
                 <div className="ml-auto flex items-center gap-1">
                   <Command className="w-3 h-3 text-muted-foreground" />
@@ -242,7 +244,7 @@ export function SimpleDesktopLayout({
               className="gap-2"
             >
               <Stethoscope className="w-4 h-4" />
-              Start Handover
+              {t("simpleLayout.startHandover")}
             </Button>
 
             <Button variant="ghost" size="sm" className="relative">
@@ -272,15 +274,15 @@ export function SimpleDesktopLayout({
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuItem>
                   <User className="w-4 h-4 mr-2" />
-                  Profile Settings
+                  {t("simpleLayout.profileSettings")}
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <Settings className="w-4 h-4 mr-2" />
-                  Preferences
+                  {t("simpleLayout.preferences")}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={onCommandPalette}>
                   <Command className="w-4 h-4 mr-2" />
-                  Command Palette
+                  {t("simpleLayout.commandPalette")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -298,7 +300,7 @@ export function SimpleDesktopLayout({
             {!sidebarCollapsed && (
               <div className="flex items-center gap-2">
                 <Users className="w-5 h-5 text-primary" />
-                <span className="font-medium">Patients</span>
+                <span className="font-medium">{t("simpleLayout.patientsTitle")}</span>
                 <Badge variant="secondary" className="text-xs">
                   {filteredPatients.length}
                 </Badge>
@@ -320,7 +322,7 @@ export function SimpleDesktopLayout({
           {!sidebarCollapsed && (
             <div className="mt-3 space-y-2">
               <Input
-                placeholder="Search patients..."
+                placeholder={t("simpleLayout.searchPatientsPlaceholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="h-8"
@@ -331,10 +333,10 @@ export function SimpleDesktopLayout({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="All Status">All Status</SelectItem>
-                    <SelectItem value="pending">Pending</SelectItem>
-                    <SelectItem value="in-progress">In Progress</SelectItem>
-                    <SelectItem value="complete">Complete</SelectItem>
+                    <SelectItem value="All Status">{t("simpleLayout.allStatus")}</SelectItem>
+                    <SelectItem value="pending">{t("simpleLayout.pending")}</SelectItem>
+                    <SelectItem value="in-progress">{t("simpleLayout.inProgress")}</SelectItem>
+                    <SelectItem value="complete">{t("simpleLayout.complete")}</SelectItem>
                   </SelectContent>
                 </Select>
                 <Select
@@ -345,10 +347,10 @@ export function SimpleDesktopLayout({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Priority">Priority</SelectItem>
-                    <SelectItem value="high">High</SelectItem>
-                    <SelectItem value="medium">Medium</SelectItem>
-                    <SelectItem value="low">Low</SelectItem>
+                    <SelectItem value="Priority">{t("simpleLayout.priority")}</SelectItem>
+                    <SelectItem value="high">{t("simpleLayout.high")}</SelectItem>
+                    <SelectItem value="medium">{t("simpleLayout.medium")}</SelectItem>
+                    <SelectItem value="low">{t("simpleLayout.low")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -391,7 +393,7 @@ export function SimpleDesktopLayout({
                             patient.name === "Maria Rodriguez" && (
                               <Badge variant="outline" className="text-xs">
                                 <ChevronRight className="w-3 h-3 mr-1" />
-                                Incoming
+                                {t("simpleLayout.incoming")}
                               </Badge>
                             )}
                           {patient.alerts && patient.alerts.length > 0 && (
@@ -419,8 +421,13 @@ export function SimpleDesktopLayout({
                       {patient.collaborators > 0 && (
                         <div className="text-xs text-muted-foreground">
                           <FileText className="w-3 h-3 inline mr-1" />
-                          {patient.collaborators} collaborators • Last: Dr.
-                          Sarah Chen
+                          {t("simpleLayout.collaborators", {
+                            count: patient.collaborators,
+                          })}{" "}
+                          •{" "}
+                          {t("simpleLayout.lastCollaborator", {
+                            name: "Dr. Sarah Chen",
+                          })}
                         </div>
                       )}
                     </div>
@@ -464,7 +471,7 @@ export function SimpleDesktopLayout({
                       {selectedPatient.name}
                     </h1>
                     <Badge variant="outline">
-                      {selectedPatient.age} years old
+                      {t("simpleLayout.yearsOld", { age: selectedPatient.age })}
                     </Badge>
                     <Badge
                       variant={
@@ -474,31 +481,34 @@ export function SimpleDesktopLayout({
                       }
                       className="capitalize"
                     >
-                      {selectedPatient.priority} Priority
+                      {t("simpleLayout.priorityLabel", {
+                        priority: selectedPatient.priority,
+                      })}
                     </Badge>
                   </div>
 
                   <div className="grid grid-cols-4 gap-4 text-sm mb-3">
                     <div>
-                      <span className="text-muted-foreground">MRN:</span>
+                      <span className="text-muted-foreground">{t("simpleLayout.mrn")}</span>
                       <p className="font-medium">
-                        {selectedPatient.mrn || "N/A"}
+                        {selectedPatient.mrn || t("simpleLayout.notAvailable")}
                       </p>
                     </div>
                     <div>
-                      <span className="text-muted-foreground">Admitted:</span>
+                      <span className="text-muted-foreground">{t("simpleLayout.admitted")}</span>
                       <p className="font-medium">
-                        {selectedPatient.admissionDate || "N/A"}
+                        {selectedPatient.admissionDate ||
+                          t("simpleLayout.notAvailable")}
                       </p>
                     </div>
                     <div>
                       <span className="text-muted-foreground">
-                        Est. Discharge:
+                        {t("simpleLayout.estDischarge")}
                       </span>
                       <p className="font-medium">2-3 days</p>
                     </div>
                     <div>
-                      <span className="text-muted-foreground">Room:</span>
+                      <span className="text-muted-foreground">{t("simpleLayout.room")}</span>
                       <p className="font-medium">{selectedPatient.room}</p>
                     </div>
                   </div>
@@ -507,18 +517,18 @@ export function SimpleDesktopLayout({
                 <div className="flex items-center gap-2">
                   <Button variant="outline" size="sm">
                     <Users className="w-4 h-4 mr-2" />
-                    Assessment
+                    {t("simpleLayout.assessment")}
                   </Button>
                   <Button variant="outline" size="sm">
                     <Activity className="w-4 h-4 mr-2" />
-                    Progress Note
+                    {t("simpleLayout.progressNote")}
                   </Button>
                   <Button
                     onClick={() => onClinicalEntry(selectedPatient.id)}
                     size="sm"
                   >
                     <Plus className="w-4 h-4 mr-2" />
-                    Clinical Entry
+                    {t("simpleLayout.clinicalEntry")}
                   </Button>
                 </div>
               </div>
@@ -553,11 +563,11 @@ export function SimpleDesktopLayout({
                 <div className="border-b px-6">
                   <TabsList>
                     <TabsTrigger value="clinical">
-                      Clinical Documentation
+                      {t("simpleLayout.clinicalDocumentation")}
                     </TabsTrigger>
-                    <TabsTrigger value="team">Care Team</TabsTrigger>
-                    <TabsTrigger value="alerts">Alerts & Protocols</TabsTrigger>
-                    <TabsTrigger value="family">Family & Discharge</TabsTrigger>
+                    <TabsTrigger value="team">{t("simpleLayout.careTeam")}</TabsTrigger>
+                    <TabsTrigger value="alerts">{t("simpleLayout.alertsProtocols")}</TabsTrigger>
+                    <TabsTrigger value="family">{t("simpleLayout.familyDischarge")}</TabsTrigger>
                   </TabsList>
                 </div>
 
@@ -602,8 +612,9 @@ export function SimpleDesktopLayout({
                                         className="text-xs"
                                       >
                                         <Users className="w-3 h-3 mr-1" />
-                                        {entry.collaborators.length}{" "}
-                                        collaborators
+                                        {t("simpleLayout.collaborators", {
+                                          count: entry.collaborators.length,
+                                        })}
                                       </Badge>
                                     )}
                                   <Button variant="ghost" size="sm">
@@ -632,7 +643,7 @@ export function SimpleDesktopLayout({
                                 {entry.author.name !== currentDoctor && (
                                   <Button variant="outline" size="sm">
                                     <MessageSquare className="w-4 h-4 mr-2" />
-                                    Add Response
+                                    {t("simpleLayout.addResponse")}
                                   </Button>
                                 )}
                               </div>
@@ -644,17 +655,16 @@ export function SimpleDesktopLayout({
                       <div className="text-center py-12">
                         <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                         <h3 className="font-medium mb-2">
-                          No Clinical Documentation Yet
+                          {t("simpleLayout.noClinicalDocumentation")}
                         </h3>
                         <p className="text-muted-foreground mb-4">
-                          Start documenting this patient&apos;s clinical
-                          information
+                          {t("simpleLayout.startDocumentation")}
                         </p>
                         <Button
                           onClick={() => onClinicalEntry(selectedPatient.id)}
                         >
                           <Plus className="w-4 h-4 mr-2" />
-                          Create First Entry
+                          {t("simpleLayout.createFirstEntry")}
                         </Button>
                       </div>
                     )}
@@ -664,10 +674,10 @@ export function SimpleDesktopLayout({
                     <div className="text-center py-12">
                       <Users className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                       <h3 className="font-medium mb-2">
-                        Care Team Information
+                        {t("simpleLayout.careTeamInformation")}
                       </h3>
                       <p className="text-muted-foreground">
-                        View team members and contact information
+                        {t("simpleLayout.viewTeamMembers")}
                       </p>
                     </div>
                   </TabsContent>
@@ -675,9 +685,9 @@ export function SimpleDesktopLayout({
                   <TabsContent value="alerts" className="p-6">
                     <div className="text-center py-12">
                       <AlertTriangle className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                      <h3 className="font-medium mb-2">Alerts & Protocols</h3>
+                      <h3 className="font-medium mb-2">{t("simpleLayout.alertsProtocols")}</h3>
                       <p className="text-muted-foreground">
-                        Patient-specific alerts and care protocols
+                        {t("simpleLayout.patientAlertsProtocols")}
                       </p>
                     </div>
                   </TabsContent>
@@ -685,9 +695,9 @@ export function SimpleDesktopLayout({
                   <TabsContent value="family" className="p-6">
                     <div className="text-center py-12">
                       <Calendar className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                      <h3 className="font-medium mb-2">Family & Discharge</h3>
+                      <h3 className="font-medium mb-2">{t("simpleLayout.familyDischarge")}</h3>
                       <p className="text-muted-foreground">
-                        Family information and discharge planning
+                        {t("simpleLayout.familyDischargePlanning")}
                       </p>
                     </div>
                   </TabsContent>
@@ -699,10 +709,9 @@ export function SimpleDesktopLayout({
           <div className="h-full flex items-center justify-center">
             <div className="text-center">
               <Users className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-medium mb-2">Select a Patient</h3>
+              <h3 className="text-lg font-medium mb-2">{t("simpleLayout.selectPatientTitle")}</h3>
               <p className="text-muted-foreground">
-                Choose a patient from the list to view detailed information and
-                clinical documentation
+                {t("simpleLayout.selectPatientDescription")}
               </p>
             </div>
           </div>

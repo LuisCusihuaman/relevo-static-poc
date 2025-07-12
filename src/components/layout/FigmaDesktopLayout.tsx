@@ -11,6 +11,7 @@ import { useState } from "react";
 // Import types
 import { ActivityFeed, type ActivityItem } from "@/features/handover/components/ActivityFeed";
 import { MainContent } from "@/features/handover/layout/MainContent";
+import { useTranslation } from "react-i18next";
 import type { DesktopPatient, SyncStatus, User } from "../../common/types";
 
 interface FigmaDesktopLayoutProps {
@@ -83,11 +84,12 @@ export function FigmaDesktopLayout({
   const [selectedPatient, setSelectedPatient] = useState<DesktopPatient | null>(
     safePatients.length > 0 ? safePatients[0] : null,
   );
+  const { t } = useTranslation();
   const [syncStatus, setSyncStatus] = useState<SyncStatus>("synced");
 
   const currentUser: User = {
     name: currentDoctor,
-    role: "Senior Practitioner",
+    role: t("figmaLayout.seniorPractitioner"),
     shift: _shift,
     initials: currentDoctor
       .split(" ")
@@ -116,7 +118,7 @@ export function FigmaDesktopLayout({
       userInitials: getInitials(update.author),
       userColor: "bg-gray-400",
       action: update.type,
-      section: "Patient Record",
+      section: t("figmaLayout.patientRecord"),
       time: update.timestamp,
       type: itemType,
     };
@@ -125,13 +127,13 @@ export function FigmaDesktopLayout({
   const getSeverityText = (severity: string) => {
     switch (severity) {
       case "unstable":
-        return "Critical";
+        return t("figmaLayout.critical");
       case "watcher":
-        return "Watch";
+        return t("figmaLayout.watch");
       case "stable":
-        return "Stable";
+        return t("figmaLayout.stable");
       default:
-        return "Unknown";
+        return t("figmaLayout.unknown");
     }
   };
 
@@ -198,16 +200,16 @@ export function FigmaDesktopLayout({
       needsAttention: urgency === "high" || hasAlerts,
       nextAction:
         urgency === "high"
-          ? "Monitor closely"
+          ? t("figmaLayout.monitorClosely")
           : urgency === "medium"
-            ? "Check in 2h"
-            : "Routine care",
+            ? t("figmaLayout.checkIn2h")
+            : t("figmaLayout.routineCare"),
       timeframe:
         urgency === "high"
-          ? "Immediate"
+          ? t("figmaLayout.immediate")
           : urgency === "medium"
-            ? "2 hours"
-            : "4-6 hours",
+            ? t("figmaLayout.twoHours")
+            : t("figmaLayout.fourToSixHours"),
     };
   };
 
@@ -218,10 +220,10 @@ export function FigmaDesktopLayout({
         <div className="text-center">
           <Users className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-foreground mb-2">
-            No Patients Available
+            {t("figmaLayout.noPatientsAvailable")}
           </h3>
           <p className="text-muted-foreground">
-            Please check your patient data or contact support.
+            {t("figmaLayout.checkPatientData")}
           </p>
         </div>
       </div>
@@ -239,7 +241,7 @@ export function FigmaDesktopLayout({
             <div>
               <div className="flex items-center gap-3 mb-2">
                 <h1 className="text-lg font-semibold text-foreground">
-                  {selectedPatient ? selectedPatient.name : "Patient Overview"}
+                  {selectedPatient ? selectedPatient.name : t("figmaLayout.patientOverview")}
                 </h1>
                 {selectedPatient && (
                   <>
@@ -293,7 +295,7 @@ export function FigmaDesktopLayout({
                 }
                 className="bg-primary hover:bg-primary/90"
               >
-                Start Handover
+                {t("startHandover")}
               </Button>
             </div>
           </div>
