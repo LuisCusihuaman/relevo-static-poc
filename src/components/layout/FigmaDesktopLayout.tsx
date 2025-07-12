@@ -1,28 +1,17 @@
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   AlertTriangle,
-  ChevronDown,
-  ChevronUp,
   Clock,
-  Eye,
-  FileText,
-  Plus,
-  Target,
-  Users,
+  Users
 } from "lucide-react";
 import { useState } from "react";
 
 // Import types
-import { type DesktopPatient } from "../../common/types";
+import { ActivityFeed, type ActivityItem } from "@/features/handover/components/ActivityFeed";
+import { MainContent } from "@/features/handover/layout/MainContent";
+import type { DesktopPatient, SyncStatus, User } from "../../common/types";
 
 interface FigmaDesktopLayoutProps {
   patients?: DesktopPatient[];
@@ -136,68 +125,13 @@ const recentUpdates = [
   },
 ];
 
-// Clinical Summary Content (I-PASS: P - Patient Summary)
-const clinicalSummaryText = `72-year-old female with acute COPD exacerbation, admitted 3 days ago for increased dyspnea and productive cough. Patient has been responding well to bronchodilator therapy and systemic corticosteroids.
-
-Past Medical History: COPD (moderate to severe), Hypertension, Type 2 Diabetes Mellitus, Former smoker (quit 5 years ago)
-
-Current medications showing good response. Patient ambulating with minimal assistance and oxygen requirements have decreased from 4L to 2L over past 24 hours.
-
-Social History: Lives with daughter, Independent in ADLs prior to admission, No advance directives on file
-
-Physical Exam: Alert and oriented x3, Respiratory: Decreased breath sounds bilaterally, mild expiratory wheeze, Cardiovascular: Regular rate and rhythm, No acute distress currently
-
-Hospital Course:
-Day 1: Admitted with acute respiratory distress, started on bronchodilators and systemic steroids
-Day 2: Improved oxygen saturation, reduced oxygen requirements
-Day 3: Continued improvement, ambulating with assistance, preparing for discharge planning
-
-Treatment Plan: Continue current therapy, taper steroids as tolerated, PT evaluation for discharge readiness.`;
-
-// Illness Severity Assessment Content (I-PASS: I)
-const illnessSeverityText = `Patient is currently stable but requires close monitoring due to respiratory status changes.
-
-Vital Signs: BP 128/82, HR 88, RR 18, SpO2 94% on 2L O2, Temp 98.6°F
-
-Recent Changes: O2 requirements reduced from 4L to 2L over past 24h. Increased mobility and appetite noted.
-
-Concerns: Watch for signs of respiratory fatigue. Monitor SpO2 closely during activity.
-
-Current Interventions: Bronchodilators q4h, corticosteroids tapering, chest physiotherapy BID.
-
-Assessment: Patient stable, O2 requirements reduced to 2L, vitals stable...`;
-
-// Situation Awareness & Contingency Content (I-PASS: S)
-const situationAwarenessText = `Contingency Plans and Situation Awareness:
-
-If respiratory distress develops:
-• Increase O2 to 4L, assess for nebulizer treatment
-• Consider chest X-ray if symptoms worsen
-• Call respiratory therapy for evaluation
-
-Discharge Planning:
-• Patient education on inhaler technique
-• Home O2 assessment if needed
-• Follow-up with pulmonology in 1 week
-
-What to Watch For:
-• Decreased SpO2 <90% despite increased O2
-• Increased work of breathing or accessory muscle use
-• Changes in mental status or increased fatigue
-
-Key Phone Numbers:
-• Respiratory Therapy: ext 4521
-• Pulmonology Fellow: ext 3892
-
-Contingency plans for respiratory distress, discharge planning in progress...`;
-
 export function FigmaDesktopLayout({
   patients = [],
-  currentDoctor: _currentDoctor,
+  currentDoctor,
   unit: _unit,
   shift: _shift,
   onCommandPalette: _onCommandPalette,
-  onStartHandover: _onStartHandover,
+  onStartHandover,
   onPatientHandover: _onPatientHandover,
 }: FigmaDesktopLayoutProps) {
   // Safe array operations with fallbacks
@@ -206,12 +140,45 @@ export function FigmaDesktopLayout({
     safePatients.length > 0 ? safePatients[0] : null,
   );
   const [actionItemsState, setActionItemsState] = useState(actionItems);
+  const [syncStatus, setSyncStatus] = useState<SyncStatus>("synced");
+  const [handoverComplete, setHandoverComplete] = useState(false);
 
-  // Progressive disclosure states
-  const [clinicalSummaryExpanded, setClinicalSummaryExpanded] = useState(false);
-  const [illnessSeverityExpanded, setIllnessSeverityExpanded] = useState(true);
-  const [situationAwarenessExpanded, setSituationAwarenessExpanded] =
-    useState(false);
+  const currentUser: User = {
+    name: currentDoctor,
+    role: "Senior Practitioner",
+    shift: _shift,
+    initials: currentDoctor
+      .split(" ")
+      .map((n) => n[0])
+      .join(""),
+  };
+
+  const activityFeedItems: ActivityItem[] = recentUpdates.map((update) => {
+    const getInitials = (name: string) =>
+      name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase();
+
+    let itemType: ActivityItem["type"] = "content_updated";
+    if (update.type.includes("reviewed")) {
+      itemType = "content_viewed";
+    } else if (update.type.includes("added")) {
+      itemType = "content_added";
+    }
+
+    return {
+      id: update.id,
+      user: update.author,
+      userInitials: getInitials(update.author),
+      userColor: "bg-gray-400",
+      action: update.type,
+      section: "Patient Record",
+      time: update.timestamp,
+      type: itemType,
+    };
+  });
 
   const getSeverityText = (severity: string) => {
     switch (severity) {
@@ -398,7 +365,7 @@ export function FigmaDesktopLayout({
             <div className="flex items-center gap-3">
               <Button
                 onClick={() =>
-                  selectedPatient && _onStartHandover(selectedPatient.id)
+                  selectedPatient && onStartHandover(selectedPatient.id)
                 }
                 className="bg-primary hover:bg-primary/90"
               >
@@ -528,295 +495,25 @@ export function FigmaDesktopLayout({
         </div>
 
         {/* Main Content - Correct I-PASS Framework Structure */}
-        <div className="flex-1 overflow-hidden">
-          <div className="h-full flex flex-col">
-            {/* Clinical Summary (I-PASS: P - Patient Summary) */}
-            <Collapsible
-              open={clinicalSummaryExpanded}
-              onOpenChange={setClinicalSummaryExpanded}
-            >
-              <div className="border-b border-border/10 bg-background">
-                <CollapsibleTrigger asChild>
-                  <div className="p-4 hover:bg-muted/20 cursor-pointer transition-colors">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <FileText className="w-4 h-4 text-blue-600" />
-                        <h3 className="font-semibold text-foreground">
-                          Clinical Summary
-                        </h3>
-                        <Badge
-                          variant="outline"
-                          className="text-xs bg-blue-50 border-blue-200 text-blue-700"
-                        >
-                          I-PASS: P
-                        </Badge>
-                        <Badge variant="outline" className="text-xs">
-                          Read-Only
-                        </Badge>
-                        <Badge variant="outline" className="text-xs">
-                          Last updated 11:39 AM
-                        </Badge>
-                      </div>
-                      {clinicalSummaryExpanded ? (
-                        <ChevronUp className="w-4 h-4 text-muted-foreground" />
-                      ) : (
-                        <ChevronDown className="w-4 h-4 text-muted-foreground" />
-                      )}
-                    </div>
-
-                    {/* Show preview when collapsed */}
-                    {!clinicalSummaryExpanded && (
-                      <div className="mt-2 text-xs text-muted-foreground">
-                        72-year-old female with acute COPD exacerbation,
-                        responding well to treatment...
-                      </div>
-                    )}
-                  </div>
-                </CollapsibleTrigger>
-
-                <CollapsibleContent>
-                  <div className="px-4 pb-4">
-                    <div className="mb-3 text-xs text-muted-foreground">
-                      <span>To edit this summary, use </span>
-                      <Button
-                        variant="link"
-                        className="p-0 h-auto text-xs underline"
-                        onClick={() =>
-                          selectedPatient &&
-                          _onStartHandover(selectedPatient.id)
-                        }
-                      >
-                        Start Handover
-                      </Button>
-                      <span> or mobile I-PASS documentation</span>
-                    </div>
-
-                    <div className="max-h-32 overflow-y-auto scrollbar-medical border border-border/20 rounded-lg">
-                      <div className="p-3 text-sm text-foreground leading-relaxed">
-                        <p className="whitespace-pre-wrap">
-                          {clinicalSummaryText}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </CollapsibleContent>
-              </div>
-            </Collapsible>
-
-            {/* Current Situation (I-PASS: I - Illness Severity Assessment) */}
-            <Collapsible
-              open={illnessSeverityExpanded}
-              onOpenChange={setIllnessSeverityExpanded}
-            >
-              <div className="border-b border-border/10 bg-background">
-                <CollapsibleTrigger asChild>
-                  <div className="p-4 hover:bg-muted/20 cursor-pointer transition-colors">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <AlertTriangle className="w-4 h-4 text-red-600" />
-                        <h3 className="font-semibold text-foreground">
-                          Current Situation
-                        </h3>
-                        <Badge
-                          variant="outline"
-                          className="text-xs bg-red-50 border-red-200 text-red-700"
-                        >
-                          I-PASS: I
-                        </Badge>
-                        {criticalInfo?.needsAttention && (
-                          <Badge className="bg-amber-50 border-amber-200 text-amber-700 text-xs">
-                            Needs Attention
-                          </Badge>
-                        )}
-                      </div>
-                      {illnessSeverityExpanded ? (
-                        <ChevronUp className="w-4 h-4 text-muted-foreground" />
-                      ) : (
-                        <ChevronDown className="w-4 h-4 text-muted-foreground" />
-                      )}
-                    </div>
-
-                    {/* Show preview when collapsed */}
-                    {!illnessSeverityExpanded && (
-                      <div className="mt-2 text-xs text-muted-foreground">
-                        Patient stable, O2 requirements reduced to 2L, vitals
-                        stable...
-                      </div>
-                    )}
-                  </div>
-                </CollapsibleTrigger>
-
-                <CollapsibleContent>
-                  <div className="px-4 pb-4">
-                    <div className="max-h-40 overflow-y-auto scrollbar-medical border border-border/20 rounded-lg">
-                      <div className="p-3 text-sm text-foreground leading-relaxed">
-                        <p className="whitespace-pre-wrap">
-                          {illnessSeverityText}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </CollapsibleContent>
-              </div>
-            </Collapsible>
-
-            {/* I-PASS Plans (I-PASS: S - Situation Awareness & Contingency) */}
-            <Collapsible
-              open={situationAwarenessExpanded}
-              onOpenChange={setSituationAwarenessExpanded}
-            >
-              <div className="border-b border-border/10 bg-background">
-                <CollapsibleTrigger asChild>
-                  <div className="p-4 hover:bg-muted/20 cursor-pointer transition-colors">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Eye className="w-4 h-4 text-yellow-600" />
-                        <h3 className="font-semibold text-foreground">
-                          I-PASS Plans
-                        </h3>
-                        <Badge
-                          variant="outline"
-                          className="text-xs bg-yellow-50 border-yellow-200 text-yellow-700"
-                        >
-                          I-PASS: S
-                        </Badge>
-                      </div>
-                      {situationAwarenessExpanded ? (
-                        <ChevronUp className="w-4 h-4 text-muted-foreground" />
-                      ) : (
-                        <ChevronDown className="w-4 h-4 text-muted-foreground" />
-                      )}
-                    </div>
-
-                    {/* Show preview when collapsed */}
-                    {!situationAwarenessExpanded && (
-                      <div className="mt-2 text-xs text-muted-foreground">
-                        Contingency plans for respiratory distress, discharge
-                        planning in progress...
-                      </div>
-                    )}
-                  </div>
-                </CollapsibleTrigger>
-
-                <CollapsibleContent>
-                  <div className="px-4 pb-4">
-                    <div className="max-h-40 overflow-y-auto scrollbar-medical border border-border/20 rounded-lg">
-                      <div className="p-3 text-sm text-foreground leading-relaxed">
-                        <p className="whitespace-pre-wrap">
-                          {situationAwarenessText}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </CollapsibleContent>
-              </div>
-            </Collapsible>
-
-            {/* Action List (I-PASS: A) - Scrollable at Bottom */}
-            <div className="flex-1 bg-background">
-              <div className="p-4 border-b border-border/10">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <Target className="w-5 h-5 text-muted-foreground" />
-                    <h3 className="font-semibold text-foreground">
-                      Action List
-                    </h3>
-                    <Badge
-                      variant="outline"
-                      className="text-xs bg-green-50 border-green-200 text-green-700"
-                    >
-                      I-PASS: A
-                    </Badge>
-                    {pendingActions > 0 && (
-                      <Badge className="bg-orange-50 border-orange-200 text-orange-700 text-xs">
-                        {pendingActions} pending
-                      </Badge>
-                    )}
-                    {highPriorityActions > 0 && (
-                      <Badge className="bg-red-50 border-red-200 text-red-700 text-xs">
-                        {highPriorityActions} urgent
-                      </Badge>
-                    )}
-                  </div>
-                  <Button variant="outline" size="sm">
-                    <Plus className="w-4 h-4 mr-2" />
-                    Add Action
-                  </Button>
-                </div>
-
-                {/* Action Progress Summary */}
-                <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                  <span>
-                    {actionItemsState.filter((a) => a.completed).length}{" "}
-                    completed
-                  </span>
-                  <span>{pendingActions} remaining</span>
-                  {highPriorityActions > 0 && (
-                    <span className="text-red-600 font-medium">
-                      {highPriorityActions} urgent
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              {/* Scrollable Action List */}
-              <ScrollArea className="flex-1">
-                <div className="p-4 space-y-3">
-                  {actionItemsState.map((action) => (
-                    <div
-                      key={action.id}
-                      className="flex items-start gap-3 p-3 bg-background border border-border/30 rounded-lg hover:border-border/50 transition-colors"
-                    >
-                      <Checkbox
-                        checked={action.completed}
-                        onCheckedChange={() => handleActionToggle(action.id)}
-                        className="mt-1"
-                      />
-
-                      <div
-                        className={`w-1.5 h-1.5 rounded-full mt-2 ${
-                          action.priority === "high"
-                            ? "bg-red-500"
-                            : action.priority === "medium"
-                              ? "bg-yellow-500"
-                              : "bg-green-500"
-                        }`}
-                      />
-
-                      <div className="flex-1 min-w-0">
-                        <h5 className="font-medium text-sm text-foreground mb-1">
-                          {action.title}
-                        </h5>
-                        <p className="text-xs text-muted-foreground leading-relaxed mb-2">
-                          {action.description}
-                        </p>
-
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <Badge variant="outline" className="text-xs">
-                              {action.priority}
-                            </Badge>
-                            <Badge variant="outline" className="text-xs">
-                              {action.status}
-                            </Badge>
-                          </div>
-                          <span className="text-xs text-muted-foreground">
-                            {action.timeframe}
-                          </span>
-                        </div>
-                      </div>
-
-                      <Avatar className="w-6 h-6 border border-border/30">
-                        <AvatarFallback className="text-xs font-medium">
-                          {action.assignedInitials}
-                        </AvatarFallback>
-                      </Avatar>
-                    </div>
-                  ))}
-                </div>
-              </ScrollArea>
-            </div>
-          </div>
+        <div className="flex-1 overflow-auto">
+          <MainContent
+            focusMode={true}
+            layoutMode="single"
+            expandedSections={{
+              illness: true,
+              patient: true,
+              actions: true,
+              awareness: true,
+              synthesis: true,
+            }}
+            handleOpenDiscussion={() => {}}
+            handleOpenFullscreenEdit={() => {}}
+            syncStatus={syncStatus}
+            setSyncStatus={setSyncStatus}
+            setHandoverComplete={setHandoverComplete}
+            getSessionDuration={() => "00:00"}
+            currentUser={currentUser}
+          />
         </div>
 
         {/* Right Sidebar - Recent Updates Timeline */}
@@ -827,39 +524,7 @@ export function FigmaDesktopLayout({
               <h3 className="font-medium text-foreground">Recent Updates</h3>
             </div>
           </div>
-
-          <ScrollArea className="flex-1">
-            <div className="p-4 space-y-3">
-              {recentUpdates.map((update, index) => (
-                <div key={update.id} className="relative">
-                  {index < recentUpdates.length - 1 && (
-                    <div className="absolute left-2 top-6 w-px h-6 bg-border/30" />
-                  )}
-                  <div className="flex items-start gap-3">
-                    <div className="w-3 h-3 rounded-full bg-primary/30 mt-1.5 border border-background shadow-sm" />
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between mb-1">
-                        <p className="text-xs font-medium text-foreground truncate">
-                          {update.type}
-                        </p>
-                        <span className="text-xs text-muted-foreground">
-                          {update.timestamp}
-                        </span>
-                      </div>
-                      <p className="text-xs text-muted-foreground leading-tight">
-                        {update.details.length > 60
-                          ? `${update.details.substring(0, 60)}...`
-                          : update.details}
-                      </p>
-                      <p className="text-xs font-medium text-muted-foreground mt-1">
-                        by {update.author}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </ScrollArea>
+          <ActivityFeed items={activityFeedItems} onNavigateToSection={() => {}} />
         </div>
       </div>
     </div>
