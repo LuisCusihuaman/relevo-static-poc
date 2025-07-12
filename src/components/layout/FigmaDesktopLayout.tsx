@@ -84,12 +84,12 @@ export function FigmaDesktopLayout({
   const [selectedPatient, setSelectedPatient] = useState<DesktopPatient | null>(
     safePatients.length > 0 ? safePatients[0] : null,
   );
-  const { t } = useTranslation();
+  const { t } = useTranslation("figmaLayout");
   const [syncStatus, setSyncStatus] = useState<SyncStatus>("synced");
 
   const currentUser: User = {
     name: currentDoctor,
-    role: t("figmaLayout.seniorPractitioner"),
+    role: t("seniorPractitioner"),
     shift: _shift,
     initials: currentDoctor
       .split(" ")
@@ -118,7 +118,7 @@ export function FigmaDesktopLayout({
       userInitials: getInitials(update.author),
       userColor: "bg-gray-400",
       action: update.type,
-      section: t("figmaLayout.patientRecord"),
+      section: t("patientRecord"),
       time: update.timestamp,
       type: itemType,
     };
@@ -127,13 +127,13 @@ export function FigmaDesktopLayout({
   const getSeverityText = (severity: string) => {
     switch (severity) {
       case "unstable":
-        return t("figmaLayout.critical");
+        return t("critical");
       case "watcher":
-        return t("figmaLayout.watch");
+        return t("watch");
       case "stable":
-        return t("figmaLayout.stable");
+        return t("stable");
       default:
-        return t("figmaLayout.unknown");
+        return t("unknown");
     }
   };
 
@@ -200,16 +200,16 @@ export function FigmaDesktopLayout({
       needsAttention: urgency === "high" || hasAlerts,
       nextAction:
         urgency === "high"
-          ? t("figmaLayout.monitorClosely")
+          ? t("monitorClosely")
           : urgency === "medium"
-            ? t("figmaLayout.checkIn2h")
-            : t("figmaLayout.routineCare"),
+            ? t("checkIn2h")
+            : t("routineCare"),
       timeframe:
         urgency === "high"
-          ? t("figmaLayout.immediate")
+          ? t("immediate")
           : urgency === "medium"
-            ? t("figmaLayout.twoHours")
-            : t("figmaLayout.fourToSixHours"),
+            ? t("twoHours")
+            : t("fourToSixHours"),
     };
   };
 
@@ -220,10 +220,10 @@ export function FigmaDesktopLayout({
         <div className="text-center">
           <Users className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-foreground mb-2">
-            {t("figmaLayout.noPatientsAvailable")}
+            {t("noPatientsAvailable")}
           </h3>
           <p className="text-muted-foreground">
-            {t("figmaLayout.checkPatientData")}
+            {t("checkPatientData")}
           </p>
         </div>
       </div>
@@ -241,7 +241,7 @@ export function FigmaDesktopLayout({
             <div>
               <div className="flex items-center gap-3 mb-2">
                 <h1 className="text-lg font-semibold text-foreground">
-                  {selectedPatient ? selectedPatient.name : t("figmaLayout.patientOverview")}
+                  {selectedPatient ? selectedPatient.name : t("patientOverview")}
                 </h1>
                 {selectedPatient && (
                   <>

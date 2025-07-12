@@ -2,6 +2,48 @@ import i18n from "i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 import { initReactI18next } from "react-i18next";
 
+const namespaces = [
+  "actionList",
+  "activityFeed",
+  "appSidebar",
+  "clinicalDocumentation",
+  "collaborationPanel",
+  "collapsibleLayout",
+  "confirmationChecklist",
+  "contextAwareDashboard",
+  "dailySetup",
+  "desktopPatientView",
+  "enhancedLayout",
+  "enhancedPatientCard",
+  "figmaLayout",
+  "fullscreenEditor",
+  "handover",
+  "handoverHistory",
+  "header",
+  "illnessSeverity",
+  "justification",
+  "mainContent",
+  "mobileMenus",
+  "modernLayout",
+  "notificationsView",
+  "patientAlerts",
+  "patientCard",
+  "patientDetailView",
+  "patientListView",
+  "patientSelectionCard",
+  "patientSummary",
+  "profileView",
+  "quickActions",
+  "quickNote",
+  "searchBar",
+  "searchView",
+  "simpleLayout",
+  "simplePatientCard",
+  "situationAwareness",
+  "statusSummary",
+  "synthesisByReceiver",
+];
+
 i18n
   // detect user language
   .use(LanguageDetector)
@@ -11,6 +53,8 @@ i18n
   .init({
     debug: true,
     fallbackLng: "en",
+    ns: namespaces,
+    defaultNS: "appSidebar",
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default
     },
@@ -638,6 +682,7 @@ i18n
           yes: "Yes",
           no: "No",
           recentActivity: "Recent Activity",
+          startHandover: "Start Handover",
         },
         fullscreenEditor: {
           titles: {
@@ -1700,9 +1745,6 @@ i18n
               description: "Official transfer of care and responsibility",
             },
           },
-        },
-        translation: {
-          startHandover: "Start Handover",
         },
       },
     },

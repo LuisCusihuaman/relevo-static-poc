@@ -1,6 +1,6 @@
 import {
   activeCollaborators,
-  ipassGuidelines,
+  getIpassGuidelines,
   patientData,
 } from "@/common/constants";
 import type {
@@ -20,6 +20,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ChevronDown, ChevronUp, Info } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import {
   ActionList,
   IllnessSeverity,
@@ -56,6 +57,8 @@ export function MainContent({
   getSessionDuration,
   currentUser,
 }: MainContentProps) {
+  const { t } = useTranslation("handover");
+  const ipassGuidelines = getIpassGuidelines(t);
   const activeUsers = activeCollaborators.filter(
     (user) => user.status === "active" || user.status === "viewing",
   );
