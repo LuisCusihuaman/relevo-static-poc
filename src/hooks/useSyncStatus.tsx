@@ -1,9 +1,11 @@
 import { AlertTriangle, CheckCircle, WifiOff } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 type SyncStatus = "synced" | "syncing" | "pending" | "offline" | "error";
 
 export function useSyncStatus() {
+  const { t } = useTranslation("header");
   const [isOnline, setIsOnline] = useState(true);
   const [syncStatus, setSyncStatus] = useState<SyncStatus>("synced");
 
@@ -37,7 +39,7 @@ export function useSyncStatus() {
           icon: (
             <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse" />
           ),
-          text: "Syncing...",
+          text: t("syncing"),
           color: "text-amber-600",
         };
       case "pending":
@@ -45,25 +47,25 @@ export function useSyncStatus() {
           icon: (
             <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" />
           ),
-          text: "Pending...",
+          text: t("pending"),
           color: "text-gray-500",
         };
       case "offline":
         return {
           icon: <WifiOff className="w-3 h-3 text-red-500" />,
-          text: "Offline",
+          text: t("offline"),
           color: "text-red-600",
         };
       case "error":
         return {
           icon: <AlertTriangle className="w-3 h-3 text-red-500" />,
-          text: "Sync Error",
+          text: t("syncError"),
           color: "text-red-600",
         };
       default:
         return {
           icon: <CheckCircle className="w-3 h-3 text-green-500" />,
-          text: "All changes saved",
+          text: t("allChangesSaved"),
           color: "text-green-600",
         };
     }

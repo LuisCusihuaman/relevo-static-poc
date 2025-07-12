@@ -3,6 +3,7 @@ import {
   getIpassGuidelines,
   patientData,
 } from "@/common/constants";
+import { patientDataES } from "@/common/constants.es";
 import type {
   ExpandedSections,
   FullscreenComponent,
@@ -57,11 +58,12 @@ export function MainContent({
   getSessionDuration,
   currentUser,
 }: MainContentProps) {
-  const { t } = useTranslation("handover");
+  const { t, i18n } = useTranslation(["handover", "mainContent"]);
   const ipassGuidelines = getIpassGuidelines(t);
   const activeUsers = activeCollaborators.filter(
     (user) => user.status === "active" || user.status === "viewing",
   );
+  const currentPatientData = i18n.language === "es" ? patientDataES : patientData;
 
   if (focusMode) {
     return (
@@ -70,20 +72,18 @@ export function MainContent({
           <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 space-y-4 sm:space-y-0">
             <div>
               <h2 className="text-lg font-medium text-gray-900">
-                I-PASS Handover Session
+                {t("focusTitle")}
               </h2>
               <p className="text-sm text-gray-600 mt-1">
-                {patientData.name} • Press{" "}
-                <kbd className="px-2 py-1 bg-gray-100 rounded text-xs">Esc</kbd>{" "}
-                to exit
+                {currentPatientData.name} • {t("focusExit")}
               </p>
             </div>
             <div className="text-right">
               <p className="text-sm font-medium text-gray-900">
-                Session: {getSessionDuration()}
+                {t("session", { duration: getSessionDuration() })}
               </p>
               <p className="text-xs text-gray-500">
-                {activeUsers.length} participants
+                {t("participants", { count: activeUsers.length })}
               </p>
             </div>
           </div>
@@ -99,7 +99,7 @@ export function MainContent({
                   </span>
                 </div>
                 <h3 className="font-medium text-gray-900 text-sm sm:text-base">
-                  Illness Severity
+                  {t("mainContent:sections.illnessSeverity")}
                 </h3>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -133,7 +133,7 @@ export function MainContent({
               <IllnessSeverity
                 focusMode={focusMode}
                 currentUser={currentUser}
-                assignedPhysician={patientData.assignedPhysician}
+                assignedPhysician={currentPatientData.assignedPhysician}
               />
             </div>
 
@@ -146,7 +146,7 @@ export function MainContent({
                   </span>
                 </div>
                 <h3 className="font-medium text-gray-900 text-sm sm:text-base">
-                  Patient Summary
+                  {t("mainContent:sections.patientSummary")}
                 </h3>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -181,7 +181,7 @@ export function MainContent({
                 onOpenThread={handleOpenDiscussion}
                 focusMode={focusMode}
                 currentUser={currentUser}
-                assignedPhysician={patientData.assignedPhysician}
+                assignedPhysician={currentPatientData.assignedPhysician}
                 onRequestFullscreen={() =>
                   handleOpenFullscreenEdit("patient-summary", true)
                 }
@@ -199,7 +199,7 @@ export function MainContent({
                   </span>
                 </div>
                 <h3 className="font-medium text-gray-900 text-sm sm:text-base">
-                  Action List
+                  {t("mainContent:sections.actionList")}
                 </h3>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -247,7 +247,7 @@ export function MainContent({
                   </span>
                 </div>
                 <h3 className="font-medium text-gray-900 text-sm sm:text-base">
-                  Current Situation
+                  {t("mainContent:sections.situationAwareness")}
                 </h3>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -301,7 +301,7 @@ export function MainContent({
                   </span>
                 </div>
                 <h3 className="font-medium text-gray-900 text-sm sm:text-base">
-                  Synthesis by Receiver
+                  {t("mainContent:sections.synthesisByReceiver")}
                 </h3>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -339,7 +339,7 @@ export function MainContent({
                 onComplete={setHandoverComplete}
                 focusMode={focusMode}
                 currentUser={currentUser}
-                receivingPhysician={patientData.receivingPhysician}
+                receivingPhysician={currentPatientData.receivingPhysician}
               />
             </div>
           </div>
@@ -365,10 +365,10 @@ export function MainContent({
                   </div>
                   <div className="flex-1">
                     <h3 className="font-medium text-gray-900">
-                      Illness Severity
+                      {t("mainContent:sections.illnessSeverity")}
                     </h3>
                     <p className="text-sm text-gray-600">
-                      Evaluate patient condition and stability
+                      {t("mainContent:sections.illnessSeverityDescription")}
                     </p>
                   </div>
                   <Tooltip>
@@ -407,7 +407,7 @@ export function MainContent({
                 <IllnessSeverity
                   focusMode={focusMode}
                   currentUser={currentUser}
-                  assignedPhysician={patientData.assignedPhysician}
+                  assignedPhysician={currentPatientData.assignedPhysician}
                 />
               </div>
             </div>
@@ -421,10 +421,10 @@ export function MainContent({
                   </div>
                   <div className="flex-1">
                     <h3 className="font-medium text-gray-900">
-                      Patient Summary
+                      {t("mainContent:sections.patientSummary")}
                     </h3>
                     <p className="text-sm text-gray-600">
-                      Static patient record copied from previous handovers
+                      {t("mainContent:sections.patientSummaryDescription")}
                     </p>
                   </div>
                   <Tooltip>
@@ -463,7 +463,7 @@ export function MainContent({
                 onOpenThread={handleOpenDiscussion}
                 focusMode={focusMode}
                 currentUser={currentUser}
-                assignedPhysician={patientData.assignedPhysician}
+                assignedPhysician={currentPatientData.assignedPhysician}
                 onRequestFullscreen={() =>
                   handleOpenFullscreenEdit("patient-summary")
                 }
@@ -481,10 +481,10 @@ export function MainContent({
                   </div>
                   <div className="flex-1">
                     <h3 className="font-medium text-gray-900">
-                      Situation Awareness and Contingency Planning
+                      {t("mainContent:sections.situationAwareness")}
                     </h3>
                     <p className="text-sm text-gray-600">
-                      Real-time patient status and updates
+                      {t("mainContent:sections.situationAwarenessDescription")}
                     </p>
                   </div>
                   <Tooltip>
@@ -543,8 +543,12 @@ export function MainContent({
                       <span className="font-bold text-blue-700">A</span>
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-medium text-gray-900">Action List</h3>
-                      <p className="text-sm text-gray-600">Pending tasks</p>
+                      <h3 className="font-medium text-gray-900">
+                        {t("mainContent:sections.actionList")}
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        {t("mainContent:sections.actionListDescription")}
+                      </p>
                     </div>
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -600,10 +604,10 @@ export function MainContent({
                     </div>
                     <div className="flex-1">
                       <h3 className="font-medium text-gray-900">
-                        Synthesis by Receiver
+                        {t("mainContent:sections.synthesisByReceiver")}
                       </h3>
                       <p className="text-sm text-gray-600">
-                        Receiver confirmation
+                        {t("synthesisByReceiver.description")}
                       </p>
                     </div>
                     <Tooltip>
@@ -646,7 +650,7 @@ export function MainContent({
                     onComplete={setHandoverComplete}
                     focusMode={focusMode}
                     currentUser={currentUser}
-                    receivingPhysician={patientData.receivingPhysician}
+                    receivingPhysician={currentPatientData.receivingPhysician}
                   />
                 </div>
               </div>
@@ -672,7 +676,7 @@ export function MainContent({
                     <div>
                       <div className="flex items-center space-x-2">
                         <h3 className="font-semibold text-gray-900">
-                          Illness Severity
+                          {t("mainContent:sections.illnessSeverity")}
                         </h3>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -708,7 +712,7 @@ export function MainContent({
                         </Tooltip>
                       </div>
                       <p className="text-sm text-gray-700">
-                        Evaluate patient condition and stability
+                        {t("mainContent:sections.illnessSeverityDescription")}
                       </p>
                     </div>
                   </div>
@@ -727,7 +731,7 @@ export function MainContent({
                 <IllnessSeverity
                   focusMode={focusMode}
                   currentUser={currentUser}
-                  assignedPhysician={patientData.assignedPhysician}
+                  assignedPhysician={currentPatientData.assignedPhysician}
                 />
               </div>
             </CollapsibleContent>
@@ -747,7 +751,7 @@ export function MainContent({
                     <div>
                       <div className="flex items-center space-x-2">
                         <h3 className="font-semibold text-gray-900">
-                          Patient Summary
+                          {t("mainContent:sections.patientSummary")}
                         </h3>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -783,7 +787,7 @@ export function MainContent({
                         </Tooltip>
                       </div>
                       <p className="text-sm text-gray-700">
-                        Static patient record copied from previous handovers
+                        {t("mainContent:sections.patientSummaryDescription")}
                       </p>
                     </div>
                   </div>
@@ -803,7 +807,7 @@ export function MainContent({
                   onOpenThread={handleOpenDiscussion}
                   focusMode={focusMode}
                   currentUser={currentUser}
-                  assignedPhysician={patientData.assignedPhysician}
+                  assignedPhysician={currentPatientData.assignedPhysician}
                   onRequestFullscreen={() =>
                     handleOpenFullscreenEdit("patient-summary")
                   }
@@ -828,7 +832,7 @@ export function MainContent({
                     <div>
                       <div className="flex items-center space-x-2">
                         <h3 className="font-semibold text-gray-900">
-                          Action List
+                          {t("mainContent:sections.actionList")}
                         </h3>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -864,7 +868,7 @@ export function MainContent({
                         </Tooltip>
                       </div>
                       <p className="text-sm text-gray-700">
-                        Pending tasks and action items for the receiving team
+                        {t("mainContent:sections.actionListDescription")}
                       </p>
                     </div>
                   </div>
@@ -904,7 +908,7 @@ export function MainContent({
                     <div>
                       <div className="flex items-center space-x-2">
                         <h3 className="font-semibold text-gray-900">
-                          Situation Awareness and Contingency Planning
+                          {t("mainContent:sections.situationAwareness")}
                         </h3>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -940,7 +944,7 @@ export function MainContent({
                         </Tooltip>
                       </div>
                       <p className="text-sm text-gray-700">
-                        Real-time patient status and updates
+                        {t("mainContent:sections.situationAwarenessDescription")}
                       </p>
                     </div>
                   </div>
@@ -982,7 +986,7 @@ export function MainContent({
                     <div>
                       <div className="flex items-center space-x-2">
                         <h3 className="font-semibold text-gray-900">
-                          Synthesis by Receiver
+                          {t("mainContent:sections.synthesisByReceiver")}
                         </h3>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -1018,8 +1022,7 @@ export function MainContent({
                         </Tooltip>
                       </div>
                       <p className="text-sm text-gray-700">
-                        Dr. {patientData.receivingPhysician.name} confirmation
-                        and handover acceptance
+                        {t("synthesisByReceiver.description")}
                       </p>
                     </div>
                   </div>
@@ -1040,7 +1043,7 @@ export function MainContent({
                   onComplete={setHandoverComplete}
                   focusMode={focusMode}
                   currentUser={currentUser}
-                  receivingPhysician={patientData.receivingPhysician}
+                  receivingPhysician={currentPatientData.receivingPhysician}
                 />
               </div>
             </CollapsibleContent>

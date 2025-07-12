@@ -13,6 +13,17 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { type RecentActivity } from "../../../common/types";
+import {
+  recentActivities,
+  upcomingTasks,
+} from "../../../store/shift.store";
+import {
+  recentActivitiesES,
+  upcomingTasksES,
+} from "../../../store/shift.store.es";
+import { mockUserProfile } from "../../../store/user.store";
+import { mockUserProfileES } from "../../../store/user.store.es";
 
 interface DoctorContext {
   id: string;
@@ -33,7 +44,7 @@ interface UnitStatus {
 }
 
 export function ContextAwareDashboard() {
-  const { t } = useTranslation("contextAwareDashboard");
+  const { t, i18n } = useTranslation("contextAwareDashboard");
   const [currentDoctor] = useState<DoctorContext>({
     id: "dr_chen_001",
     name: "Dr. Sarah Chen",
@@ -54,50 +65,19 @@ export function ContextAwareDashboard() {
 
   const [currentTime, setCurrentTime] = useState(new Date());
 
+  const currentUserProfile =
+    i18n.language === "es" ? mockUserProfileES : mockUserProfile;
+  const currentUpcomingTasks =
+    i18n.language === "es" ? upcomingTasksES : upcomingTasks;
+  const currentRecentActivity =
+    i18n.language === "es" ? recentActivitiesES : recentActivities;
+
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date());
     }, 1000);
     return () => clearInterval(timer);
   }, []);
-
-  const upcomingTasks = [
-    {
-      time: "10:00",
-      task: "Handover session with Dr. Torres",
-      priority: "high",
-    },
-    {
-      time: "11:30",
-      task: "Family meeting - Room PICU-01",
-      priority: "medium",
-    },
-    { time: "14:00", task: "Review discharge plans", priority: "low" },
-    { time: "15:30", task: "Medication rounds", priority: "medium" },
-  ];
-
-  const recentActivity = [
-    {
-      time: "15 min ago",
-      activity: "Updated care plan for Maria Rodriguez",
-      user: "Dr. Sarah Chen",
-    },
-    {
-      time: "23 min ago",
-      activity: "New comment on Carlos Gonzalez handover",
-      user: "Dr. Michael Torres",
-    },
-    {
-      time: "1 hour ago",
-      activity: "Completed discharge documentation",
-      user: "Dr. Lisa Park",
-    },
-    {
-      time: "2 hours ago",
-      activity: "Started collaborative handover session",
-      user: "Dr. Sarah Chen",
-    },
-  ];
 
   return (
     <div className="max-w-7xl mx-auto space-y-6 p-6">
@@ -107,12 +87,12 @@ export function ContextAwareDashboard() {
           <div className="flex items-center justify-between">
             <div>
               <CardTitle className="text-2xl mb-2">
-                {t("welcome", { name: currentDoctor.name })}
+                {t("welcome", { name: currentUserProfile.name })}
               </CardTitle>
               <div className="flex items-center gap-4 text-sm text-muted-foreground">
                 <div className="flex items-center gap-1">
                   <Shield className="w-4 h-4" />
-                  <span>{currentDoctor.role}</span>
+                  <span>{currentUserProfile.title}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <Calendar className="w-4 h-4" />
@@ -129,7 +109,7 @@ export function ContextAwareDashboard() {
                 {currentTime.toLocaleTimeString()}
               </div>
               <div className="text-sm text-muted-foreground">
-                {t("unit", { name: unitStatus.name })}
+                {t("unit", { name: currentUserProfile.department })}
               </div>
             </div>
           </div>
@@ -191,7 +171,7 @@ export function ContextAwareDashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {upcomingTasks.map((task, index) => (
+              {currentUpcomingTasks.map((task, index) => (
                 <div
                   key={index}
                   className="flex items-center gap-3 p-3 rounded-lg border"
@@ -239,7 +219,7 @@ export function ContextAwareDashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {recentActivity.map((activity, index) => (
+              {currentRecentActivity.map((activity: RecentActivity, index) => (
                 <div
                   key={index}
                   className="flex gap-3 p-3 rounded-lg bg-muted/30"
@@ -247,12 +227,12 @@ export function ContextAwareDashboard() {
                   <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm text-foreground">
-                      {activity.activity}
+                      {activity.details}
                     </p>
-                    <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
-                      <span>{activity.time}</span>
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
+                      <span>{activity.timestamp}</span>
                       <span>•</span>
-                      <span className="font-medium">{activity.user}</span>
+                      <span>{activity.doctor}</span>
                     </div>
                   </div>
                 </div>

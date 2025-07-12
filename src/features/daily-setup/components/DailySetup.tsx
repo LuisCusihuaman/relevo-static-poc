@@ -25,9 +25,17 @@ import { useTranslation } from "react-i18next";
 import {
   type DailySetupData,
   dailySetupPatients,
+} from "../../../common/mockData";
+import {
   shiftsConfig,
   unitsConfig,
-} from "../../../common/mockData";
+} from "../../../store/config.store";
+import {
+  shiftsConfigES,
+  unitsConfigES,
+} from "../../../store/config.store.es";
+import { formatDiagnosis } from "../../../store/patients.store";
+import { patientsES } from "../../../store/patients.store.es";
 import { PatientSelectionCard } from "./PatientSelectionCard";
 
 interface DailySetupProps {
@@ -41,7 +49,7 @@ export function DailySetup({
   existingSetup,
   isEditing = false,
 }: DailySetupProps) {
-  const { t } = useTranslation("dailySetup");
+  const { t, i18n } = useTranslation("dailySetup");
   const [currentStep, setCurrentStep] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -53,6 +61,23 @@ export function DailySetup({
     existingSetup?.selectedPatients || [],
   );
   const [showValidationError, setShowValidationError] = useState(false);
+
+  const currentUnitsConfig =
+    i18n.language === "es" ? unitsConfigES : unitsConfig;
+  const currentShiftsConfig =
+    i18n.language === "es" ? shiftsConfigES : shiftsConfig;
+  const currentPatientsSource =
+    i18n.language === "es" ? patientsES : dailySetupPatients;
+
+  const currentPatients = currentPatientsSource.map((p: any) => ({
+    id: p.id,
+    name: p.name,
+    age: p.age,
+    room: p.room,
+    diagnosis: formatDiagnosis(p.diagnosis),
+    status: p.status,
+    severity: p.illnessSeverity,
+  }));
 
   // Helper function to get medical icons for different units
   const getUnitIcon = (unitId: string) => {
@@ -91,10 +116,10 @@ export function DailySetup({
   };
 
   const handleSelectAll = () => {
-    if (selectedPatients.length === dailySetupPatients.length) {
+    if (selectedPatients.length === currentPatients.length) {
       setSelectedPatients([]);
     } else {
-      setSelectedPatients(dailySetupPatients.map((p) => p.id));
+      setSelectedPatients(currentPatients.map((p) => p.id));
     }
 
     if (showValidationError) {
@@ -233,7 +258,7 @@ export function DailySetup({
 
               {/* MOBILE SCROLLABLE UNIT LIST */}
               <div className="space-y-3 mobile-scroll-fix">
-                {unitsConfig.map((unitOption) => {
+                {currentUnitsConfig.map((unitOption) => {
                   const UnitIcon = getUnitIcon(unitOption.id);
                   return (
                     <button
@@ -303,7 +328,7 @@ export function DailySetup({
 
               {/* MOBILE SCROLLABLE SHIFT LIST */}
               <div className="space-y-3 mobile-scroll-fix">
-                {shiftsConfig.map((shiftOption) => (
+                {currentShiftsConfig.map((shiftOption) => (
                   <button
                     key={shiftOption.id}
                     onClick={() => setShift(shiftOption.id)}
@@ -365,7 +390,7 @@ export function DailySetup({
                 >
                   {t("patientsSelected", {
                     count: selectedPatients.length,
-                    total: dailySetupPatients.length,
+                    total: currentPatients.length,
                   })}
                 </Badge>
 
@@ -387,7 +412,7 @@ export function DailySetup({
                   onClick={handleSelectAll}
                   className="gap-2"
                 >
-                  {selectedPatients.length === dailySetupPatients.length ? (
+                  {selectedPatients.length === currentPatients.length ? (
                     <>
                       <Circle className="w-4 h-4" />
                       {t("deselectAll")}
@@ -421,7 +446,7 @@ export function DailySetup({
             <div className="flex-1 min-h-0 mt-6">
               <div className="h-full overflow-y-auto mobile-scroll-fix">
                 <div className="space-y-3 pb-4">
-                  {dailySetupPatients.map((patient) => (
+                  {currentPatients.map((patient) => (
                     <div
                       key={patient.id}
                       onClick={() => handlePatientToggle(patient.id)}
@@ -652,7 +677,7 @@ export function DailySetup({
 
                 {/* Compact Grid Layout for Units */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-                  {unitsConfig.map((unitOption) => {
+                  {currentUnitsConfig.map((unitOption) => {
                     const UnitIcon = getUnitIcon(unitOption.id);
                     return (
                       <button
@@ -719,7 +744,7 @@ export function DailySetup({
 
                 {/* Compact Grid Layout for Shifts */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-                  {shiftsConfig.map((shiftOption) => (
+                  {currentShiftsConfig.map((shiftOption) => (
                     <button
                       key={shiftOption.id}
                       onClick={() => setShift(shiftOption.id)}
@@ -777,7 +802,7 @@ export function DailySetup({
                 >
                   {t("patientsSelected", {
                     count: selectedPatients.length,
-                    total: dailySetupPatients.length,
+                    total: currentPatients.length,
                   })}
                 </Badge>
 
@@ -798,7 +823,7 @@ export function DailySetup({
                   onClick={handleSelectAll}
                   className="gap-2"
                 >
-                  {selectedPatients.length === dailySetupPatients.length ? (
+                  {selectedPatients.length === currentPatients.length ? (
                     <>
                       <Circle className="w-4 h-4" />
                       {t("deselectAll")}
@@ -832,7 +857,7 @@ export function DailySetup({
                 <div className="patient-scroll-container bg-muted/10 border border-border/40 rounded-xl p-4">
                   <div className="max-h-[380px] overflow-y-auto scrollbar-hidden">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-                      {dailySetupPatients.map((patient) => (
+                      {currentPatients.map((patient) => (
                         <div
                           key={patient.id}
                           onClick={() => handlePatientToggle(patient.id)}

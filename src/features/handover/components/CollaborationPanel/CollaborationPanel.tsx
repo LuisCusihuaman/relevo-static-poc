@@ -1,9 +1,13 @@
+import {
+  recentActivity,
+} from "@/common/constants";
+import { recentActivityES } from "@/common/constants.es";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { Activity, Bell, MessageSquare, Send, Users, X } from "lucide-react";
+import { Bell, MessageSquare, Send, Users, X } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ActivityFeed, type ActivityItem } from "../ActivityFeed";
@@ -57,50 +61,6 @@ const handoverDiscussion = [
   },
 ];
 
-// Mock recent activity for the handover
-const recentActivity = [
-  {
-    id: 1,
-    user: "Dr. Patel",
-    userInitials: "SP",
-    userColor: "bg-purple-600",
-    action: "joined handover session",
-    section: "General",
-    time: "5 minutes ago",
-    type: "user_joined",
-  },
-  {
-    id: 2,
-    user: "Dr. Johnson",
-    userInitials: "DJ",
-    userColor: "bg-blue-600",
-    action: "updated illness severity assessment",
-    section: "Illness Severity",
-    time: "3 minutes ago",
-    type: "content_updated",
-  },
-  {
-    id: 3,
-    user: "Dr. Rodriguez",
-    userInitials: "MR",
-    userColor: "bg-emerald-600",
-    action: "added action item about morning labs",
-    section: "Action List",
-    time: "2 minutes ago",
-    type: "content_added",
-  },
-  {
-    id: 4,
-    user: "Nurse Clara",
-    userInitials: "CJ",
-    userColor: "bg-teal-600",
-    action: "reviewed patient summary",
-    section: "Patient Summary",
-    time: "1 minute ago",
-    type: "content_viewed",
-  },
-];
-
 export function CollaborationPanel({
   onClose,
   onNavigateToSection,
@@ -108,7 +68,9 @@ export function CollaborationPanel({
 }: CollaborationPanelProps) {
   const [newMessage, setNewMessage] = useState("");
   const [activeTab, setActiveTab] = useState("discussion");
-  const { t } = useTranslation("collaborationPanel");
+  const { t, i18n } = useTranslation("collaborationPanel");
+  const currentRecentActivity =
+    i18n.language === "es" ? recentActivityES : recentActivity;
 
   const handleSendMessage = () => {
     if (newMessage.trim()) {
@@ -248,23 +210,21 @@ export function CollaborationPanel({
             <div className="space-y-3">
               <div className="relative">
                 <Textarea
+                  placeholder={t("messageInput.placeholder")}
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder={t("messageInput.placeholder")}
-                  className="min-h-[60px] pr-12 resize-none border-gray-200 focus:border-blue-300 focus:ring-blue-200 bg-white"
+                  className="bg-white min-h-[5rem] pr-20"
+                  rows={3}
                 />
                 <Button
                   onClick={handleSendMessage}
-                  disabled={!newMessage.trim()}
+                  className="absolute bottom-2 right-2"
                   size="sm"
-                  className="absolute bottom-2 right-2 h-8 w-8 p-0 bg-blue-600 hover:bg-blue-700"
                 >
-                  <Send className="w-3 h-3" />
+                  <Send className="w-4 h-4 mr-2" />
+                  {t("messageInput.send")}
                 </Button>
-              </div>
-              <div className="text-xs text-gray-500">
-                Press Enter to send, Shift+Enter for new line
               </div>
             </div>
           </div>
@@ -272,21 +232,8 @@ export function CollaborationPanel({
 
         {/* Activity Tab */}
         <TabsContent value="activity" className="flex-1 flex flex-col mt-0">
-          <div className="px-4 py-3 bg-gray-50 border-b border-gray-100">
-            <div className="flex items-center space-x-2">
-              <Activity className="w-4 h-4 text-gray-600" />
-              <div className="flex-1">
-                <h4 className="text-sm font-medium text-gray-900">
-                  {t("activityTab.title")}
-                </h4>
-                <p className="text-xs text-gray-600">
-                  {t("activityTab.subtitle")}
-                </p>
-              </div>
-            </div>
-          </div>
           <ActivityFeed
-            items={recentActivity as ActivityItem[]}
+            items={currentRecentActivity as ActivityItem[]}
             onNavigateToSection={onNavigateToSection}
           />
         </TabsContent>

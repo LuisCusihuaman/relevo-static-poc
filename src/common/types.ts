@@ -410,6 +410,15 @@ export interface ShiftConfig {
 // DAILY SETUP TYPES
 // ========================================
 
+export interface RecentActivity {
+  id: number;
+  type: string;
+  patient: string;
+  doctor: string;
+  timestamp: string;
+  details: string;
+}
+
 export interface DailySetupData {
   unit: string;
   shift: string;

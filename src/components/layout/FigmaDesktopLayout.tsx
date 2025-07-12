@@ -258,7 +258,7 @@ export function FigmaDesktopLayout({
                         variant="outline"
                         className="text-xs border-amber-200 bg-amber-50 text-amber-700"
                       >
-                        Needs Attention
+                        {t("needsAttention")}
                       </Badge>
                     )}
                   </>
@@ -267,21 +267,21 @@ export function FigmaDesktopLayout({
               {selectedPatient && (
                 <div className="flex items-center gap-6 text-sm text-muted-foreground">
                   <span>
-                    <strong>Room:</strong> {selectedPatient.room}
+                    <strong>{t("room")}:</strong> {selectedPatient.room}
                   </span>
                   <span>
-                    <strong>Age:</strong> {selectedPatient.age}
+                    <strong>{t("age")}:</strong> {selectedPatient.age}
                   </span>
                   <span>
-                    <strong>MRN:</strong> A211370
+                    <strong>{t("mrn")}:</strong> A211370
                   </span>
                   <span>
-                    <strong>Diagnosis:</strong>{" "}
+                    <strong>{t("diagnosis")}:</strong>{" "}
                     {selectedPatient.primaryDiagnosis}
                   </span>
                   {criticalInfo && (
                     <span className="text-primary">
-                      <strong>Next:</strong> {criticalInfo.nextAction} (
+                      <strong>{t("next")}:</strong> {criticalInfo.nextAction} (
                       {criticalInfo.timeframe})
                     </span>
                   )}
@@ -308,7 +308,7 @@ export function FigmaDesktopLayout({
         <div className="w-80 border-r border-border/20 bg-background">
           <div className="p-4 border-b border-border/10">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-foreground">Patients</h3>
+              <h3 className="font-semibold text-foreground">{t("patients")}</h3>
               <Badge variant="outline" className="text-xs">
                 {safePatients.length}
               </Badge>
@@ -319,19 +319,19 @@ export function FigmaDesktopLayout({
               <div className="flex items-center gap-1.5">
                 <div className="w-1.5 h-1.5 rounded-full bg-neutral-400/40" />
                 <span className="text-sm font-medium text-neutral-600">
-                  {severityCounts.unstable || 0} Critical
+                  {severityCounts.unstable || 0} {t("critical")}
                 </span>
               </div>
               <div className="flex items-center gap-1.5">
                 <div className="w-1.5 h-1.5 rounded-full bg-neutral-400/35" />
                 <span className="text-sm font-medium text-neutral-600">
-                  {severityCounts.watcher || 0} Watch
+                  {severityCounts.watcher || 0} {t("watch")}
                 </span>
               </div>
               <div className="flex items-center gap-1.5">
                 <div className="w-1.5 h-1.5 rounded-full bg-neutral-400/30" />
                 <span className="text-sm font-medium text-neutral-600">
-                  {severityCounts.stable || 0} Stable
+                  {severityCounts.stable || 0} {t("stable")}
                 </span>
               </div>
             </div>
@@ -391,7 +391,7 @@ export function FigmaDesktopLayout({
                         {/* Patient Info Row - Using Much More Subtle Colors */}
                         <div className="flex items-center justify-between">
                           <div className="text-xs text-muted-foreground">
-                            Age {patient.age || "N/A"}
+                            {t("age")} {patient.age || "N/A"}
                           </div>
                           <div
                             className={`text-xs font-medium ${getSeverityTextColor(patient.illnessSeverity || "stable")}`}

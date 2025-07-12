@@ -1,7 +1,14 @@
 // RELEVO - Configuration Store
 // Units, shifts, colors, and system configuration
 
-import { type UnitConfig, type ShiftConfig } from "../common/types";
+import { type ShiftConfig, type UnitConfig } from "../common/types";
+import i18n from "../i18n";
+import {
+  shiftsConfigES,
+  shiftsES,
+  unitsConfigES,
+  unitsES,
+} from "./config.store.es";
 
 // ========================================
 // HOSPITAL UNITS CONFIGURATION
@@ -83,6 +90,9 @@ export const alertLevelColors: Record<string, string> = {
  * Get unit name by ID
  */
 export const getUnitName = (unitId: string): string => {
+  if (i18n.language === 'es') {
+    return unitsES[unitId] || unitId.toUpperCase();
+  }
   return units[unitId] || unitId.toUpperCase();
 };
 
@@ -90,6 +100,9 @@ export const getUnitName = (unitId: string): string => {
  * Get shift name by ID
  */
 export const getShiftName = (shiftId: string): string => {
+  if (i18n.language === 'es') {
+    return shiftsES[shiftId] || shiftId;
+  }
   return shifts[shiftId] || shiftId;
 };
 
@@ -97,6 +110,9 @@ export const getShiftName = (shiftId: string): string => {
  * Get unit configuration by ID
  */
 export const getUnitConfig = (unitId: string): UnitConfig | undefined => {
+  if (i18n.language === 'es') {
+    return unitsConfigES.find((unit) => unit.id === unitId);
+  }
   return unitsConfig.find((unit) => unit.id === unitId);
 };
 
@@ -104,6 +120,9 @@ export const getUnitConfig = (unitId: string): UnitConfig | undefined => {
  * Get shift configuration by ID
  */
 export const getShiftConfig = (shiftId: string): ShiftConfig | undefined => {
+  if (i18n.language === 'es') {
+    return shiftsConfigES.find((shift) => shift.id === shiftId);
+  }
   return shiftsConfig.find((shift) => shift.id === shiftId);
 };
 

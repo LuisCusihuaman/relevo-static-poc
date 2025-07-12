@@ -1,6 +1,8 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export function useHandoverSession() {
+  const { t } = useTranslation("handover");
   const [handoverStartTime] = useState(new Date(Date.now() - 12 * 60 * 1000)); // Started 12 minutes ago
   const [sessionDuration, setSessionDuration] = useState(12);
 
@@ -13,11 +15,11 @@ export function useHandoverSession() {
     const diffMs = handoverTime.getTime() - now.getTime();
     const diffMins = Math.ceil(diffMs / (1000 * 60));
 
-    if (diffMins <= 0) return "Handover time";
-    if (diffMins < 60) return `${diffMins} min`;
+    if (diffMins <= 0) return t("handoverComplete");
+    if (diffMins < 60) return t("remaining", { time: `${diffMins} min` });
     const hours = Math.floor(diffMins / 60);
     const mins = diffMins % 60;
-    return `${hours}h ${mins}m`;
+    return t("remaining", { time: `${hours}h ${mins}m` });
   };
 
   // Format session duration for display

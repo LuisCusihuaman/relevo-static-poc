@@ -123,7 +123,7 @@ export function Header({
               <div className="hidden xl:flex items-center space-x-2">
                 <div className="w-2 h-2 rounded-full bg-green-500"></div>
                 <span className="text-xs text-gray-600">
-                  {t("handover:session", { duration: getSessionDuration() })}
+                  {t("session", { duration: getSessionDuration() })}
                 </span>
               </div>
             </div>
@@ -369,7 +369,7 @@ export function Header({
             </div>
           </div>
           <div className="flex items-center space-x-3 text-sm">
-            <span className="text-gray-500">Handover:</span>
+            <span className="text-gray-500">{t("handover")}:</span>
             <div className="flex items-center space-x-2">
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -420,7 +420,7 @@ export function Header({
                   </div>
                 </TooltipContent>
               </Tooltip>
-              <span className="text-gray-500">in {getTimeUntilHandover()}</span>
+              <span className="text-gray-500">{getTimeUntilHandover()}</span>
             </div>
           </div>
         </div>

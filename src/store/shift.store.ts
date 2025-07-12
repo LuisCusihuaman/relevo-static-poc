@@ -208,6 +208,56 @@ export const mockHandoverSessions: HandoverSession[] = [
   },
 ];
 
+export const upcomingTasks = [
+  {
+    time: "10:00",
+    task: "Handover session with Dr. Torres",
+    priority: "high",
+  },
+  {
+    time: "11:30",
+    task: "Family meeting - Room PICU-01",
+    priority: "medium",
+  },
+  { time: "14:00", task: "Review discharge plans", priority: "low" },
+  { time: "15:30", task: "Medication rounds", priority: "medium" },
+];
+
+export const recentActivities = [
+  {
+    id: 1,
+    type: "care-plan-update",
+    patient: "Maria Rodriguez",
+    doctor: "Dr. Sarah Chen",
+    timestamp: "15 min ago",
+    details: "Updated care plan for Maria Rodriguez",
+  },
+  {
+    id: 2,
+    type: "new-comment",
+    patient: "Carlos Gonzalez",
+    doctor: "Dr. Michael Torres",
+    timestamp: "23 min ago",
+    details: "New comment on Carlos Gonzalez handover",
+  },
+  {
+    id: 3,
+    type: "documentation-complete",
+    patient: "General",
+    doctor: "Dr. Lisa Park",
+    timestamp: "1 hour ago",
+    details: "Completed discharge documentation",
+  },
+  {
+    id: 4,
+    type: "handover-started",
+    patient: "General",
+    doctor: "Dr. Sarah Chen",
+    timestamp: "2 hours ago",
+    details: "Started collaborative handover session",
+  },
+];
+
 // ========================================
 // SHIFT UTILITIES
 // ========================================
