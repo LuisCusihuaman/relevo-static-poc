@@ -13,6 +13,7 @@ import {
   X,
 } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface PatientData {
   name: string;
@@ -31,75 +32,76 @@ export function HandoverHistory({
   patientData,
   hideHeader = false,
 }: HandoverHistoryProps) {
+  const { t } = useTranslation("handoverHistory");
   const [selectedHandover, setSelectedHandover] = useState<string | null>(null);
 
   const handoverHistory = [
     {
       id: "current",
       date: "2024-06-23",
-      shift: "Day → Evening",
+      shift: "shifts.dayToEvening",
       time: "16:45",
       status: "in-progress",
-      outgoingTeam: "Day Shift - Internal Medicine",
-      incomingTeam: "Evening Shift - Internal Medicine",
-      primaryPhysician: "Dr. Johnson",
-      receivingPhysician: "Dr. Martinez",
+      outgoingTeam: "teams.dayInternal",
+      incomingTeam: "teams.eveningInternal",
+      primaryPhysician: "doctors.johnson",
+      receivingPhysician: "doctors.martinez",
       severity: "stable",
       keyPoints: [
-        "COPD exacerbation improving",
-        "O2 requirements decreased to 2L",
-        "Family meeting scheduled",
+        "keyPoints.copdImproving",
+        "keyPoints.o2Decreased",
+        "keyPoints.familyMeeting",
       ],
     },
     {
       id: "ho-001",
       date: "2024-06-23",
-      shift: "Night → Day",
+      shift: "shifts.nightToDay",
       time: "07:30",
       status: "completed",
-      outgoingTeam: "Night Shift - Internal Medicine",
-      incomingTeam: "Day Shift - Internal Medicine",
-      primaryPhysician: "Dr. Chen",
-      receivingPhysician: "Dr. Johnson",
+      outgoingTeam: "teams.nightInternal",
+      incomingTeam: "teams.dayInternal",
+      primaryPhysician: "doctors.chen",
+      receivingPhysician: "doctors.johnson",
       severity: "guarded",
       keyPoints: [
-        "Patient admitted with COPD exacerbation",
-        "Started on corticosteroids and bronchodilators",
-        "Initial O2 requirement 4L",
+        "keyPoints.admittedCopd",
+        "keyPoints.startedSteroids",
+        "keyPoints.initialO2",
       ],
     },
     {
       id: "ho-002",
       date: "2024-06-22",
-      shift: "Evening → Night",
+      shift: "shifts.eveningToNight",
       time: "23:15",
       status: "completed",
-      outgoingTeam: "Evening Shift - Emergency Medicine",
-      incomingTeam: "Night Shift - Internal Medicine",
-      primaryPhysician: "Dr. Williams",
-      receivingPhysician: "Dr. Chen",
+      outgoingTeam: "teams.eveningEmergency",
+      incomingTeam: "teams.nightInternal",
+      primaryPhysician: "doctors.williams",
+      receivingPhysician: "doctors.chen",
       severity: "unstable",
       keyPoints: [
-        "Emergency admission from ED",
-        "Acute respiratory distress",
-        "Stabilized with oxygen therapy",
+        "keyPoints.emergencyAdmission",
+        "keyPoints.acuteDistress",
+        "keyPoints.stabilized",
       ],
     },
     {
       id: "ho-003",
       date: "2024-06-22",
-      shift: "Day → Evening",
+      shift: "shifts.dayToEvening",
       time: "19:00",
       status: "completed",
-      outgoingTeam: "Day Shift - Emergency Medicine",
-      incomingTeam: "Evening Shift - Emergency Medicine",
-      primaryPhysician: "Dr. Rodriguez",
-      receivingPhysician: "Dr. Williams",
+      outgoingTeam: "teams.dayEmergency",
+      incomingTeam: "teams.eveningEmergency",
+      primaryPhysician: "doctors.rodriguez",
+      receivingPhysician: "doctors.williams",
       severity: "critical",
       keyPoints: [
-        "Patient presented with severe dyspnea",
-        "Initial workup completed",
-        "Chest X-ray shows COPD changes",
+        "keyPoints.severeDyspnea",
+        "keyPoints.workupCompleted",
+        "keyPoints.xrayCopd",
       ],
     },
   ];
@@ -138,7 +140,7 @@ export function HandoverHistory({
           <div className="flex items-center justify-between p-4 border-b border-gray-200">
             <h3 className="font-medium flex items-center space-x-2">
               <History className="w-4 h-4" />
-              <span>Handover History</span>
+              <span>{t("title")}</span>
             </h3>
             <Button variant="ghost" size="sm" onClick={onClose}>
               <X className="w-4 h-4" />
@@ -149,12 +151,16 @@ export function HandoverHistory({
         {/* Patient Context */}
         <div className="p-4 bg-blue-50 border-b border-gray-200">
           <h4 className="font-medium text-sm text-gray-900 mb-2">
-            Patient Timeline
+            {t("patientTimeline")}
           </h4>
           <div className="text-sm text-gray-600">
             <p className="font-medium">{patientData.name}</p>
-            <p>MRN: {patientData.mrn}</p>
-            <p>Admitted: {patientData.admissionDate}</p>
+            <p>
+              {t("mrn")} {patientData.mrn}
+            </p>
+            <p>
+              {t("admitted")} {patientData.admissionDate}
+            </p>
           </div>
         </div>
 
@@ -183,9 +189,11 @@ export function HandoverHistory({
                       </span>
                     </div>
                     <Badge className={getStatusColor(handover.status)}>
-                      {handover.status === "in-progress"
-                        ? "Current"
-                        : "Completed"}
+                      {t(
+                        handover.status === "in-progress"
+                          ? "status.current"
+                          : "status.completed",
+                      )}
                     </Badge>
                   </div>
                   <div className="flex items-center space-x-2">
@@ -195,7 +203,7 @@ export function HandoverHistory({
                     </span>
                     <ArrowRight className="w-3 h-3 text-gray-400" />
                     <span className="text-xs text-gray-600">
-                      {handover.shift}
+                      {t(handover.shift)}
                     </span>
                   </div>
                 </CardHeader>
@@ -204,9 +212,11 @@ export function HandoverHistory({
                   <div className="space-y-3">
                     {/* Severity */}
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-gray-600">Severity</span>
+                      <span className="text-xs text-gray-600">
+                        {t("severityLabel")}
+                      </span>
                       <Badge className={getSeverityColor(handover.severity)}>
-                        {handover.severity.toUpperCase()}
+                        {t(`severity.${handover.severity}`).toUpperCase()}
                       </Badge>
                     </div>
 
@@ -215,30 +225,34 @@ export function HandoverHistory({
                       <div className="flex items-center space-x-2 text-xs">
                         <User className="w-3 h-3 text-gray-400" />
                         <span className="text-gray-600">
-                          From: {handover.primaryPhysician}
+                          {t("from")} {t(handover.primaryPhysician)}
                         </span>
                       </div>
                       <div className="flex items-center space-x-2 text-xs">
                         <ArrowRight className="w-3 h-3 text-gray-400" />
                         <span className="text-gray-600">
-                          To: {handover.receivingPhysician}
+                          {t("to")} {t(handover.receivingPhysician)}
                         </span>
                       </div>
                     </div>
 
                     {/* Key Points Preview */}
                     <div className="space-y-1">
-                      <span className="text-xs text-gray-600">Key Points:</span>
+                      <span className="text-xs text-gray-600">
+                        {t("keyPointsLabel")}
+                      </span>
                       <ul className="text-xs text-gray-700 space-y-1">
                         {handover.keyPoints.slice(0, 2).map((point, idx) => (
                           <li key={idx} className="flex items-start space-x-1">
                             <div className="w-1 h-1 bg-gray-400 rounded-full mt-2 flex-shrink-0"></div>
-                            <span>{point}</span>
+                            <span>{t(point)}</span>
                           </li>
                         ))}
                         {handover.keyPoints.length > 2 && (
                           <li className="text-gray-500">
-                            +{handover.keyPoints.length - 2} more...
+                            {t("moreKeyPoints", {
+                              count: handover.keyPoints.length - 2,
+                            })}
                           </li>
                         )}
                       </ul>
@@ -249,17 +263,21 @@ export function HandoverHistory({
                       <div className="pt-3 border-t border-gray-200 space-y-3">
                         <div>
                           <span className="text-xs text-gray-600 font-medium">
-                            Teams:
+                            {t("teamsLabel")}
                           </span>
                           <div className="text-xs text-gray-700 mt-1">
-                            <p>Out: {handover.outgoingTeam}</p>
-                            <p>In: {handover.incomingTeam}</p>
+                            <p>
+                              {t("out")} {t(handover.outgoingTeam)}
+                            </p>
+                            <p>
+                              {t("in")} {t(handover.incomingTeam)}
+                            </p>
                           </div>
                         </div>
 
                         <div>
                           <span className="text-xs text-gray-600 font-medium">
-                            All Key Points:
+                            {t("allKeyPointsLabel")}
                           </span>
                           <ul className="text-xs text-gray-700 space-y-1 mt-1">
                             {handover.keyPoints.map((point, idx) => (
@@ -268,7 +286,7 @@ export function HandoverHistory({
                                 className="flex items-start space-x-1"
                               >
                                 <div className="w-1 h-1 bg-gray-400 rounded-full mt-2 flex-shrink-0"></div>
-                                <span>{point}</span>
+                                <span>{t(point)}</span>
                               </li>
                             ))}
                           </ul>
@@ -281,7 +299,7 @@ export function HandoverHistory({
                             className="text-xs"
                           >
                             <Eye className="w-3 h-3 mr-1" />
-                            View Full
+                            {t("viewFull")}
                           </Button>
                           <Button
                             size="sm"
@@ -289,7 +307,7 @@ export function HandoverHistory({
                             className="text-xs"
                           >
                             <FileText className="w-3 h-3 mr-1" />
-                            Compare
+                            {t("compare")}
                           </Button>
                         </div>
                       </div>
@@ -304,7 +322,7 @@ export function HandoverHistory({
         {/* Footer */}
         <div className="p-4 border-t border-gray-200">
           <div className="text-xs text-gray-500 text-center">
-            {handoverHistory.length} handovers • Last 48 hours
+            {t("footer", { count: handoverHistory.length })}
           </div>
         </div>
       </div>

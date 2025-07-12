@@ -1,5 +1,6 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useTranslation } from "react-i18next";
 
 export interface ActivityItem {
   id: number | string;
@@ -18,6 +19,7 @@ interface ActivityFeedProps {
 }
 
 export function ActivityFeed({ items, onNavigateToSection }: ActivityFeedProps) {
+  const { t } = useTranslation("activityFeed");
   const renderActivityDot = (type: ActivityItem["type"]) => {
     switch (type) {
       case "content_updated":
@@ -64,7 +66,7 @@ export function ActivityFeed({ items, onNavigateToSection }: ActivityFeedProps) 
                       }
                       className="text-blue-600 hover:text-blue-700 ml-1 hover:underline"
                     >
-                      in {activity.section}
+                      {t("inSection", { section: activity.section })}
                     </button>
                   )}
                 </div>

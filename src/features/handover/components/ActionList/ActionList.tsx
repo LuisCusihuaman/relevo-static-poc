@@ -13,6 +13,7 @@ import {
   X,
 } from "lucide-react";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface Collaborator {
   id: number;
@@ -65,63 +66,64 @@ export function ActionList({
     role: "Day Attending",
   },
 }: ActionListProps) {
+  const { t } = useTranslation("actionList");
   // Action items from multiple shifts - persistent until completed or handover ends
   const [actionItems, setActionItems] = useState<ActionItem[]>([
     // Previous Night Shift tasks (still pending)
     {
       id: 1,
-      task: "Follow up on blood culture results from yesterday - patient spiked fever at 02:00",
+      task: t("actionItems.followUpCulture.task"),
       priority: "high",
-      dueTime: "Before rounds",
+      dueTime: t("actionItems.followUpCulture.dueTime"),
       completed: false,
-      submittedBy: "Dr. Park",
+      submittedBy: t("doctors.park"),
       submittedTime: "02:15",
-      submittedDate: "Last night",
-      shift: "Night → Day",
+      submittedDate: t("time.lastNight"),
+      shift: t("shifts.nightToDay"),
     },
     {
       id: 2,
-      task: "Cardiology consult for new murmur detected during admission",
+      task: t("actionItems.cardiologyConsult.task"),
       priority: "medium",
-      dueTime: "Today",
+      dueTime: t("time.today"),
       completed: false,
-      submittedBy: "Dr. Kim",
+      submittedBy: t("doctors.kim"),
       submittedTime: "23:45",
-      submittedDate: "Last night",
-      shift: "Night → Day",
+      submittedDate: t("time.lastNight"),
+      shift: t("shifts.nightToDay"),
     },
     // Current Day Shift tasks
     {
       id: 3,
-      task: "Discuss discharge planning with family - daughter will be here at 14:00",
+      task: t("actionItems.dischargePlanning.task"),
       priority: "medium",
       completed: true,
-      submittedBy: "Dr. Johnson",
+      submittedBy: t("doctors.johnson"),
       submittedTime: "09:30",
-      submittedDate: "Today",
-      shift: "Day → Evening",
+      submittedDate: t("time.today"),
+      shift: t("shifts.dayToEvening"),
     },
     {
       id: 4,
-      task: "Review chest X-ray results and adjust oxygen therapy accordingly",
+      task: t("actionItems.reviewXray.task"),
       priority: "high",
-      dueTime: "Evening rounds",
+      dueTime: t("actionItems.reviewXray.dueTime"),
       completed: false,
-      submittedBy: "Dr. Martinez",
+      submittedBy: t("doctors.martinez"),
       submittedTime: "11:15",
-      submittedDate: "Today",
-      shift: "Day → Evening",
+      submittedDate: t("time.today"),
+      shift: t("shifts.dayToEvening"),
     },
     {
       id: 5,
-      task: "Monitor urine output closely - patient had decreased output this afternoon",
+      task: t("actionItems.monitorUrine.task"),
       priority: "high",
-      dueTime: "Q2H checks",
+      dueTime: t("actionItems.monitorUrine.dueTime"),
       completed: false,
-      submittedBy: "Nurse Clara",
+      submittedBy: t("nurses.clara"),
       submittedTime: "15:30",
-      submittedDate: "Today",
-      shift: "Day → Evening",
+      submittedDate: t("time.today"),
+      shift: t("shifts.dayToEvening"),
     },
   ]);
 
@@ -159,8 +161,8 @@ export function ActionList({
           hour: "2-digit",
           minute: "2-digit",
         }),
-        submittedDate: "Today",
-        shift: "Day → Evening",
+        submittedDate: t("time.today"),
+        shift: t("shifts.dayToEvening"),
       };
 
       setActionItems((prev) => [...prev, task]);
@@ -182,7 +184,7 @@ export function ActionList({
   // Delete task (only current shift tasks by assigned physician)
   const handleDeleteTask = (taskId: number) => {
     const task = actionItems.find((t) => t.id === taskId);
-    if (!canDeleteTasks || task?.shift !== "Day → Evening") return;
+    if (!canDeleteTasks || task?.shift !== t("shifts.dayToEvening")) return;
 
     setActionItems((prev) => prev.filter((item) => item.id !== taskId));
   };
@@ -233,7 +235,7 @@ export function ActionList({
                 <div
                   className={`text-xs px-2 py-1 rounded border font-medium ${getPriorityColor(task.priority)}`}
                 >
-                  {task.priority.toUpperCase()}
+                  {t(`priorities.${task.priority}`)}
                 </div>
               </div>
               <p
@@ -251,7 +253,7 @@ export function ActionList({
           {/* Delete button - Only for current shift tasks by assigned physician */}
           {!focusMode &&
             canDeleteTasks &&
-            task.shift === "Day → Evening" &&
+            task.shift === t("shifts.dayToEvening") &&
             !task.completed && (
               <Button
                 variant="ghost"
@@ -294,14 +296,14 @@ export function ActionList({
       <div className="space-y-4">
         {/* Quick Stats */}
         <div className="flex items-center justify-between">
-          <h4 className="font-medium text-gray-900">Action Items</h4>
+          <h4 className="font-medium text-gray-900">{t("title")}</h4>
           <div className="flex items-center space-x-2">
             <Badge variant="outline" className="text-xs">
-              {pendingTasks.length} pending
+              {pendingTasks.length} {t("pending").toLowerCase()}
             </Badge>
             {completedTasks.length > 0 && (
               <Badge className="bg-gray-100 text-gray-600 border-gray-200 text-xs">
-                {completedTasks.length} done
+                {completedTasks.length} {t("done").toLowerCase()}
               </Badge>
             )}
           </div>
@@ -310,13 +312,13 @@ export function ActionList({
         {/* Pending Tasks - Limited */}
         {pendingTasks.length > 0 && (
           <div className="space-y-2">
-            <h5 className="text-sm font-medium text-gray-700">Pending</h5>
+            <h5 className="text-sm font-medium text-gray-700">{t("pending")}</h5>
             {pendingTasks.slice(0, 3).map((task) => (
               <TaskCard key={task.id} task={task} />
             ))}
             {pendingTasks.length > 3 && (
               <p className="text-xs text-gray-500 text-center py-2">
-                +{pendingTasks.length - 3} more tasks
+                +{pendingTasks.length - 3} {t("moreTasks")}
               </p>
             )}
           </div>
@@ -325,13 +327,13 @@ export function ActionList({
         {/* Completed Tasks - Limited in Compact Mode */}
         {completedTasks.length > 0 && (
           <div className="space-y-2">
-            <h5 className="text-sm font-medium text-gray-600">Completed</h5>
+            <h5 className="text-sm font-medium text-gray-600">{t("completed")}</h5>
             {completedTasks.slice(0, 2).map((task) => (
               <TaskCard key={task.id} task={task} />
             ))}
             {completedTasks.length > 2 && (
               <p className="text-xs text-gray-500 text-center py-2">
-                +{completedTasks.length - 2} more completed
+                +{completedTasks.length - 2} {t("moreCompleted")}
               </p>
             )}
           </div>
@@ -346,7 +348,7 @@ export function ActionList({
             className="w-full text-xs border-gray-200 hover:bg-gray-50"
           >
             <Plus className="w-3 h-3 mr-1" />
-            Add Task
+            {t("addTask")}
           </Button>
         ) : (
           !focusMode && (
@@ -354,7 +356,7 @@ export function ActionList({
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <h5 className="font-medium text-gray-900 text-sm">
-                    New Task
+                    {t("newTask")}
                   </h5>
                   <Button
                     variant="ghost"
@@ -375,7 +377,7 @@ export function ActionList({
                         setNewTask({ ...newTask, task: e.target.value })
                       }
                       onKeyDown={handleKeyDown}
-                      placeholder="Describe the task..."
+                      placeholder={t("describeTask")}
                       className="min-h-[50px] text-sm border-gray-300 focus:border-blue-400 focus:ring-blue-100 bg-white resize-none"
                       disabled={isSubmitting}
                     />
@@ -397,9 +399,9 @@ export function ActionList({
                         className="w-full p-1.5 text-xs border border-gray-300 rounded bg-white focus:border-blue-400 focus:ring-blue-100"
                         disabled={isSubmitting}
                       >
-                        <option value="low">Low</option>
-                        <option value="medium">Medium</option>
-                        <option value="high">High</option>
+                        <option value="low">{t("low")}</option>
+                        <option value="medium">{t("medium")}</option>
+                        <option value="high">{t("high")}</option>
                       </select>
                     </div>
 
@@ -410,7 +412,7 @@ export function ActionList({
                         onChange={(e) =>
                           setNewTask({ ...newTask, dueTime: e.target.value })
                         }
-                        placeholder="Due time"
+                        placeholder={t("dueTime")}
                         className="w-full p-1.5 text-xs border border-gray-300 rounded bg-white focus:border-blue-400 focus:ring-blue-100"
                         disabled={isSubmitting}
                       />
@@ -426,7 +428,7 @@ export function ActionList({
                     className="text-xs px-2 py-1 h-7 border-gray-300 hover:bg-gray-50"
                     disabled={isSubmitting}
                   >
-                    Cancel
+                    {t("cancel")}
                   </Button>
                   <Button
                     size="sm"
@@ -437,12 +439,12 @@ export function ActionList({
                     {isSubmitting ? (
                       <>
                         <div className="w-2 h-2 border border-white border-t-transparent rounded-full animate-spin mr-1"></div>
-                        Adding...
+                        {t("adding")}...
                       </>
                     ) : (
                       <>
                         <Send className="w-2 h-2 mr-1" />
-                        Add
+                        {t("add")}
                       </>
                     )}
                   </Button>
@@ -462,11 +464,11 @@ export function ActionList({
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <Badge className="bg-blue-50 text-blue-700 border border-blue-200 text-xs">
-            {pendingTasks.length} pending
+            {pendingTasks.length} {t("pending").toLowerCase()}
           </Badge>
           {completedTasks.length > 0 && (
             <Badge className="bg-gray-100 text-gray-600 border border-gray-200 text-xs">
-              {completedTasks.length} done
+              {completedTasks.length} {t("done").toLowerCase()}
             </Badge>
           )}
         </div>
@@ -476,12 +478,10 @@ export function ActionList({
       <div className="p-3 bg-blue-25 border border-blue-200 rounded-lg">
         <div className="flex items-center space-x-2 text-blue-800 text-sm">
           <History className="w-4 h-4" />
-          <span className="font-medium">
-            Tasks persist across shifts until completed
-          </span>
+          <span className="font-medium">{t("tasksPersist")}</span>
         </div>
         <p className="text-blue-700 text-xs mt-1">
-          Current shift: Day → Evening
+          {t("currentShift")}: {t("shifts.dayToEvening")}
         </p>
       </div>
 
@@ -491,10 +491,10 @@ export function ActionList({
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <CheckSquare className="w-4 h-4 text-gray-600" />
-              <h4 className="font-medium text-gray-900">Pending</h4>
+              <h4 className="font-medium text-gray-900">{t("pendingTasks")}</h4>
             </div>
             <Badge variant="outline" className="text-xs">
-              {pendingTasks.length} active
+              {pendingTasks.length} {t("active")}
             </Badge>
           </div>
           <div className="space-y-3">
@@ -511,10 +511,12 @@ export function ActionList({
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <CheckSquare className="w-4 h-4 text-gray-600" />
-              <h4 className="font-medium text-gray-600">Completed</h4>
+              <h4 className="font-medium text-gray-600">
+                {t("completedTasks")}
+              </h4>
             </div>
             <Badge className="bg-gray-100 text-gray-600 border-gray-200 text-xs">
-              {completedTasks.length} done
+              {completedTasks.length} {t("done")}
             </Badge>
           </div>
           <div className="space-y-3">
@@ -523,7 +525,7 @@ export function ActionList({
             ))}
             {completedTasks.length > 3 && (
               <p className="text-xs text-gray-500 text-center py-2">
-                +{completedTasks.length - 3} more completed
+                +{completedTasks.length - 3} {t("moreCompleted")}
               </p>
             )}
           </div>
@@ -540,14 +542,16 @@ export function ActionList({
           className="w-full text-gray-600 border-gray-200 hover:bg-gray-50"
         >
           <Plus className="w-4 h-4 mr-2" />
-          Add Action Item
+          {t("addActionItem")}
         </Button>
       ) : (
         !focusMode && (
           <div className="p-4 border border-gray-200 rounded-lg bg-gray-25">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h5 className="font-medium text-gray-900">New Action Item</h5>
+                <h5 className="font-medium text-gray-900">
+                  {t("newActionItem")}
+                </h5>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -565,7 +569,7 @@ export function ActionList({
                     htmlFor="task-description"
                     className="text-sm font-medium text-gray-700 mb-1 block"
                   >
-                    Task Description:
+                    {t("taskDescription")}:
                   </label>
                   <Textarea
                     id="task-description"
@@ -574,7 +578,7 @@ export function ActionList({
                       setNewTask({ ...newTask, task: e.target.value })
                     }
                     onKeyDown={handleKeyDown}
-                    placeholder="e.g., Follow up on lab results, Contact cardiology for consult..."
+                    placeholder={t("taskDescriptionPlaceholder")}
                     className="min-h-[60px] border-gray-300 focus:border-blue-400 focus:ring-blue-100 bg-white"
                     disabled={isSubmitting}
                   />
@@ -586,7 +590,7 @@ export function ActionList({
                       htmlFor="task-priority"
                       className="text-sm font-medium text-gray-700 mb-1 block"
                     >
-                      Priority:
+                      {t("priority")}:
                     </label>
                     <select
                       id="task-priority"
@@ -600,9 +604,9 @@ export function ActionList({
                       className="w-full p-2 text-sm border border-gray-300 rounded-lg bg-white focus:border-blue-400 focus:ring-blue-100"
                       disabled={isSubmitting}
                     >
-                      <option value="low">Low Priority</option>
-                      <option value="medium">Medium Priority</option>
-                      <option value="high">High Priority</option>
+                      <option value="low">{t("lowPriority")}</option>
+                      <option value="medium">{t("mediumPriority")}</option>
+                      <option value="high">{t("highPriority")}</option>
                     </select>
                   </div>
 
@@ -611,7 +615,7 @@ export function ActionList({
                       htmlFor="task-due-time"
                       className="text-sm font-medium text-gray-700 mb-1 block"
                     >
-                      Due Time:
+                      {t("dueTime")}:
                     </label>
                     <input
                       id="task-due-time"
@@ -620,7 +624,7 @@ export function ActionList({
                       onChange={(e) =>
                         setNewTask({ ...newTask, dueTime: e.target.value })
                       }
-                      placeholder="e.g., End of shift, 2PM"
+                      placeholder={t("dueTimePlaceholder")}
                       className="w-full p-2 text-sm border border-gray-300 rounded-lg bg-white focus:border-blue-400 focus:ring-blue-100"
                       disabled={isSubmitting}
                     />
@@ -636,7 +640,7 @@ export function ActionList({
                   className="text-xs border-gray-300 hover:bg-gray-50"
                   disabled={isSubmitting}
                 >
-                  Cancel
+                  {t("cancel")}
                 </Button>
                 <Button
                   size="sm"
@@ -647,12 +651,12 @@ export function ActionList({
                   {isSubmitting ? (
                     <>
                       <div className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin mr-1"></div>
-                      Submitting...
+                      {t("submitting")}
                     </>
                   ) : (
                     <>
                       <Send className="w-3 h-3 mr-1" />
-                      Submit Task
+                      {t("submitTask")}
                     </>
                   )}
                 </Button>

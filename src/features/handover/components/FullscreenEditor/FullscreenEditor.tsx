@@ -1,20 +1,21 @@
 import {
-  activeCollaborators,
-  currentUser,
-  patientData,
+    activeCollaborators,
+    currentUser,
+    patientData,
 } from "@/common/constants";
 import type { FullscreenEditingState, SyncStatus } from "@/common/types";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Clock, Save, Stethoscope, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { PatientSummary } from "../PatientSummary";
 import { SituationAwareness } from "../SituationAwareness";
 
@@ -40,6 +41,7 @@ export function FullscreenEditor({
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const isMobile = useIsMobile();
   const saveButtonRef = useRef<HTMLButtonElement>(null);
+  const { t } = useTranslation("fullscreenEditor");
 
   // Get active collaborators with stable reference
   const activeUsers = useRef(
@@ -93,11 +95,11 @@ export function FullscreenEditor({
   const getComponentTitle = () => {
     switch (fullscreenEditing.component) {
       case "patient-summary":
-        return "Patient Summary - Fullscreen Editor";
+        return t("titles.patientSummary");
       case "situation-awareness":
-        return "Situation Awareness - Fullscreen Editor";
+        return t("titles.situationAwareness");
       default:
-        return "Fullscreen Editor";
+        return t("titles.default");
     }
   };
 
@@ -105,13 +107,13 @@ export function FullscreenEditor({
   const getSyncStatusDisplay = () => {
     switch (syncStatus) {
       case "synced":
-        return { text: "All changes saved", color: "text-green-600" };
+        return { text: t("syncStatus.synced"), color: "text-green-600" };
       case "pending":
-        return { text: "Saving changes...", color: "text-yellow-600" };
+        return { text: t("syncStatus.pending"), color: "text-yellow-600" };
       case "error":
-        return { text: "Save failed", color: "text-red-600" };
+        return { text: t("syncStatus.error"), color: "text-red-600" };
       default:
-        return { text: "Ready", color: "text-gray-600" };
+        return { text: t("syncStatus.ready"), color: "text-gray-600" };
     }
   };
 
@@ -127,7 +129,7 @@ export function FullscreenEditor({
             <div className="flex items-center space-x-2 flex-shrink-0">
               <Stethoscope className="w-4 h-4 sm:w-5 sm:h-5 text-gray-900" />
               <h1 className="text-base sm:text-lg font-bold text-gray-900">
-                RELEVO
+                {t("relevo")}
               </h1>
             </div>
             <Separator
@@ -194,7 +196,7 @@ export function FullscreenEditor({
                 ))}
                 {activeUsers.length > 3 && (
                   <div className="text-xs text-gray-500 ml-2">
-                    +{activeUsers.length - 3}
+                    {t("moreUsers", { count: activeUsers.length - 3 })}
                   </div>
                 )}
               </div>
@@ -210,7 +212,7 @@ export function FullscreenEditor({
                 className="bg-gray-900 hover:bg-gray-800 text-white text-xs px-3 h-8"
               >
                 <Save className="w-3 h-3 mr-1" />
-                Save
+                {t("save")}
               </Button>
             )}
 
@@ -278,9 +280,9 @@ export function FullscreenEditor({
       <div className="flex-shrink-0 border-t border-gray-200 bg-gray-50 px-4 py-3 sm:px-6">
         <div className="flex items-center justify-between text-sm text-gray-600">
           <div className="flex items-center space-x-4">
-            <span>Editing in fullscreen</span>
+            <span>{t("footer.editing")}</span>
             <span>•</span>
-            <span>Press Esc to exit, Ctrl+S to save</span>
+            <span>{t("footer.shortcuts")}</span>
           </div>
           <div className="flex items-center space-x-2">
             <Clock className="w-4 h-4" />

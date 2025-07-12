@@ -12,47 +12,37 @@ import {
   Wifi,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
-// Compact severity levels with simpler styling
-const severityLevels = [
-  {
-    id: "stable",
-    label: "Stable",
-    description: "Patient condition is stable with minimal intervention needed",
-    icon: Thermometer,
+const severityLevelIds = ["stable", "guarded", "unstable", "critical"];
+const severityIcons = {
+  stable: Thermometer,
+  guarded: Heart,
+  unstable: Brain,
+  critical: Stethoscope,
+};
+const severityStyling = {
+  stable: {
     textColor: "text-emerald-600",
     bgColor: "bg-emerald-50",
     borderColor: "border-emerald-300",
   },
-  {
-    id: "guarded",
-    label: "Guarded",
-    description: "Patient requires close monitoring with potential for change",
-    icon: Heart,
+  guarded: {
     textColor: "text-amber-600",
     bgColor: "bg-amber-50",
     borderColor: "border-amber-300",
   },
-  {
-    id: "unstable",
-    label: "Unstable",
-    description:
-      "Patient condition is unstable requiring immediate intervention",
-    icon: Brain,
+  unstable: {
     textColor: "text-red-600",
     bgColor: "bg-red-50",
     borderColor: "border-red-300",
   },
-  {
-    id: "critical",
-    label: "Critical",
-    description: "Patient in critical condition requiring urgent care",
-    icon: Stethoscope,
+  critical: {
     textColor: "text-red-700",
     bgColor: "bg-red-50",
     borderColor: "border-red-400",
   },
-];
+};
 
 interface IllnessSeverityProps {
   currentUser?: {
@@ -76,16 +66,25 @@ export function IllnessSeverity({
     role: "Day Attending",
   },
 }: IllnessSeverityProps) {
+  const { t } = useTranslation("illnessSeverity");
   const [selectedSeverity, setSelectedSeverity] = useState("stable");
   const [canEdit] = useState(currentUser.name === assignedPhysician.name);
   const [realtimeUpdate, setRealtimeUpdate] = useState(false);
-  const [lastUpdated, setLastUpdated] = useState("Just now");
+  const [lastUpdated, setLastUpdated] = useState(t("justNow"));
+
+  const severityLevels = severityLevelIds.map((id) => ({
+    id,
+    label: t(`levels.${id}.label`),
+    description: t(`levels.${id}.description`),
+    icon: severityIcons[id as keyof typeof severityIcons],
+    ...severityStyling[id as keyof typeof severityStyling],
+  }));
 
   const handleSeverityChange = (severityId: string) => {
     if (canEdit) {
       setSelectedSeverity(severityId);
       setRealtimeUpdate(true);
-      setLastUpdated("Just now");
+      setLastUpdated(t("justNow"));
 
       // Simulate real-time update animation
       setTimeout(() => {
@@ -127,9 +126,7 @@ export function IllnessSeverity({
             className={`w-2 h-2 rounded-full ${realtimeUpdate ? "bg-green-500 animate-pulse" : "bg-gray-400"} transition-colors`}
           />
           <p className="text-sm text-gray-600">
-            {canEdit
-              ? "You can edit severity assessment"
-              : "Live severity assessment"}
+            {t(canEdit ? "youCanEdit" : "liveAssessment")}
           </p>
           {realtimeUpdate && (
             <Badge
@@ -137,7 +134,7 @@ export function IllnessSeverity({
               className="text-xs text-green-600 border-green-200 bg-green-50 animate-pulse"
             >
               <Wifi className="w-3 h-3 mr-1" />
-              Live update
+              {t("liveUpdate")}
             </Badge>
           )}
         </div>
@@ -149,12 +146,12 @@ export function IllnessSeverity({
           {canEdit ? (
             <>
               <Edit className="w-3 h-3 mr-1" />
-              Editor
+              {t("editor")}
             </>
           ) : (
             <>
               <Eye className="w-3 h-3 mr-1" />
-              Viewer
+              {t("viewer")}
             </>
           )}
         </Badge>
@@ -231,7 +228,7 @@ export function IllnessSeverity({
                     <div className="flex items-center space-x-3 text-xs text-gray-500 mt-2">
                       <span className="flex items-center space-x-1">
                         <User className="w-3 h-3" />
-                        <span>Set by {assignedPhysician.initials}</span>
+                        <span>{t("setBy", { user: assignedPhysician.initials })}</span>
                       </span>
                       <span className="flex items-center space-x-1">
                         <Clock className="w-3 h-3" />
@@ -249,13 +246,19 @@ export function IllnessSeverity({
       {/* Real-time collaboration status */}
       <div className="text-xs text-gray-500 text-center space-y-1">
         <p>
-          {canEdit
-            ? "Changes are automatically synced to all viewers in real-time"
-            : `Only ${assignedPhysician.initials} (${assignedPhysician.role}) can modify this assessment`}
+          {t(
+            canEdit
+              ? "changesSynced"
+              : "onlyUserCanModify",
+            {
+              user: assignedPhysician.initials,
+              role: assignedPhysician.role,
+            },
+          )}
         </p>
         {!canEdit && (
           <p className="text-gray-400">
-            You will see updates automatically as they are made
+            {t("updatesAutomatic")}
           </p>
         )}
       </div>

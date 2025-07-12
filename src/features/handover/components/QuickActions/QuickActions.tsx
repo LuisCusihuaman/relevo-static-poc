@@ -23,6 +23,7 @@ import {
   X,
 } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface Patient {
   name: string;
@@ -35,6 +36,7 @@ interface QuickActionsProps {
 }
 
 export function QuickActions({ patient, onClose }: QuickActionsProps) {
+  const { t } = useTranslation("quickActions");
   const [activeForm, setActiveForm] = useState<string | null>(null);
   const [quickNote, setQuickNote] = useState("");
   const [targetSection, setTargetSection] = useState("patient-summary");
@@ -43,62 +45,73 @@ export function QuickActions({ patient, onClose }: QuickActionsProps) {
   const ipassTemplates = [
     {
       id: "illness-update",
-      title: "Illness Severity Update",
+      title: t("ipassTemplates.illness.title"),
       icon: Activity,
       section: "illness",
-      template:
-        "Severity assessment: Patient appears [STABLE/GUARDED/UNSTABLE/CRITICAL]. [CLINICAL_INDICATORS]. Requires [INTERVENTION_LEVEL].",
+      template: t("ipassTemplates.illness.template"),
       color: "text-blue-600",
     },
     {
       id: "patient-summary",
-      title: "Patient Summary Note",
+      title: t("ipassTemplates.patient.title"),
       icon: FileText,
       section: "patient",
-      template:
-        "[AGE]-year-old [GENDER] with [PRIMARY_DIAGNOSIS]. Admitted [DATE] for [REASON]. Current status: [STATUS]. Key concerns: [CONCERNS].",
+      template: t("ipassTemplates.patient.template"),
       color: "text-green-600",
     },
     {
       id: "action-item",
-      title: "Action Item",
+      title: t("ipassTemplates.action.title"),
       icon: Target,
       section: "actions",
-      template:
-        "Action needed: [TASK]. Timeline: [WHEN]. Responsible: [WHO]. Priority: [HIGH/MEDIUM/LOW]. Follow-up: [FOLLOW_UP].",
+      template: t("ipassTemplates.action.template"),
       color: "text-orange-600",
     },
     {
       id: "situation-awareness",
-      title: "Situation Update",
+      title: t("ipassTemplates.situation.title"),
       icon: AlertTriangle,
       section: "awareness",
-      template:
-        "Situation update: [WHAT_CHANGED]. Impact: [CLINICAL_IMPACT]. Watch for: [MONITORING_POINTS]. If-then: [CONTINGENCY].",
+      template: t("ipassTemplates.situation.template"),
       color: "text-purple-600",
     },
     {
       id: "synthesis-note",
-      title: "Synthesis Note",
+      title: t("ipassTemplates.synthesis.title"),
       icon: MessageSquare,
       section: "synthesis",
-      template:
-        "Key takeaways: [SUMMARY]. Questions: [QUESTIONS]. Confirmed understanding: [CONFIRMATION]. Next steps: [NEXT_STEPS].",
+      template: t("ipassTemplates.synthesis.template"),
       color: "text-red-600",
     },
   ];
 
   // I-PASS section tracking
   const ipassProgress = {
-    illness: { complete: true, label: "Illness Severity", icon: Activity },
-    patient: { complete: true, label: "Patient Summary", icon: FileText },
-    actions: { complete: false, label: "Action List", icon: Target },
+    illness: {
+      complete: true,
+      label: t("ipassProgress.illness.label"),
+      icon: Activity,
+    },
+    patient: {
+      complete: true,
+      label: t("ipassProgress.patient.label"),
+      icon: FileText,
+    },
+    actions: {
+      complete: false,
+      label: t("ipassProgress.action.label"),
+      icon: Target,
+    },
     awareness: {
       complete: false,
-      label: "Situation Awareness",
+      label: t("ipassProgress.awareness.label"),
       icon: AlertTriangle,
     },
-    synthesis: { complete: false, label: "Synthesis", icon: MessageSquare },
+    synthesis: {
+      complete: false,
+      label: t("ipassProgress.synthesis.label"),
+      icon: MessageSquare,
+    },
   };
 
   const handleQuickSave = (content: string, section: string) => {
@@ -126,9 +139,9 @@ export function QuickActions({ patient, onClose }: QuickActionsProps) {
       <div className="p-4 border-b border-gray-200">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="font-medium text-gray-900">I-PASS Quick Actions</h3>
+            <h3 className="font-medium text-gray-900">{t("title")}</h3>
             <p className="text-sm text-gray-600">
-              {patient.name} • Room {patient.room}
+              {t("patientInfo", { name: patient.name, room: patient.room })}
             </p>
           </div>
           <Button
@@ -147,9 +160,14 @@ export function QuickActions({ patient, onClose }: QuickActionsProps) {
           {/* I-PASS Progress Overview */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <h4 className="font-medium text-gray-900">I-PASS Progress</h4>
+              <h4 className="font-medium text-gray-900">
+                {t("progressOverview.title")}
+              </h4>
               <Badge variant="outline" className="text-xs">
-                {completedSections}/{totalSections} Complete
+                {t("progressOverview.sectionsCompleted", {
+                  completed: completedSections,
+                  total: totalSections,
+                })}
               </Badge>
             </div>
 
@@ -189,7 +207,7 @@ export function QuickActions({ patient, onClose }: QuickActionsProps) {
           {/* Quick Note with I-PASS Section Targeting */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <h4 className="font-medium text-gray-900">Add to I-PASS</h4>
+              <h4 className="font-medium text-gray-900">{t("addToIPass")}</h4>
               <Button
                 variant="ghost"
                 size="sm"
@@ -199,7 +217,7 @@ export function QuickActions({ patient, onClose }: QuickActionsProps) {
                 className="text-xs"
               >
                 <Edit className="w-3 h-3 mr-1" />
-                {activeForm === "note" ? "Cancel" : "Add"}
+                {activeForm === "note" ? t("cancel") : t("add")}
               </Button>
             </div>
 
@@ -211,19 +229,25 @@ export function QuickActions({ patient, onClose }: QuickActionsProps) {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="illness">
-                      I - Illness Severity
+                      {t("ipassSections.illness")}
                     </SelectItem>
-                    <SelectItem value="patient">P - Patient Summary</SelectItem>
-                    <SelectItem value="actions">A - Action List</SelectItem>
+                    <SelectItem value="patient">
+                      {t("ipassSections.patient")}
+                    </SelectItem>
+                    <SelectItem value="actions">
+                      {t("ipassSections.action")}
+                    </SelectItem>
                     <SelectItem value="awareness">
-                      S - Situation Awareness
+                      {t("ipassSections.situation")}
                     </SelectItem>
-                    <SelectItem value="synthesis">S - Synthesis</SelectItem>
+                    <SelectItem value="synthesis">
+                      {t("ipassSections.synthesis")}
+                    </SelectItem>
                   </SelectContent>
                 </Select>
 
                 <Textarea
-                  placeholder="Enter clinical note for selected I-PASS section..."
+                  placeholder={t("notePlaceholder")}
                   value={quickNote}
                   onChange={(e) => setQuickNote(e.target.value)}
                   className="min-h-[80px] text-sm"
@@ -237,9 +261,11 @@ export function QuickActions({ patient, onClose }: QuickActionsProps) {
                     className="text-xs flex-1"
                   >
                     <Save className="w-3 h-3 mr-1" />
-                    Add to{" "}
-                    {targetSection.charAt(0).toUpperCase() +
-                      targetSection.slice(1)}
+                    {t("addTo", {
+                      section:
+                        targetSection.charAt(0).toUpperCase() +
+                        targetSection.slice(1),
+                    })}
                   </Button>
                   <Button
                     variant="outline"
@@ -247,7 +273,7 @@ export function QuickActions({ patient, onClose }: QuickActionsProps) {
                     onClick={() => setQuickNote("")}
                     className="text-xs"
                   >
-                    Clear
+                    {t("clear")}
                   </Button>
                 </div>
               </div>
@@ -258,7 +284,9 @@ export function QuickActions({ patient, onClose }: QuickActionsProps) {
 
           {/* I-PASS Templates */}
           <div className="space-y-3">
-            <h4 className="font-medium text-gray-900">I-PASS Templates</h4>
+            <h4 className="font-medium text-gray-900">
+              {t("quickTemplates")}
+            </h4>
             <div className="space-y-2">
               {ipassTemplates.map((template) => {
                 const IconComponent = template.icon;
@@ -279,8 +307,9 @@ export function QuickActions({ patient, onClose }: QuickActionsProps) {
                       <div className="flex-1 text-left">
                         <div className="font-medium">{template.title}</div>
                         <div className="text-xs text-gray-500 mt-1">
-                          {template.section.charAt(0).toUpperCase()}-PASS
-                          Section
+                          {t("passSection", {
+                            letter: template.section.charAt(0).toUpperCase(),
+                          })}
                         </div>
                       </div>
                     </div>
@@ -296,12 +325,13 @@ export function QuickActions({ patient, onClose }: QuickActionsProps) {
       <div className="p-4 border-t border-gray-200">
         <div className="flex items-center justify-between text-xs text-gray-500">
           <span>
-            I-PASS Progress:{" "}
-            {Math.round((completedSections / totalSections) * 100)}%
+            {t("footer.progress", {
+              progress: Math.round((completedSections / totalSections) * 100),
+            })}
           </span>
           <Button variant="ghost" size="sm" className="text-xs">
             <Star className="w-3 h-3 mr-1" />
-            Save Template
+            {t("footer.saveTemplate")}
           </Button>
         </div>
       </div>

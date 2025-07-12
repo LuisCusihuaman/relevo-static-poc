@@ -307,6 +307,27 @@ i18n
                 "Should we continue the current diuretic dose overnight? BUN/Cr stable at 1.2.",
               time: "30 seconds ago",
             },
+            userpatel: {
+              user: "Dr. Patel",
+              role: "Evening Attending",
+              message:
+                "Just reviewed the case. The heart failure seems stable today. Any concerns about the fluid balance?",
+              time: "2 minutes ago",
+            },
+            userjohnson: {
+              user: "Dr. Johnson",
+              role: "Day Attending",
+              message:
+                "Patient has been net negative 500ml today. Responded well to the lasix adjustment this morning. Current weight is down 2kg from admission.",
+              time: "1 minute ago",
+            },
+            userrodriguez: {
+              user: "Dr. Rodriguez",
+              role: "Resident",
+              message:
+                "Should we continue the current diuretic dose overnight? BUN/Cr stable at 1.2.",
+              time: "30 seconds ago",
+            },
           },
           activity: {
             user1: {
@@ -707,6 +728,58 @@ i18n
         handover: {
           historySidebarTitle: "Handover History",
           collaborationSidebarTitle: "Handover Collaboration",
+          handoverAt: "Handover at {{time}}",
+          remaining: "{{time}} remaining",
+          session: "Session: {{duration}}",
+          handoverComplete: "Handover Complete",
+          completeHandover: "Complete Handover",
+          ipassGuidelines: {
+            illness: {
+              title: "Illness Severity Guidelines",
+              points: {
+                0: "Assess current stability and acuity level",
+                1: "Consider trajectory and potential for change",
+                2: "Identify monitoring requirements",
+                3: "Determine level of intervention needed",
+              },
+            },
+            patient: {
+              title: "Patient Summary Guidelines",
+              points: {
+                0: "Include relevant medical history and allergies",
+                1: "Document current medications and orders",
+                2: "Note code status and advance directives",
+                3: "Provide context for current admission",
+              },
+            },
+            actions: {
+              title: "Action List Guidelines",
+              points: {
+                0: "Prioritize pending tasks and orders",
+                1: "Include timeline and responsible parties",
+                2: "Note follow-up requirements",
+                3: "Document contingency actions",
+              },
+            },
+            awareness: {
+              title: "Situation Awareness Guidelines",
+              points: {
+                0: "Provide real-time patient status updates",
+                1: "Include recent changes and trends",
+                2: "Note current monitoring parameters",
+                3: "Identify immediate concerns or watch points",
+              },
+            },
+            synthesis: {
+              title: "Synthesis Guidelines",
+              points: {
+                0: "Confirm understanding of key points",
+                1: "Ask clarifying questions",
+                2: "Verify action items and responsibilities",
+                3: "Acknowledge acceptance of care",
+              },
+            },
+          },
         },
         handoverHistory: {
           title: "Handover History",
@@ -776,6 +849,25 @@ i18n
           pending: "Pending",
           active: "Active",
           newInfo: "New Info",
+          back: "Back",
+          session: "Session: {{duration}}",
+          peopleWithAccess: "People with access",
+          peopleCanViewAndEdit_one: "{{count}} person can view and edit",
+          peopleCanViewAndEdit_other: "{{count}} people can view and edit",
+          current: "Current",
+          receiving: "Receiving",
+          activeNow: "Active now",
+          viewingNow: "Viewing now",
+          lastSeen: "Last seen {{time}}",
+          handoverStatus: "Handover Status",
+          timeRemaining: "Time Remaining",
+          sessionDuration: "Session Duration",
+          syncStatus: "Sync Status",
+          viewHistory: "View History",
+          viewDiscussion: "View Discussion",
+          enterFocusMode: "Enter Focus Mode",
+          exitFocusMode: "Exit Focus Mode",
+          options: "Options",
         },
         illnessSeverity: {
           levels: {
@@ -808,6 +900,11 @@ i18n
           setBy: "Set by {{user}}",
           assessmentBy: "Assessment by {{user}} ({{role}})",
           lastSynced: "Last synced at {{time}}",
+          changesSynced:
+            "Changes are automatically synced to all viewers in real-time",
+          onlyUserCanModify:
+            "Only {{user}} ({{role}}) can modify this assessment",
+          updatesAutomatic: "You will see updates automatically as they are made",
         },
         justification: {
           title: "Clinical Justification",
@@ -819,7 +916,7 @@ i18n
           cancel: "Cancel",
           editingBy: "Editing: {{name}}",
           comment: "Comment",
-          lastUpdated: "Last updated: 14:15 PMT",
+          lastUpdated: "Last updated: {{time}}",
           entriesTotal: "{{count}} entries total",
           sharedWithTeam: "Shared with team",
           authors: {
@@ -847,6 +944,11 @@ i18n
             actionList: "Action List",
             situationAwareness: "Situation Awareness",
             synthesisByReceiver: "Synthesis by Receiver",
+            illnessSeverityDescription: "Evaluate patient condition and stability",
+            patientSummaryDescription:
+              "Static patient record copied from previous handovers",
+            situationAwarenessDescription: "Real-time patient status and updates",
+            actionListDescription: "Pending tasks",
           },
         },
         mobileMenus: {
@@ -1198,8 +1300,10 @@ i18n
           selected: "Selected",
         },
         patientSummary: {
+          initialSummary:
+            "72-year-old female with acute exacerbation of COPD, admitted 3 days ago for increased dyspnea and productive cough. Patient has been responding well to bronchodilator therapy and systemic corticosteroids.\n\nPast Medical History:\n• COPD (moderate to severe)\n• Hypertension\n• Type 2 Diabetes Mellitus\n• Former smoker (quit 5 years ago)\n\nCurrent medications showing good response. Patient ambulating with minimal assistance and oxygen requirements have decreased from 4L to 2L over past 24 hours.\n\nSocial History:\n• Lives with daughter\n• Independent in ADLs prior to admission\n• No advance directives on file\n\nPhysical Exam:\n• Alert and oriented x3\n• Respiratory: Decreased breath sounds bilaterally, mild expiratory wheeze\n• Cardiovascular: Regular rate and rhythm\n• No acute distress currently\n\nDischarge Planning:\n• Social work consulted for home services\n• PT/OT evaluation completed\n• Family education on COPD management\n• Follow-up with pulmonology in 2 weeks\n\nCode Status: DNR/DNI (confirmed with family)\nAllergies: Penicillin, Sulfa\nEmergency Contact: Daughter - Sarah Rodriguez (555) 123-4567",
           time: {
-            lessThanHour: "Less than 1 hour ago",
+            lessThan1Hour: "Less than 1 hour ago",
             hoursAgo_one: "{{count}} hour ago",
             hoursAgo_other: "{{count}} hours ago",
             daysAgo_one: "{{count}} day ago",
@@ -1210,56 +1314,26 @@ i18n
             title: "Editing Clinical Record",
             updating: "Updating...",
             placeholder: "Enter patient background and clinical summary...",
-            wordCount_one: "{{count}} word",
-            wordCount_other: "{{count}} words",
-            lineCount_one: "{{count}} line",
-            lineCount_other: "{{count}} lines",
+            words: "words",
+            lines: "lines",
             cancel: "Cancel",
             save: "Save",
-            useSaveButton: "Use Save button above",
+            useSaveButtonAbove: "Use Save button above",
             useFullscreenControls: "Use fullscreen controls to save",
           },
           view: {
             editAriaLabel: "Click to edit clinical record",
             fullscreenTitle: "Clinical Record - Fullscreen View",
             title: "Clinical Record",
+            only: " only",
             current: "Current",
-            verified: "Verified",
-            lastUpdated: "Updated {{time}} by {{user}}",
-            wordCount_one: "{{count}} word",
-            wordCount_other: "{{count}} words",
+            updated: "Updated",
+            words: "words",
             clickToEdit: "Click to edit",
-            readOnly: "Read-only",
-            readOnlyNotice:
-              "Only {{physicianName}} can modify this clinical record.",
           },
-          initialSummary: {
-            pmhTitle: "Past Medical History:",
-            pmhItem1: "COPD (moderate to severe)",
-            pmhItem2: "Hypertension",
-            pmhItem3: "Type 2 Diabetes Mellitus",
-            pmhItem4: "Former smoker (quit 5 years ago)",
-            medsTitle:
-              "Current medications showing good response. Patient ambulating with minimal assistance and oxygen requirements have decreased from 4L to 2L over past 24 hours.",
-            socialTitle: "Social History:",
-            socialItem1: "Lives with daughter",
-            socialItem2: "Independent in ADLs prior to admission",
-            socialItem3: "No advance directives on file",
-            examTitle: "Physical Exam:",
-            examItem1: "Alert and oriented x3",
-            examItem2:
-              "Respiratory: Decreased breath sounds bilaterally, mild expiratory wheeze",
-            examItem3: "Cardiovascular: Regular rate and rhythm",
-            examItem4: "No acute distress currently",
-            dischargeTitle: "Discharge Planning:",
-            dischargeItem1: "Social work consulted for home services",
-            dischargeItem2: "PT/OT evaluation completed",
-            dischargeItem3: "Family education on COPD management",
-            dischargeItem4: "Follow-up with pulmonology in 2 weeks",
-            codeStatusTitle: "Code Status: DNR/DNI (confirmed with family)",
-            allergiesTitle: "Allergies: Penicillin, Sulfa",
-            emergencyContactTitle:
-              "Emergency Contact: Daughter - Sarah Rodriguez (555) 123-4567",
+          permission: {
+            only: "Only",
+            canModify: "can modify this clinical record.",
           },
         },
         profileView: {
@@ -1392,6 +1466,11 @@ i18n
           addTo: "Add to {{section}}",
           clear: "Clear",
           quickTemplates: "I-PASS Templates",
+          passSection: "{{letter}}-PASS Section",
+          footer: {
+            progress: "I-PASS Progress: {{progress}}%",
+            saveTemplate: "Save Template",
+          },
           ipassSections: {
             illness: "I - Illness Severity",
             patient: "P - Patient Summary",
@@ -1436,7 +1515,7 @@ i18n
             action: {
               label: "Action List",
             },
-            situation: {
+            awareness: {
               label: "Situation Awareness",
             },
             synthesis: {
@@ -1617,8 +1696,8 @@ i18n
             },
           },
           status: {
-            active: "Active",
-            planned: "Planned",
+            active: "active",
+            planned: "planned",
           },
           autoSave: {
             saving: "Saving...",
@@ -1631,33 +1710,56 @@ i18n
             low: "Low Priority",
           },
           cancel: "Cancel",
-          submittedBy: "Submitted by {{name}} at {{time}} on {{date}}",
+          submittedBy: "Submitted by {{name}} at {{time}}",
+          newPlan: {
+            title: "New Contingency Plan",
+            submitting: "Submitting...",
+            submit: "Submit Plan",
+          },
+          editor: {
+            fullscreenTitle: "Current Situation - Fullscreen Editor",
+            title: "Current Situation",
+            placeholder: "Enter current situation details...",
+            lines: "lines",
+            words: "words",
+            autosaving: "Auto-saving",
+            useFullscreenControls: "Use fullscreen controls to save",
+            peopleEditing: "{{count}} people editing",
+          },
+          view: {
+            editAriaLabel: "Click to edit situation awareness documentation",
+            fullscreenTitle: "Current Situation - Fullscreen View",
+            allCanEdit: "All can edit",
+            active: "Active",
+            lastUpdatedBy: "Last updated by {{user}}",
+            clickToEdit: "Click to edit",
+          },
           initialSituation: {
             header: "CURRENT STATUS - 16:30",
-            line1: "Patient stable, responding well to current interventions",
-            line2: "Heart rate stabilized at 82 bpm, blood pressure 128/76",
-            line3: "Oxygen saturation maintaining 96% on 2L nasal cannula",
+            line1: "• Patient stable, responding well to current interventions",
+            line2: "• Heart rate stabilized at 82 bpm, blood pressure 128/76",
+            line3: "• Oxygen saturation maintaining 96% on 2L nasal cannula",
             line4:
-              "Patient reports decreased shortness of breath since morning",
-            line5: "Ambulating with assistance, appetite improving",
+              "• Patient reports decreased shortness of breath since morning",
+            line5: "• Ambulating with assistance, appetite improving",
             monitoringHeader: "MONITORING PRIORITIES:",
-            monitoring1: "Hourly urine output monitoring - target >30ml/hr",
-            monitoring2: "Daily weight monitoring for fluid balance",
-            monitoring3: "Respiratory rate and oxygen requirements",
-            monitoring4: "Pain assessment q4h - current pain 3/10",
-            monitoring5: "Continue cardiac monitoring overnight",
+            monitoring1: "□ Hourly urine output monitoring - target >30ml/hr",
+            monitoring2: "□ Daily weight monitoring for fluid balance",
+            monitoring3: "□ Respiratory rate and oxygen requirements",
+            monitoring4: "□ Pain assessment q4h - current pain 3/10",
+            monitoring5: "□ Continue cardiac monitoring overnight",
             teamNotesHeader: "NOTES FROM TEAM:",
             teamNote1:
-              "14:30 - Cardiology reviewed echo results, EF improved to 40%",
+              "• 14:30 - Cardiology reviewed echo results, EF improved to 40%",
             teamNote2:
-              "15:15 - PT evaluation completed, cleared for discharge planning",
-            teamNote3: "16:00 - Family meeting scheduled for tomorrow 10:00",
-            teamNote4: "16:15 - Evening nurse briefed on care plan",
+              "• 15:15 - PT evaluation completed, cleared for discharge planning",
+            teamNote3: "• 16:00 - Family meeting scheduled for tomorrow 10:00",
+            teamNote4: "• 16:15 - Evening nurse briefed on care plan",
             nextShiftGoalsHeader: "GOALS FOR NEXT SHIFT:",
-            goal1: "Continue diuretic therapy - monitor electrolytes",
-            goal2: "Advance activity as tolerated",
-            goal3: "Finalize discharge planning with case manager",
-            goal4: "Patient education on heart failure management completed",
+            goal1: "□ Continue diuretic therapy - monitor electrolytes",
+            goal2: "□ Advance activity as tolerated",
+            goal3: "□ Finalize discharge planning with case manager",
+            goal4: "□ Patient education on heart failure management completed",
           },
           contingencyPlans: {
             plan1: {
@@ -1695,6 +1797,8 @@ i18n
           complete: "Complete",
         },
         synthesisByReceiver: {
+          title: "Synthesis by Receiver",
+          description: "Confirmation by the Receiver",
           receivingPhysician: "Receiving Physician",
           confirmationRequired: "Confirmation Required",
           onlyReceiverConfirms: "Only {{name}} can confirm this handover",
@@ -1705,11 +1809,29 @@ i18n
           allItemsConfirmed: "All items confirmed - ready for final handover",
           checklistTitle: "Handover Confirmation Checklist",
           critical: "Critical",
-          confirmHandover: "Confirm Handover",
-          handoverConfirmed: "Handover Confirmed",
-          responsibilityAccepted:
-            "You have accepted responsibility for this patient",
-          waitingForConfirmation: "Waiting for {{name}} to confirm...",
+          finalConfirmation: {
+            title: "Final Handover Confirmation",
+            description:
+              "By clicking confirm, you formally accept clinical responsibility for this patient.",
+            button: {
+              confirm: "Confirm Handover & Accept Responsibility",
+              incomplete: {
+                prefix: "Complete All Items to Continue (",
+                suffix: ")",
+              },
+            },
+          },
+          status: {
+            waitingFor: "Waiting for {{name}} to confirm handover",
+            itemsConfirmed: "{{completed}} of {{total}} items confirmed",
+            pending: "Confirmation pending",
+          },
+          focusMode: {
+            title: "Synthesis by Receiver",
+            description: "{{name}} will confirm handover completion",
+            readOnly:
+              "Read-only mode - Confirmation available in interactive mode",
+          },
           confirmationItems: {
             illnessSeverity: {
               label:
@@ -1744,6 +1866,24 @@ i18n
                 "I formally accept clinical responsibility for this patient",
               description: "Official transfer of care and responsibility",
             },
+          },
+        },
+        patientHeader: {
+          age: "Age: {{age}}",
+          room: "Room: {{room}}",
+          admitted: "Admitted: {{date}}",
+          mrn: "MRN: {{mrn}}",
+          handoverInProgress: "Handover In Progress",
+          handoverComplete: "Handover Complete",
+          los: "LOS: {{count}} days",
+          activeHandoverSession: "Active handover session: {{shift}}",
+          collaborationMessage:
+            "Team members are currently collaborating on this handover",
+          severity: {
+            stable: "Stable",
+            guarded: "Guarded",
+            unstable: "Unstable",
+            critical: "Critical",
           },
         },
       },

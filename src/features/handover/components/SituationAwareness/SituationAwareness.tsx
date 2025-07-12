@@ -14,6 +14,7 @@ import {
   X,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 // Enhanced collaborator with typing indicators
 interface Collaborator {
@@ -80,33 +81,54 @@ export function SituationAwareness({
   },
   onContentChange,
 }: SituationAwarenessProps) {
+  const { t } = useTranslation("situationAwareness");
+
   // Live situation documentation (collaborative)
-  const [currentSituation, setCurrentSituation] =
-    useState(`CURRENT STATUS - 16:30
-• Patient stable, responding well to current interventions
-• Heart rate stabilized at 82 bpm, blood pressure 128/76
-• Oxygen saturation maintaining 96% on 2L nasal cannula
-• Patient reports decreased shortness of breath since morning
-• Ambulating with assistance, appetite improving
-
-MONITORING PRIORITIES:
-□ Hourly urine output monitoring - target >30ml/hr
-□ Daily weight monitoring for fluid balance
-□ Respiratory rate and oxygen requirements
-□ Pain assessment q4h - current pain 3/10
-□ Continue cardiac monitoring overnight
-
-NOTES FROM TEAM:
-• 14:30 - Cardiology reviewed echo results, EF improved to 40%
-• 15:15 - PT evaluation completed, cleared for discharge planning
-• 16:00 - Family meeting scheduled for tomorrow 10:00
-• 16:15 - Evening nurse briefed on care plan
-
-GOALS FOR NEXT SHIFT:
-□ Continue diuretic therapy - monitor electrolytes
-□ Advance activity as tolerated
-□ Finalize discharge planning with case manager
-□ Patient education on heart failure management completed`);
+  const [currentSituation, setCurrentSituation] = useState(
+    t("initialSituation.header") +
+      "\n" +
+      t("initialSituation.line1") +
+      "\n" +
+      t("initialSituation.line2") +
+      "\n" +
+      t("initialSituation.line3") +
+      "\n" +
+      t("initialSituation.line4") +
+      "\n" +
+      t("initialSituation.line5") +
+      "\n\n" +
+      t("initialSituation.monitoringHeader") +
+      "\n" +
+      t("initialSituation.monitoring1") +
+      "\n" +
+      t("initialSituation.monitoring2") +
+      "\n" +
+      t("initialSituation.monitoring3") +
+      "\n" +
+      t("initialSituation.monitoring4") +
+      "\n" +
+      t("initialSituation.monitoring5") +
+      "\n\n" +
+      t("initialSituation.teamNotesHeader") +
+      "\n" +
+      t("initialSituation.teamNote1") +
+      "\n" +
+      t("initialSituation.teamNote2") +
+      "\n" +
+      t("initialSituation.teamNote3") +
+      "\n" +
+      t("initialSituation.teamNote4") +
+      "\n\n" +
+      t("initialSituation.nextShiftGoalsHeader") +
+      "\n" +
+      t("initialSituation.goal1") +
+      "\n" +
+      t("initialSituation.goal2") +
+      "\n" +
+      t("initialSituation.goal3") +
+      "\n" +
+      t("initialSituation.goal4"),
+  );
 
   // State for editing mode
   const [isEditing, setIsEditing] = useState(false);
@@ -123,44 +145,40 @@ GOALS FOR NEXT SHIFT:
   }, [fullscreenMode, autoEdit]);
 
   // Contingency plans
-  const [contingencyPlans, setContingencyPlans] = useState<ContingencyPlan[]>([
-    {
-      id: 1,
-      condition:
-        "Patient experiences increased shortness of breath or O2 sat drops below 92%",
-      action:
-        "Increase oxygen to 4L, obtain arterial blood gas, notify physician immediately, prepare for possible BiPAP",
-      priority: "high",
-      status: "active",
-      submittedBy: "Dr. Johnson",
-      submittedTime: "14:20",
-      submittedDate: "Today",
-    },
-    {
-      id: 2,
-      condition:
-        "Urine output decreases to less than 20ml/hr for 2 consecutive hours",
-      action:
-        "Check catheter patency, review fluid balance, obtain creatinine and BUN, consider nephrology consult",
-      priority: "medium",
-      status: "active",
-      submittedBy: "Dr. Martinez",
-      submittedTime: "15:45",
-      submittedDate: "Today",
-    },
-    {
-      id: 3,
-      condition:
-        "Blood pressure drops below 90/60 or patient shows signs of hypotension",
-      action:
-        "Hold diuretics, fluid bolus 250ml NS, reassess in 30 minutes, notify attending physician",
-      priority: "high",
-      status: "planned",
-      submittedBy: "Dr. Rodriguez",
-      submittedTime: "16:10",
-      submittedDate: "Today",
-    },
-  ]);
+  const [contingencyPlans, setContingencyPlans] = useState<ContingencyPlan[]>(
+    () => [
+      {
+        id: 1,
+        condition: t("contingencyPlans.plan1.condition"),
+        action: t("contingencyPlans.plan1.action"),
+        priority: "high",
+        status: "active",
+        submittedBy: t("doctors.johnson"),
+        submittedTime: "14:20",
+        submittedDate: t("time.today"),
+      },
+      {
+        id: 2,
+        condition: t("contingencyPlans.plan2.condition"),
+        action: t("contingencyPlans.plan2.action"),
+        priority: "medium",
+        status: "active",
+        submittedBy: t("doctors.martinez"),
+        submittedTime: "15:45",
+        submittedDate: t("time.today"),
+      },
+      {
+        id: 3,
+        condition: t("contingencyPlans.plan3.condition"),
+        action: t("contingencyPlans.plan3.action"),
+        priority: "high",
+        status: "planned",
+        submittedBy: t("doctors.rodriguez"),
+        submittedTime: "16:10",
+        submittedDate: t("time.today"),
+      },
+    ],
+  );
 
   // New plan form state
   const [showNewPlanForm, setShowNewPlanForm] = useState(false);
@@ -208,7 +226,7 @@ GOALS FOR NEXT SHIFT:
           hour: "2-digit",
           minute: "2-digit",
         }),
-        submittedDate: "Today",
+        submittedDate: t("time.today"),
       };
 
       setContingencyPlans((prev) => [...prev, plan]);
@@ -295,8 +313,8 @@ GOALS FOR NEXT SHIFT:
                   <Edit className="w-5 h-5 text-blue-600" />
                   <h4 className="text-lg font-medium text-blue-800">
                     {fullscreenMode
-                      ? "Current Situation - Fullscreen Editor"
-                      : "Current Situation"}
+                      ? t("editor.fullscreenTitle")
+                      : t("editor.title")}
                   </h4>
                 </div>
                 <div className="flex items-center space-x-3">
@@ -312,10 +330,10 @@ GOALS FOR NEXT SHIFT:
                     ></div>
                     <span className="text-sm text-blue-600">
                       {autoSaveStatus === "saved"
-                        ? "Saved"
+                        ? t("autoSave.saved")
                         : autoSaveStatus === "saving"
-                          ? "Saving..."
-                          : "Error"}
+                          ? t("autoSave.saving")
+                          : t("autoSave.error")}
                     </span>
                   </div>
                   {/* ONLY SHOW DONE BUTTON IF NOT HIDING CONTROLS */}
@@ -326,7 +344,7 @@ GOALS FOR NEXT SHIFT:
                       onClick={() => setIsEditing(false)}
                       className="text-xs text-blue-600 hover:bg-blue-100 h-7 px-2"
                     >
-                      Done
+                      {t("done")}
                     </Button>
                   )}
                 </div>
@@ -340,7 +358,7 @@ GOALS FOR NEXT SHIFT:
                       value={currentSituation}
                       onChange={(e) => handleSituationChange(e.target.value)}
                       className={`w-full h-full ${fullscreenMode ? "min-h-[60vh]" : "min-h-[400px]"} border-0 bg-transparent p-4 resize-none text-gray-900 leading-relaxed placeholder:text-gray-400 focus:outline-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none`}
-                      placeholder="Enter current situation details..."
+                      placeholder={t("editor.placeholder")}
                       style={{
                         fontFamily: "system-ui, -apple-system, sans-serif",
                         fontSize: fullscreenMode ? "16px" : "14px",
@@ -357,12 +375,20 @@ GOALS FOR NEXT SHIFT:
                 className={`flex items-center justify-between px-4 py-2 border-t border-gray-100 bg-gray-25/30 ${fullscreenMode ? "rounded-b-lg" : ""}`}
               >
                 <div className="flex items-center space-x-3 text-xs text-gray-500">
-                  <span>{currentSituation.split("\n").length} lines</span>
-                  <span>{currentSituation.split(" ").length} words</span>
-                  {!hideControls && <span>Auto-saving</span>}
-                  {hideControls && <span>Use fullscreen controls to save</span>}
+                  <span>
+                    {currentSituation.split("\n").length} {t("editor.lines")}
+                  </span>
+                  <span>
+                    {currentSituation.split(" ").length} {t("editor.words")}
+                  </span>
+                  {!hideControls && <span>{t("editor.autosaving")}</span>}
+                  {hideControls && (
+                    <span>{t("editor.useFullscreenControls")}</span>
+                  )}
                 </div>
-                <span className="text-xs text-gray-500">3 people editing</span>
+                <span className="text-xs text-gray-500">
+                  {t("editor.peopleEditing", { count: 3 })}
+                </span>
               </div>
             </div>
           </div>
@@ -380,9 +406,7 @@ GOALS FOR NEXT SHIFT:
             role={!focusMode ? "button" : undefined}
             tabIndex={!focusMode ? 0 : undefined}
             aria-label={
-              !focusMode
-                ? "Click to edit situation awareness documentation"
-                : undefined
+              !focusMode ? t("view.editAriaLabel") : undefined
             }
           >
             <div
@@ -397,21 +421,21 @@ GOALS FOR NEXT SHIFT:
                   <div className="flex items-center space-x-3">
                     <h4 className="text-lg font-medium text-blue-700">
                       {fullscreenMode
-                        ? "Current Situation - Fullscreen View"
-                        : "Current Situation"}
+                        ? t("view.fullscreenTitle")
+                        : t("currentSituation.title")}
                     </h4>
                     <Badge
                       variant="outline"
                       className="text-xs bg-blue-50 text-blue-700 border-blue-200"
                     >
                       <Users className="w-3 h-3 mr-1" />
-                      All can edit
+                      {t("view.allCanEdit")}
                     </Badge>
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <span className="text-sm text-gray-500">Active</span>
+                  <span className="text-sm text-gray-500">{t("view.active")}</span>
                 </div>
               </div>
 
@@ -438,15 +462,19 @@ GOALS FOR NEXT SHIFT:
                 className={`flex items-center justify-between px-4 py-2 border-t border-gray-100 bg-gray-25/30 ${fullscreenMode ? "rounded-b-lg" : ""}`}
               >
                 <div className="flex items-center space-x-3 text-xs text-gray-500">
-                  <span>{currentSituation.split("\n").length} lines</span>
-                  <span>{currentSituation.split(" ").length} words</span>
-                  <span>Last updated by Dr. Rodriguez</span>
+                  <span>
+                    {currentSituation.split("\n").length} {t("editor.lines")}
+                  </span>
+                  <span>
+                    {currentSituation.split(" ").length} {t("editor.words")}
+                  </span>
+                  <span>{t("view.lastUpdatedBy", { user: "Dr. Rodriguez" })}</span>
                 </div>
                 {!focusMode && (
                   <div className="opacity-0 group-hover:opacity-100 transition-opacity">
                     <div className="flex items-center space-x-1 text-xs text-gray-500">
                       <Edit className="w-3 h-3" />
-                      <span>Click to edit</span>
+                      <span>{t("view.clickToEdit")}</span>
                     </div>
                   </div>
                 )}
@@ -466,17 +494,17 @@ GOALS FOR NEXT SHIFT:
             <div className="flex items-center space-x-2">
               <AlertCircle className="w-4 h-4 text-gray-600" />
               <h4 className="font-medium text-gray-900">
-                Active Contingency Plans
+                {t("contingencyPlanning.title")}
               </h4>
             </div>
             <div className="flex items-center space-x-2">
               <Badge variant="outline" className="text-xs">
                 {contingencyPlans.filter((p) => p.status === "active").length}{" "}
-                active
+                {t("status.active")}
               </Badge>
               <Badge variant="outline" className="text-xs">
                 {contingencyPlans.filter((p) => p.status === "planned").length}{" "}
-                planned
+                {t("status.planned")}
               </Badge>
             </div>
           </div>
@@ -501,7 +529,9 @@ GOALS FOR NEXT SHIFT:
                         <Badge
                           className={`text-xs border ${getStatusBadge(plan.status)} mb-2`}
                         >
-                          {plan.status === "active" ? "Active" : "Planned"}
+                          {plan.status === "active"
+                            ? t("status.active")
+                            : t("status.planned")}
                         </Badge>
                       </div>
                     </div>
@@ -526,7 +556,7 @@ GOALS FOR NEXT SHIFT:
                   <div className="space-y-2">
                     <div className="flex items-start space-x-2">
                       <span className="text-sm font-medium text-gray-700 flex-shrink-0">
-                        IF:
+                        {t("contingencyPlanning.ifPrefix")}
                       </span>
                       <span className="text-sm text-gray-900">
                         {plan.condition}
@@ -534,7 +564,7 @@ GOALS FOR NEXT SHIFT:
                     </div>
                     <div className="flex items-start space-x-2">
                       <span className="text-sm font-medium text-gray-700 flex-shrink-0">
-                        THEN:
+                        {t("contingencyPlanning.thenPrefix")}
                       </span>
                       <span className="text-sm text-gray-900">
                         {plan.action}
@@ -545,7 +575,11 @@ GOALS FOR NEXT SHIFT:
                   {/* Plan Footer - Submitted info */}
                   <div className="flex items-center justify-between text-xs text-gray-500 pt-2 border-t border-gray-100">
                     <span>
-                      Submitted by {plan.submittedBy} at {plan.submittedTime}
+                      {t("submittedBy", {
+                        name: plan.submittedBy,
+                        time: plan.submittedTime,
+                        date: plan.submittedDate,
+                      })}
                     </span>
                     <span>{plan.submittedDate}</span>
                   </div>
@@ -562,7 +596,7 @@ GOALS FOR NEXT SHIFT:
               className="w-full text-gray-600 border-gray-200 hover:bg-gray-50"
             >
               <Plus className="w-4 h-4 mr-2" />
-              Add Contingency Plan
+              {t("contingencyPlanning.addPlan")}
             </Button>
           ) : (
             !focusMode && (
@@ -570,7 +604,7 @@ GOALS FOR NEXT SHIFT:
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <h5 className="font-medium text-gray-900">
-                      New Contingency Plan
+                      {t("newPlan.title")}
                     </h5>
                     <Button
                       variant="ghost"
@@ -589,7 +623,7 @@ GOALS FOR NEXT SHIFT:
                         htmlFor="plan-condition"
                         className="text-sm font-medium text-gray-700 mb-1 block"
                       >
-                        IF (Condition):
+                        {t("contingencyPlanning.form.conditionLabel")}
                       </label>
                       <Textarea
                         id="plan-condition"
@@ -597,7 +631,9 @@ GOALS FOR NEXT SHIFT:
                         onChange={(e) =>
                           setNewPlan({ ...newPlan, condition: e.target.value })
                         }
-                        placeholder="e.g., Systolic BP drops below 90"
+                        placeholder={t(
+                          "contingencyPlanning.form.conditionPlaceholder",
+                        )}
                         className="w-full p-2 border border-gray-300 rounded-md text-sm bg-white"
                         rows={2}
                         onKeyDown={handleKeyDown}
@@ -609,7 +645,7 @@ GOALS FOR NEXT SHIFT:
                         htmlFor="plan-action"
                         className="text-sm font-medium text-gray-700 mb-1 block"
                       >
-                        THEN (Action):
+                        {t("contingencyPlanning.form.actionLabel")}
                       </label>
                       <Textarea
                         id="plan-action"
@@ -618,7 +654,9 @@ GOALS FOR NEXT SHIFT:
                           setNewPlan({ ...newPlan, action: e.target.value })
                         }
                         onKeyDown={handleKeyDown}
-                        placeholder="e.g., Obtain blood cultures, notify physician immediately..."
+                        placeholder={t(
+                          "contingencyPlanning.form.actionPlaceholder",
+                        )}
                         className="min-h-[60px] border-gray-300 focus:border-blue-400 focus:ring-blue-100 bg-white"
                         disabled={isSubmitting}
                       />
@@ -629,7 +667,7 @@ GOALS FOR NEXT SHIFT:
                         htmlFor="plan-priority"
                         className="text-sm font-medium text-gray-700 mb-1 block"
                       >
-                        Priority:
+                        {t("contingencyPlanning.form.priorityLabel")}
                       </label>
                       <select
                         id="plan-priority"
@@ -640,9 +678,9 @@ GOALS FOR NEXT SHIFT:
                         className="w-full p-2 text-sm border border-gray-300 rounded-lg bg-white focus:border-blue-400 focus:ring-blue-100"
                         disabled={isSubmitting}
                       >
-                        <option value="low">Low Priority</option>
-                        <option value="medium">Medium Priority</option>
-                        <option value="high">High Priority</option>
+                        <option value="low">{t("priorities.low")}</option>
+                        <option value="medium">{t("priorities.medium")}</option>
+                        <option value="high">{t("priorities.high")}</option>
                       </select>
                     </div>
                   </div>
@@ -655,7 +693,7 @@ GOALS FOR NEXT SHIFT:
                       className="text-xs border-gray-300 hover:bg-gray-50"
                       disabled={isSubmitting}
                     >
-                      Cancel
+                      {t("cancel")}
                     </Button>
                     <Button
                       size="sm"
@@ -668,12 +706,12 @@ GOALS FOR NEXT SHIFT:
                       {isSubmitting ? (
                         <>
                           <div className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin mr-1"></div>
-                          Submitting...
+                          {t("newPlan.submitting")}
                         </>
                       ) : (
                         <>
                           <Send className="w-3 h-3 mr-1" />
-                          Submit Plan
+                          {t("newPlan.submit")}
                         </>
                       )}
                     </Button>

@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Activity, Bell, MessageSquare, Send, Users, X } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ActivityFeed, type ActivityItem } from "../ActivityFeed";
 
 interface CollaborationPanelProps {
@@ -107,6 +108,7 @@ export function CollaborationPanel({
 }: CollaborationPanelProps) {
   const [newMessage, setNewMessage] = useState("");
   const [activeTab, setActiveTab] = useState("discussion");
+  const { t } = useTranslation("collaborationPanel");
 
   const handleSendMessage = () => {
     if (newMessage.trim()) {
@@ -129,7 +131,7 @@ export function CollaborationPanel({
         <div className="p-4 border-b border-gray-200 bg-gray-50">
           <div className="flex items-center justify-between mb-3">
             <h3 className="font-medium text-gray-900">
-              Handover Collaboration
+              {t("header.title")}
             </h3>
             <Button
               variant="ghost"
@@ -145,9 +147,9 @@ export function CollaborationPanel({
           <div className="flex items-center justify-between text-sm">
             <div className="flex items-center space-x-2">
               <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-              <span className="text-gray-600">Live session</span>
+              <span className="text-gray-600">{t("header.liveSession")}</span>
             </div>
-            <span className="text-gray-500">Maria Rodriguez • Room 302A</span>
+            <span className="text-gray-500">{t("header.sessionInfo")}</span>
           </div>
         </div>
       )}
@@ -158,9 +160,9 @@ export function CollaborationPanel({
           <div className="flex items-center justify-between text-sm">
             <div className="flex items-center space-x-2">
               <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-              <span className="text-gray-600">Live session</span>
+              <span className="text-gray-600">{t("header.liveSession")}</span>
             </div>
-            <span className="text-gray-500">Maria Rodriguez • Room 302A</span>
+            <span className="text-gray-500">{t("header.sessionInfo")}</span>
           </div>
         </div>
       )}
@@ -178,14 +180,14 @@ export function CollaborationPanel({
               className="text-xs data-[state=active]:bg-white"
             >
               <MessageSquare className="w-3 h-3 mr-1" />
-              Discussion
+              {t("tabs.discussion")}
             </TabsTrigger>
             <TabsTrigger
               value="activity"
               className="text-xs data-[state=active]:bg-white"
             >
               <Bell className="w-3 h-3 mr-1" />
-              Updates
+              {t("tabs.updates")}
             </TabsTrigger>
           </TabsList>
         </div>
@@ -197,10 +199,10 @@ export function CollaborationPanel({
               <Users className="w-4 h-4 text-blue-600" />
               <div className="flex-1">
                 <h4 className="text-sm font-medium text-blue-900">
-                  Handover Discussion
+                  {t("discussionTab.title")}
                 </h4>
                 <p className="text-xs text-blue-700">
-                  Day → Evening shift conversation
+                  {t("discussionTab.subtitle")}
                 </p>
               </div>
             </div>
@@ -222,17 +224,17 @@ export function CollaborationPanel({
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center space-x-2 mb-1">
                         <span className="text-sm font-medium text-gray-900">
-                          {message.user}
+                          {t(`discussion.${message.user.replace("Dr. ", "user").toLowerCase()}.user`)}
                         </span>
                         <span className="text-xs text-gray-500">
-                          {message.role}
+                          {t(`discussion.${message.user.replace("Dr. ", "user").toLowerCase()}.role`)}
                         </span>
                         <span className="text-xs text-gray-400">
-                          {message.time}
+                          {t(`discussion.${message.user.replace("Dr. ", "user").toLowerCase()}.time`)}
                         </span>
                       </div>
                       <div className="text-sm text-gray-700 leading-relaxed">
-                        {message.message}
+                        {t(`discussion.${message.user.replace("Dr. ", "user").toLowerCase()}.message`)}
                       </div>
                     </div>
                   </div>
@@ -249,7 +251,7 @@ export function CollaborationPanel({
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder="Add to the handover discussion..."
+                  placeholder={t("messageInput.placeholder")}
                   className="min-h-[60px] pr-12 resize-none border-gray-200 focus:border-blue-300 focus:ring-blue-200 bg-white"
                 />
                 <Button
@@ -275,9 +277,11 @@ export function CollaborationPanel({
               <Activity className="w-4 h-4 text-gray-600" />
               <div className="flex-1">
                 <h4 className="text-sm font-medium text-gray-900">
-                  Recent Updates
+                  {t("activityTab.title")}
                 </h4>
-                <p className="text-xs text-gray-600">Live handover activity</p>
+                <p className="text-xs text-gray-600">
+                  {t("activityTab.subtitle")}
+                </p>
               </div>
             </div>
           </div>

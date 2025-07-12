@@ -5,6 +5,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { Clock, Edit, FileText, Lock, Save, Shield } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface PatientSummaryProps {
   onOpenThread?: (section: string) => void;
@@ -49,9 +50,8 @@ export function PatientSummary({
   },
   onContentChange,
 }: PatientSummaryProps) {
-  const [summaryText, setSummaryText] = useState(
-    "72-year-old female with acute exacerbation of COPD, admitted 3 days ago for increased dyspnea and productive cough. Patient has been responding well to bronchodilator therapy and systemic corticosteroids.\n\nPast Medical History:\n• COPD (moderate to severe)\n• Hypertension\n• Type 2 Diabetes Mellitus\n• Former smoker (quit 5 years ago)\n\nCurrent medications showing good response. Patient ambulating with minimal assistance and oxygen requirements have decreased from 4L to 2L over past 24 hours.\n\nSocial History:\n• Lives with daughter\n• Independent in ADLs prior to admission\n• No advance directives on file\n\nPhysical Exam:\n• Alert and oriented x3\n• Respiratory: Decreased breath sounds bilaterally, mild expiratory wheeze\n• Cardiovascular: Regular rate and rhythm\n• No acute distress currently\n\nDischarge Planning:\n• Social work consulted for home services\n• PT/OT evaluation completed\n• Family education on COPD management\n• Follow-up with pulmonology in 2 weeks\n\nCode Status: DNR/DNI (confirmed with family)\nAllergies: Penicillin, Sulfa\nEmergency Contact: Daughter - Sarah Rodriguez (555) 123-4567",
-  );
+  const { t } = useTranslation("patientSummary");
+  const [summaryText, setSummaryText] = useState(t("initialSummary"));
 
   const [isEditing, setIsEditing] = useState(false);
   const [lastUpdated, setLastUpdated] = useState(
@@ -103,10 +103,10 @@ export function PatientSummary({
       (now.getTime() - lastUpdated.getTime()) / (1000 * 60 * 60),
     );
 
-    if (diffHours < 1) return "Less than 1 hour ago";
-    if (diffHours < 24) return `${diffHours} hours ago`;
+    if (diffHours < 1) return t("time.lessThan1Hour");
+    if (diffHours < 24) return t("time.hoursAgo", { count: diffHours });
     const diffDays = Math.floor(diffHours / 24);
-    return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
+    return t("time.daysAgo", { count: diffDays });
   };
 
   // Handle click for editing or fullscreen - SIMPLIFIED FOR SINGLE CLICK
@@ -147,15 +147,15 @@ export function PatientSummary({
                   </div>
                   <h4 className="text-lg font-medium text-gray-800">
                     {fullscreenMode
-                      ? "Clinical Record - Fullscreen Editor"
-                      : "Editing Clinical Record"}
+                      ? t("editing.fullscreenTitle")
+                      : t("editing.title")}
                   </h4>
                 </div>
                 <div className="flex items-center space-x-2">
                   {isUpdating && (
                     <div className="flex items-center space-x-2 text-sm text-gray-600">
                       <div className="w-4 h-4 border-2 border-gray-400 border-t-gray-600 rounded-full animate-spin"></div>
-                      <span>Updating...</span>
+                      <span>{t("editing.updating")}</span>
                     </div>
                   )}
                 </div>
@@ -168,7 +168,7 @@ export function PatientSummary({
                     value={summaryText}
                     onChange={handleTextChange}
                     className={`w-full h-full ${fullscreenMode ? "min-h-[60vh]" : "min-h-[320px]"} border-0 bg-transparent p-4 resize-none text-gray-900 leading-relaxed placeholder:text-gray-400 focus:outline-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none`}
-                    placeholder="Enter patient background and clinical summary..."
+                    placeholder={t("editing.placeholder")}
                     style={{
                       fontFamily: "system-ui, -apple-system, sans-serif",
                       fontSize: fullscreenMode ? "16px" : "14px",
@@ -185,8 +185,12 @@ export function PatientSummary({
                   className={`flex items-center justify-between px-4 py-2 border-t border-gray-200 bg-gray-50 ${fullscreenMode ? "rounded-b-lg" : "rounded-b-lg"}`}
                 >
                   <div className="flex items-center space-x-3 text-xs text-gray-500">
-                    <span>{summaryText.split(" ").length} words</span>
-                    <span>{summaryText.split("\n").length} lines</span>
+                    <span>
+                      {summaryText.split(" ").length} {t("editing.words")}
+                    </span>
+                    <span>
+                      {summaryText.split("\n").length} {t("editing.lines")}
+                    </span>
                   </div>
                   <div className="flex space-x-2">
                     <Button
@@ -196,7 +200,7 @@ export function PatientSummary({
                       className="text-xs text-gray-600 hover:bg-gray-100 h-7 px-2"
                       disabled={isUpdating}
                     >
-                      Cancel
+                      {t("editing.cancel")}
                     </Button>
                     <Button
                       size="sm"
@@ -205,7 +209,7 @@ export function PatientSummary({
                       disabled={isUpdating}
                     >
                       <Save className="w-3 h-3 mr-1" />
-                      Save
+                      {t("editing.save")}
                     </Button>
                   </div>
                 </div>
@@ -217,13 +221,17 @@ export function PatientSummary({
                   className={`flex items-center justify-between px-4 py-2 border-t border-gray-200 bg-gray-50 ${fullscreenMode ? "rounded-b-lg" : "rounded-b-lg"}`}
                 >
                   <div className="flex items-center space-x-3 text-xs text-gray-500">
-                    <span>{summaryText.split(" ").length} words</span>
-                    <span>{summaryText.split("\n").length} lines</span>
+                    <span>
+                      {summaryText.split(" ").length} {t("editing.words")}
+                    </span>
+                    <span>
+                      {summaryText.split("\n").length} {t("editing.lines")}
+                    </span>
                   </div>
                   <div className="text-xs text-gray-500">
                     {fullscreenMode
-                      ? "Use Save button above"
-                      : "Use fullscreen controls to save"}
+                      ? t("editing.useSaveButtonAbove")
+                      : t("editing.useFullscreenControls")}
                   </div>
                 </div>
               )}
@@ -251,9 +259,7 @@ export function PatientSummary({
             role={canEdit && !focusMode ? "button" : undefined}
             tabIndex={canEdit && !focusMode ? 0 : undefined}
             aria-label={
-              canEdit && !focusMode
-                ? "Click to edit clinical record"
-                : undefined
+              canEdit && !focusMode ? t("view.editAriaLabel") : undefined
             }
           >
             {/* Header with subtle gray background and top rounded corners */}
@@ -267,22 +273,23 @@ export function PatientSummary({
                 <div className="flex items-center space-x-3">
                   <h4 className="text-lg font-medium text-gray-800">
                     {fullscreenMode
-                      ? "Clinical Record - Fullscreen View"
-                      : "Clinical Record"}
+                      ? t("view.fullscreenTitle")
+                      : t("view.title")}
                   </h4>
                   <Badge
                     variant="outline"
                     className="text-xs bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-100 transition-colors"
                   >
                     <Shield className="w-3 h-3 mr-1" />
-                    {assignedPhysician.name} only
+                    {assignedPhysician.name}
+                    {t("view.only")}
                   </Badge>
                 </div>
               </div>
               <div className="flex items-center space-x-2">
                 <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
                 <span className="text-sm text-gray-500 font-medium">
-                  Current
+                  {t("view.current")}
                 </span>
               </div>
             </div>
@@ -310,16 +317,20 @@ export function PatientSummary({
               <div className="flex items-center space-x-3 text-xs text-gray-500">
                 <div className="flex items-center space-x-1">
                   <Clock className="w-3 h-3" />
-                  <span>Updated {getTimeAgo()}</span>
+                  <span>
+                    {t("view.updated")} {getTimeAgo()}
+                  </span>
                 </div>
                 <span>•</span>
-                <span>{summaryText.split(" ").length} words</span>
+                <span>
+                  {summaryText.split(" ").length} {t("view.words")}
+                </span>
               </div>
               {canEdit && !focusMode && (
                 <div className="opacity-0 group-hover:opacity-100 transition-opacity">
                   <div className="flex items-center space-x-1 text-xs text-gray-600">
                     <Edit className="w-3 h-3" />
-                    <span>Click to edit</span>
+                    <span>{t("view.clickToEdit")}</span>
                   </div>
                 </div>
               )}
@@ -332,7 +343,8 @@ export function PatientSummary({
               <div className="flex items-center space-x-2 text-sm text-orange-700">
                 <Lock className="w-4 h-4" />
                 <span>
-                  Only {assignedPhysician.name} can modify this clinical record.
+                  {t("permission.only")} {assignedPhysician.name}{" "}
+                  {t("permission.canModify")}
                 </span>
               </div>
             </div>

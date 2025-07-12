@@ -14,6 +14,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useSyncStatus } from "@/hooks/useSyncStatus";
 import { X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   CollaborationPanel,
   FullscreenEditor,
@@ -59,6 +60,7 @@ export default function App({ onBack }: HandoverProps = {}) {
   const isMobile = useIsMobile();
   const { getTimeUntilHandover, getSessionDuration } = useHandoverSession();
   const { syncStatus, setSyncStatus, getSyncStatusDisplay } = useSyncStatus();
+  const { t } = useTranslation("handover");
 
   // Event handlers
   const handleSyncStatusChange = (status: SyncStatus) => {
@@ -135,7 +137,7 @@ export default function App({ onBack }: HandoverProps = {}) {
             <SidebarHeader className="p-4 border-b border-gray-200">
               <div className="flex items-center justify-between">
                 <h2 className="font-semibold text-gray-900">
-                  Handover History
+                  {t("historySidebarTitle")}
                 </h2>
                 <Button
                   variant="ghost"
@@ -210,7 +212,7 @@ export default function App({ onBack }: HandoverProps = {}) {
             <SidebarHeader className="p-4 border-b border-gray-200">
               <div className="flex items-center justify-between">
                 <h2 className="font-semibold text-gray-900">
-                  Handover Collaboration
+                  {t("collaborationSidebarTitle")}
                 </h2>
                 <Button
                   variant="ghost"

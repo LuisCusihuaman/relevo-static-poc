@@ -3,21 +3,22 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
 } from "@/components/ui/sheet";
 import {
-  Activity,
-  Clock,
-  History,
-  Maximize2,
-  MessageSquare,
-  User,
-  Users,
+    Activity,
+    Clock,
+    History,
+    Maximize2,
+    MessageSquare,
+    User,
+    Users,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { activeCollaborators, patientData } from "../../../../common/constants";
 import { CollaborationPanel } from "../CollaborationPanel";
 import { HandoverHistory } from "../HandoverHistory";
@@ -53,6 +54,7 @@ export function MobileMenus({
   handleNavigateToSection,
   currentUser: _currentUser,
 }: MobileMenusProps) {
+  const { t } = useTranslation("mobileMenus");
   const activeUsers = activeCollaborators.filter(
     (user) => user.status === "active" || user.status === "viewing",
   );
@@ -67,11 +69,10 @@ export function MobileMenus({
         >
           <SheetHeader className="pb-4 border-b border-gray-100">
             <SheetTitle className="text-left text-gray-900">
-              Handover Controls
+              {t("controls.title")}
             </SheetTitle>
             <SheetDescription className="text-left text-gray-600">
-              Access patient information, team collaboration tools, and handover
-              controls for {patientData.name}.
+              {t("controls.description", { patientName: patientData.name })}
             </SheetDescription>
           </SheetHeader>
 
@@ -81,24 +82,26 @@ export function MobileMenus({
               <div className="flex items-center space-x-2 mb-3">
                 <User className="w-4 h-4 text-blue-600" />
                 <h4 className="text-sm font-medium text-blue-900">
-                  Patient Information
+                  {t("patientInfo.title")}
                 </h4>
               </div>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-blue-700">Age:</span>
+                  <span className="text-blue-700">{t("patientInfo.age")}</span>
                   <span className="text-blue-900 font-medium">
                     {patientData.age}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-blue-700">MRN:</span>
+                  <span className="text-blue-700">{t("patientInfo.mrn")}</span>
                   <span className="text-blue-900 font-mono text-xs">
                     {patientData.mrn}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-blue-700">Diagnosis:</span>
+                  <span className="text-blue-700">
+                    {t("patientInfo.diagnosis")}
+                  </span>
                   <span className="text-blue-900 font-medium text-right">
                     {patientData.primaryDiagnosis}
                   </span>
@@ -112,7 +115,7 @@ export function MobileMenus({
                 <div className="flex items-center space-x-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                   <span className="text-sm font-medium text-gray-900">
-                    Active Session
+                    {t("session.active")}
                   </span>
                 </div>
                 <span className="text-sm font-medium text-gray-900">
@@ -121,7 +124,7 @@ export function MobileMenus({
               </div>
               <div className="flex items-center space-x-2 text-xs text-gray-600">
                 <Clock className="w-3 h-3" />
-                <span>{getTimeUntilHandover()} until handover</span>
+                <span>{t("session.untilHandover", { time: getTimeUntilHandover() })}</span>
               </div>
             </div>
 
@@ -130,7 +133,7 @@ export function MobileMenus({
               <div className="flex items-center space-x-2 px-1">
                 <Users className="w-4 h-4 text-gray-700" />
                 <h4 className="text-sm font-medium text-gray-900">
-                  Team Collaboration
+                  {t("collaboration.title")}
                 </h4>
               </div>
 
@@ -146,9 +149,11 @@ export function MobileMenus({
                 >
                   <MessageSquare className="w-4 h-4 mr-3" />
                   <div className="text-left">
-                    <div className="text-sm font-medium">Discussion</div>
+                    <div className="text-sm font-medium">
+                      {t("collaboration.discussion")}
+                    </div>
                     <div className="text-xs opacity-75">
-                      Handover conversation
+                      {t("collaboration.discussionHint")}
                     </div>
                   </div>
                 </Button>
@@ -164,8 +169,12 @@ export function MobileMenus({
                 >
                   <History className="w-4 h-4 mr-3" />
                   <div className="text-left">
-                    <div className="text-sm font-medium">Handover History</div>
-                    <div className="text-xs opacity-75">Previous records</div>
+                    <div className="text-sm font-medium">
+                      {t("collaboration.history")}
+                    </div>
+                    <div className="text-xs opacity-75">
+                      {t("collaboration.historyHint")}
+                    </div>
                   </div>
                 </Button>
               </div>
@@ -182,8 +191,10 @@ export function MobileMenus({
             >
               <Maximize2 className="w-4 h-4 mr-3" />
               <div className="text-left">
-                <div className="text-sm font-medium">Focus Mode</div>
-                <div className="text-xs opacity-75">Distraction-free view</div>
+                <div className="text-sm font-medium">{t("focusMode.title")}</div>
+                <div className="text-xs opacity-75">
+                  {t("focusMode.description")}
+                </div>
               </div>
             </Button>
 
@@ -193,11 +204,11 @@ export function MobileMenus({
                 <div className="flex items-center space-x-2">
                   <Activity className="w-4 h-4 text-gray-700" />
                   <h4 className="text-sm font-medium text-gray-900">
-                    Active Team
+                    {t("activeTeam.title")}
                   </h4>
                 </div>
                 <Badge variant="outline" className="text-xs px-2 py-1">
-                  {activeUsers.length} online
+                  {t("activeTeam.online", { count: activeUsers.length })}
                 </Badge>
               </div>
 
@@ -227,7 +238,7 @@ export function MobileMenus({
                             variant="outline"
                             className="text-xs px-1 py-0 bg-blue-50 text-blue-700 border-blue-200"
                           >
-                            Current
+                            {t("activeTeam.current")}
                           </Badge>
                         )}
                         {user.presenceType === "assigned-receiving" && (
@@ -235,7 +246,7 @@ export function MobileMenus({
                             variant="outline"
                             className="text-xs px-1 py-0 bg-purple-50 text-purple-700 border-purple-200"
                           >
-                            Receiving
+                            {t("activeTeam.receiving")}
                           </Badge>
                         )}
                       </div>
@@ -245,7 +256,7 @@ export function MobileMenus({
                 ))}
                 {activeUsers.length > 3 && (
                   <div className="text-xs text-gray-500 text-center py-2">
-                    +{activeUsers.length - 3} more active
+                    {t("activeTeam.moreActive", { count: activeUsers.length - 3 })}
                   </div>
                 )}
               </div>
@@ -263,10 +274,10 @@ export function MobileMenus({
           >
             <SheetHeader className="p-4 border-b border-gray-200">
               <SheetTitle className="text-left text-gray-900">
-                Handover History
+                {t("historySheet.title")}
               </SheetTitle>
               <SheetDescription className="text-left text-gray-600">
-                Previous handover records for {patientData.name}.
+                {t("historySheet.description", { patientName: patientData.name })}
               </SheetDescription>
             </SheetHeader>
             <div className="flex-1 overflow-auto">
@@ -289,10 +300,12 @@ export function MobileMenus({
           >
             <SheetHeader className="p-4 border-b border-gray-200">
               <SheetTitle className="text-left text-gray-900">
-                Handover Collaboration
+                {t("collaborationSheet.title")}
               </SheetTitle>
               <SheetDescription className="text-left text-gray-600">
-                Team discussion and collaboration tools for {patientData.name}.
+                {t("collaborationSheet.description", {
+                  patientName: patientData.name,
+                })}
               </SheetDescription>
             </SheetHeader>
             <div className="flex-1 overflow-auto">

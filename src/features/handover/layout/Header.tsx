@@ -33,6 +33,7 @@ import {
   X,
 } from "lucide-react";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 interface HeaderProps {
   focusMode: boolean;
@@ -69,6 +70,7 @@ export function Header({
   getSessionDuration,
   onBack,
 }: HeaderProps) {
+  const { t } = useTranslation(["header", "handover"]);
   const activeUsers = activeCollaborators.filter(
     (user) => user.status === "active" || user.status === "viewing",
   );
@@ -91,7 +93,7 @@ export function Header({
                 className="flex-shrink-0"
               >
                 <ChevronLeft className="w-4 h-4 mr-1" />
-                <span className="hidden sm:inline">Back</span>
+                <span className="hidden sm:inline">{t("back")}</span>
               </Button>
             )}
 
@@ -99,7 +101,7 @@ export function Header({
             <div className="flex items-center space-x-3 flex-shrink-0">
               <Stethoscope className="w-5 h-5 sm:w-6 sm:h-6 text-gray-900" />
               <h1 className="text-lg sm:text-xl font-bold text-gray-900">
-                RELEVO
+                {t("title")}
               </h1>
             </div>
 
@@ -121,7 +123,7 @@ export function Header({
               <div className="hidden xl:flex items-center space-x-2">
                 <div className="w-2 h-2 rounded-full bg-green-500"></div>
                 <span className="text-xs text-gray-600">
-                  Session: {getSessionDuration()}
+                  {t("handover:session", { duration: getSessionDuration() })}
                 </span>
               </div>
             </div>
@@ -178,10 +180,12 @@ export function Header({
                 >
                   <div className="p-3 border-b border-gray-100">
                     <h3 className="font-medium text-gray-900 text-sm">
-                      People with access
+                      {t("peopleWithAccess")}
                     </h3>
                     <p className="text-xs text-gray-600">
-                      {activeUsers.length} people can view and edit
+                      {t("peopleCanViewAndEdit", {
+                        count: activeUsers.length,
+                      })}
                     </p>
                   </div>
                   <div className="max-h-64 overflow-y-auto">
@@ -204,8 +208,8 @@ export function Header({
                                 person.status === "active"
                                   ? "bg-green-500"
                                   : person.status === "viewing"
-                                    ? "bg-amber-500"
-                                    : "bg-gray-400"
+                                  ? "bg-amber-500"
+                                  : "bg-gray-400"
                               }`}
                             ></div>
                           </div>
@@ -219,7 +223,7 @@ export function Header({
                                   variant="outline"
                                   className="text-xs px-1 py-0 bg-blue-50 text-blue-700 border-blue-200"
                                 >
-                                  Current
+                                  {t("current")}
                                 </Badge>
                               )}
                               {person.presenceType === "assigned-receiving" && (
@@ -227,7 +231,7 @@ export function Header({
                                   variant="outline"
                                   className="text-xs px-1 py-0 bg-purple-50 text-purple-700 border-purple-200"
                                 >
-                                  Receiving
+                                  {t("receiving")}
                                 </Badge>
                               )}
                             </div>
@@ -240,16 +244,16 @@ export function Header({
                                   person.status === "active"
                                     ? "bg-green-500"
                                     : person.status === "viewing"
-                                      ? "bg-amber-500"
-                                      : "bg-gray-400"
+                                    ? "bg-amber-500"
+                                    : "bg-gray-400"
                                 }`}
                               ></div>
                               <span className="text-xs text-gray-500">
                                 {person.status === "active"
-                                  ? "Active now"
+                                  ? t("activeNow")
                                   : person.status === "viewing"
-                                    ? "Viewing"
-                                    : "Offline"}
+                                  ? "Viewing now"
+                                  : `Last seen ${person.lastSeen}`}
                               </span>
                             </div>
                           </div>
@@ -316,23 +320,25 @@ export function Header({
               >
                 <Maximize2 className="w-4 h-4" />
               </Button>
-
               {/* Discussion */}
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowComments(!showComments)}
-                className={`text-xs p-2 hover:bg-gray-100 ${showComments ? "bg-gray-100" : ""}`}
+                className={`text-xs p-2 hover:bg-gray-100 ${
+                  showComments ? "bg-gray-100" : ""
+                }`}
               >
                 <MessageSquare className="w-4 h-4" />
               </Button>
-
               {/* History */}
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowHistory(!showHistory)}
-                className={`text-xs p-2 hover:bg-gray-100 ${showHistory ? "bg-gray-100" : ""}`}
+                className={`text-xs p-2 hover:bg-gray-100 ${
+                  showHistory ? "bg-gray-100" : ""
+                }`}
               >
                 <History className="w-4 h-4" />
               </Button>

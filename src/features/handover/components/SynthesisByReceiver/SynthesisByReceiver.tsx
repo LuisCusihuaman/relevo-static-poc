@@ -12,6 +12,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface SynthesisByReceiverProps {
   onOpenThread?: (section: string) => void;
@@ -40,52 +41,48 @@ export function SynthesisByReceiver({
     role: "Evening Attending",
   },
 }: SynthesisByReceiverProps) {
+  const { t } = useTranslation("synthesisByReceiver");
   // Confirmation checklist items
-  const [confirmationItems, setConfirmationItems] = useState([
+  const [confirmationItems, setConfirmationItems] = useState(() => [
     {
       id: "illness-severity",
-      label:
-        "I understand the patient's current illness severity and stability",
-      description:
-        "Patient condition, monitoring requirements, and severity assessment",
+      label: t("confirmationItems.illnessSeverity.label"),
+      description: t("confirmationItems.illnessSeverity.description"),
       checked: false,
       required: true,
     },
     {
       id: "clinical-background",
-      label: "I have reviewed the clinical background and patient history",
-      description:
-        "Medical history, allergies, code status, and baseline information",
+      label: t("confirmationItems.clinicalBackground.label"),
+      description: t("confirmationItems.clinicalBackground.description"),
       checked: false,
       required: true,
     },
     {
       id: "action-items",
-      label: "I acknowledge all pending action items and tasks",
-      description:
-        "Outstanding orders, pending results, and scheduled interventions",
+      label: t("confirmationItems.actionItems.label"),
+      description: t("confirmationItems.actionItems.description"),
       checked: false,
       required: true,
     },
     {
       id: "contingency-plans",
-      label: "I understand the contingency plans and potential complications",
-      description:
-        "If-then scenarios, escalation triggers, and emergency protocols",
+      label: t("confirmationItems.contingencyPlans.label"),
+      description: t("confirmationItems.contingencyPlans.description"),
       checked: false,
       required: true,
     },
     {
       id: "questions-answered",
-      label: "All my questions have been answered satisfactorily",
-      description: "Any clarifications or concerns have been addressed",
+      label: t("confirmationItems.questionsAnswered.label"),
+      description: t("confirmationItems.questionsAnswered.description"),
       checked: false,
       required: true,
     },
     {
       id: "accept-responsibility",
-      label: "I formally accept clinical responsibility for this patient",
-      description: "Official transfer of care and responsibility",
+      label: t("confirmationItems.acceptResponsibility.label"),
+      description: t("confirmationItems.acceptResponsibility.description"),
       checked: false,
       required: true,
       critical: true,
@@ -145,9 +142,9 @@ export function SynthesisByReceiver({
         </div>
         <div className="text-right">
           <p className="text-sm font-medium text-purple-900">
-            Receiving Physician
+            {t("receivingPhysician")}
           </p>
-          <p className="text-xs text-purple-700">Confirmation Required</p>
+          <p className="text-xs text-purple-700">{t("confirmationRequired")}</p>
         </div>
       </div>
 
@@ -157,12 +154,11 @@ export function SynthesisByReceiver({
           <div className="flex items-center space-x-2 text-amber-800">
             <Lock className="w-4 h-4" />
             <span className="text-sm font-medium">
-              Only {receivingPhysician.name} can confirm this handover
+              {t("onlyReceiverConfirms", { name: receivingPhysician.name })}
             </span>
           </div>
           <p className="text-sm text-amber-700 mt-1">
-            The receiving physician must formally accept responsibility before
-            handover completion.
+            {t("receiverMustAccept")}
           </p>
         </div>
       )}
@@ -171,16 +167,21 @@ export function SynthesisByReceiver({
       {!focusMode && (
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <h4 className="font-medium text-gray-900">Confirmation Progress</h4>
+            <h4 className="font-medium text-gray-900">
+              {t("confirmationProgress")}
+            </h4>
             <span className="text-sm text-gray-600">
-              {completedItems} of {totalItems}
+              {t("progress", {
+                completed: completedItems,
+                total: totalItems,
+              })}
             </span>
           </div>
           <Progress value={completionProgress} className="h-2" />
           {isComplete && (
             <p className="text-sm text-green-600 flex items-center space-x-1">
               <CheckCircle2 className="w-4 h-4" />
-              <span>All items confirmed - ready for final handover</span>
+              <span>{t("allItemsConfirmed")}</span>
             </p>
           )}
         </div>
@@ -191,7 +192,7 @@ export function SynthesisByReceiver({
         <div className="space-y-4">
           <h4 className="font-medium text-gray-900 flex items-center space-x-2">
             <CheckSquare className="w-4 h-4 text-gray-600" />
-            <span>Handover Confirmation Checklist</span>
+            <span>{t("checklistTitle")}</span>
           </h4>
 
           <div className="space-y-4">
@@ -232,7 +233,7 @@ export function SynthesisByReceiver({
                             variant="outline"
                             className="ml-2 text-xs bg-purple-50 text-purple-700 border-purple-200"
                           >
-                            Critical
+                            {t("critical")}
                           </Badge>
                         )}
                       </label>
@@ -261,11 +262,10 @@ export function SynthesisByReceiver({
           <div className="space-y-4">
             <div className="text-center">
               <h4 className="font-medium text-gray-900 mb-2">
-                Final Handover Confirmation
+                {t("finalConfirmation.title")}
               </h4>
               <p className="text-sm text-gray-600">
-                By clicking confirm, you formally accept clinical responsibility
-                for this patient.
+                {t("finalConfirmation.description")}
               </p>
             </div>
 
@@ -282,12 +282,14 @@ export function SynthesisByReceiver({
               {isComplete ? (
                 <>
                   <ShieldCheck className="w-4 h-4 mr-2" />
-                  Confirm Handover & Accept Responsibility
+                  {t("finalConfirmation.button.confirm")}
                 </>
               ) : (
                 <>
                   <Circle className="w-4 h-4 mr-2" />
-                  Complete All Items to Continue ({completedItems}/{totalItems})
+                  {t("finalConfirmation.button.incomplete.prefix")}
+                  {completedItems}/{totalItems}
+                  {t("finalConfirmation.button.incomplete.suffix")}
                 </>
               )}
             </Button>
@@ -302,13 +304,16 @@ export function SynthesisByReceiver({
             <div className="flex items-center justify-center space-x-2">
               <Clock className="w-4 h-4 text-gray-500" />
               <span className="text-sm text-gray-600">
-                Waiting for {receivingPhysician.name} to confirm handover
+                {t("status.waitingFor", { name: receivingPhysician.name })}
               </span>
             </div>
             <div className="text-xs text-gray-500">
               {completedItems > 0
-                ? `${completedItems} of ${totalItems} items confirmed`
-                : "Confirmation pending"}
+                ? t("status.itemsConfirmed", {
+                    completed: completedItems,
+                    total: totalItems,
+                  })
+                : t("status.pending")}
             </div>
           </div>
         </div>
@@ -318,12 +323,12 @@ export function SynthesisByReceiver({
       {focusMode && (
         <div className="p-4 bg-gray-25 border border-gray-200 rounded-lg">
           <div className="text-center space-y-2">
-            <h4 className="font-medium text-gray-900">Synthesis by Receiver</h4>
+            <h4 className="font-medium text-gray-900">{t("focusMode.title")}</h4>
             <p className="text-sm text-gray-600">
-              {receivingPhysician.name} will confirm handover completion
+              {t("focusMode.description", { name: receivingPhysician.name })}
             </p>
             <div className="text-xs text-gray-500">
-              Read-only mode - Confirmation available in interactive mode
+              {t("focusMode.readOnly")}
             </div>
           </div>
         </div>

@@ -4,6 +4,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { AlertCircle, CheckCircle, Clock } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface ConfirmationChecklistProps {
   onComplete: (complete: boolean) => void;
@@ -12,6 +13,7 @@ interface ConfirmationChecklistProps {
 export function ConfirmationChecklist({
   onComplete,
 }: ConfirmationChecklistProps) {
+  const { t } = useTranslation("confirmationChecklist");
   const [checkedItems, setCheckedItems] = useState<{ [key: string]: boolean }>(
     {},
   );
@@ -19,50 +21,50 @@ export function ConfirmationChecklist({
   const checklistItems = [
     {
       id: "clinical-status",
-      category: "Clinical Status",
-      item: "I have reviewed all clinical data and patient status",
+      category: t("categories.clinicalStatus"),
+      item: t("items.reviewClinicalData"),
       required: true,
     },
     {
       id: "medications",
-      category: "Medications",
-      item: "I understand current medications and any pending orders",
+      category: t("categories.medications"),
+      item: t("items.understandMedications"),
       required: true,
     },
     {
       id: "allergies",
-      category: "Safety",
-      item: "I have noted all allergies and safety precautions",
+      category: t("categories.safety"),
+      item: t("items.noteAllergies"),
       required: true,
     },
     {
       id: "priorities",
-      category: "Care Plan",
-      item: "I understand the immediate care priorities and action items",
+      category: t("categories.carePlan"),
+      item: t("items.understandPriorities"),
       required: true,
     },
     {
       id: "contingency",
-      category: "Contingency",
-      item: "I am aware of contingency plans and when to escalate",
+      category: t("categories.contingency"),
+      item: t("items.awareOfContingency"),
       required: true,
     },
     {
       id: "communication",
-      category: "Communication",
-      item: "I know who to contact for questions or emergencies",
+      category: t("categories.communication"),
+      item: t("items.knowWhoToContact"),
       required: true,
     },
     {
       id: "documentation",
-      category: "Documentation",
-      item: "All documentation is complete and accurate",
+      category: t("categories.documentation"),
+      item: t("items.documentationComplete"),
       required: false,
     },
     {
       id: "family",
-      category: "Family",
-      item: "I am aware of family communication needs and scheduled meetings",
+      category: t("categories.family"),
+      item: t("items.awareOfFamilyNeeds"),
       required: false,
     },
   ];
@@ -91,10 +93,13 @@ export function ConfirmationChecklist({
         <CardTitle className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <CheckCircle className="w-5 h-5 text-blue-600" />
-            <span>Confirmation Checklist</span>
+            <span>{t("title")}</span>
           </div>
           <Badge variant={allRequiredComplete ? "default" : "secondary"}>
-            {requiredChecked}/{requiredItems.length} Required
+            {t("requiredCount", {
+              count: requiredChecked,
+              total: requiredItems.length,
+            })}
           </Badge>
         </CardTitle>
       </CardHeader>
@@ -102,7 +107,7 @@ export function ConfirmationChecklist({
         {/* Progress Indicator */}
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
-            <span>Completion Progress</span>
+            <span>{t("completionProgress")}</span>
             <span>{Math.round(progressPercentage)}%</span>
           </div>
           <Progress value={progressPercentage} className="h-2" />
@@ -112,7 +117,7 @@ export function ConfirmationChecklist({
         <div>
           <h4 className="font-medium text-gray-900 mb-3 flex items-center space-x-2">
             <AlertCircle className="w-4 h-4 text-red-500" />
-            <span>Required Confirmations</span>
+            <span>{t("requiredConfirmations")}</span>
           </h4>
           <div className="space-y-3">
             {requiredItems.map((item) => (
@@ -143,7 +148,7 @@ export function ConfirmationChecklist({
         {/* Optional Items */}
         <div>
           <h4 className="font-medium text-gray-900 mb-3">
-            Additional Confirmations
+            {t("additionalConfirmations")}
           </h4>
           <div className="space-y-3">
             {checklistItems
@@ -179,13 +184,10 @@ export function ConfirmationChecklist({
             <div className="p-4 bg-green-50 rounded-lg border border-green-200">
               <div className="flex items-center space-x-2 text-green-800">
                 <CheckCircle className="w-5 h-5" />
-                <span className="font-medium">
-                  Ready for Handover Completion
-                </span>
+                <span className="font-medium">{t("readyForCompletion")}</span>
               </div>
               <p className="text-sm text-green-700 mt-1">
-                All required items have been confirmed. The handover can now be
-                completed.
+                {t("allRequiredConfirmed")}
               </p>
             </div>
           ) : (
@@ -193,12 +195,13 @@ export function ConfirmationChecklist({
               <div className="flex items-center space-x-2 text-yellow-800">
                 <Clock className="w-5 h-5" />
                 <span className="font-medium">
-                  {requiredItems.length - requiredChecked} items remaining
+                  {t("itemsRemaining", {
+                    count: requiredItems.length - requiredChecked,
+                  })}
                 </span>
               </div>
               <p className="text-sm text-yellow-700 mt-1">
-                Please confirm all required items to complete the handover
-                process.
+                {t("pleaseConfirmItems")}
               </p>
             </div>
           )}
@@ -206,7 +209,7 @@ export function ConfirmationChecklist({
 
         {/* Timestamp */}
         <div className="text-xs text-gray-500 text-center">
-          Checklist initiated: {new Date().toLocaleString()}
+          {t("checklistInitiated", { date: new Date() })}
         </div>
       </CardContent>
     </Card>

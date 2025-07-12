@@ -2,6 +2,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Activity, Calendar, Clock, MapPin, User, Users } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface PatientHeaderProps {
   patient: {
@@ -20,6 +21,8 @@ interface PatientHeaderProps {
 }
 
 export function PatientHeader({ patient }: PatientHeaderProps) {
+  const { t } = useTranslation("patientHeader");
+
   const getSeverityColor = (severity: string) => {
     switch (severity) {
       case "stable":
@@ -48,6 +51,11 @@ export function PatientHeader({ patient }: PatientHeaderProps) {
     }
   };
 
+  const losDays = Math.ceil(
+    (new Date().getTime() - new Date(patient.admissionDate).getTime()) /
+      (1000 * 3600 * 24),
+  );
+
   return (
     <Card className="mx-6 mt-6 border-l-4 border-l-blue-500">
       <CardContent className="p-6">
@@ -69,22 +77,22 @@ export function PatientHeader({ patient }: PatientHeaderProps) {
                   {patient.name}
                 </h2>
                 <Badge className={getSeverityColor(patient.severity)}>
-                  {patient.severity.toUpperCase()}
+                  {t(`severity.${patient.severity}`).toUpperCase()}
                 </Badge>
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600">
                 <div className="flex items-center space-x-1">
                   <User className="w-4 h-4" />
-                  <span>Age: {patient.age}</span>
+                  <span>{t("age", { age: patient.age })}</span>
                 </div>
                 <div className="flex items-center space-x-1">
                   <MapPin className="w-4 h-4" />
-                  <span>Room: {patient.room}</span>
+                  <span>{t("room", { room: patient.room })}</span>
                 </div>
                 <div className="flex items-center space-x-1">
                   <Calendar className="w-4 h-4" />
-                  <span>Admitted: {patient.admissionDate}</span>
+                  <span>{t("admitted", { date: patient.admissionDate })}</span>
                 </div>
                 <div className="flex items-center space-x-1">
                   <Users className="w-4 h-4" />
@@ -92,7 +100,7 @@ export function PatientHeader({ patient }: PatientHeaderProps) {
                 </div>
               </div>
 
-              <div className="text-xs text-gray-500">MRN: {patient.mrn}</div>
+              <div className="text-xs text-gray-500">{t("mrn", { mrn: patient.mrn })}</div>
             </div>
           </div>
 
@@ -107,22 +115,18 @@ export function PatientHeader({ patient }: PatientHeaderProps) {
 
             <div className="space-y-1">
               <Badge className={getStatusColor(patient.handoverStatus)}>
-                {patient.handoverStatus === "in-progress"
-                  ? "Handover In Progress"
-                  : "Handover Complete"}
+                {t(
+                  patient.handoverStatus === "in-progress"
+                    ? "handoverInProgress"
+                    : "handoverComplete",
+                )}
               </Badge>
               <div className="text-xs text-gray-500">{patient.shift}</div>
             </div>
 
             {/* Length of Stay */}
             <div className="text-xs text-gray-500">
-              LOS:{" "}
-              {Math.ceil(
-                (new Date().getTime() -
-                  new Date(patient.admissionDate).getTime()) /
-                  (1000 * 3600 * 24),
-              )}{" "}
-              days
+              {t("los", { count: losDays })}
             </div>
           </div>
         </div>
@@ -133,12 +137,12 @@ export function PatientHeader({ patient }: PatientHeaderProps) {
             <div className="flex items-center space-x-2">
               <Activity className="w-4 h-4 text-blue-600" />
               <span className="text-sm font-medium text-blue-800">
-                Active handover session: {patient.shift}
+                {t("activeHandoverSession", { shift: patient.shift })}
               </span>
               <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse"></div>
             </div>
             <p className="text-xs text-blue-700 mt-1">
-              Team members are currently collaborating on this handover
+              {t("collaborationMessage")}
             </p>
           </div>
         )}
