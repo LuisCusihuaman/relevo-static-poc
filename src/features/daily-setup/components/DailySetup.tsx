@@ -49,7 +49,7 @@ export function DailySetup({
   existingSetup,
   isEditing = false,
 }: DailySetupProps) {
-  const { i18n, t } = useTranslation(["daily-setup", "handover"]);
+  const { i18n, t } = useTranslation(["dailySetup", "handover"]);
   const [currentStep, setCurrentStep] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
 
