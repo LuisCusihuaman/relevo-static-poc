@@ -17,6 +17,7 @@ interface PatientHeaderProps {
     handoverStatus: string;
     shift: string;
     room: string;
+    primaryDiagnosis: string;
   };
 }
 
@@ -98,9 +99,19 @@ export function PatientHeader({ patient }: PatientHeaderProps) {
                   <Users className="w-4 h-4" />
                   <span>{patient.primaryTeam}</span>
                 </div>
+                <div className="flex items-center space-x-1">
+                  <Activity className="w-4 h-4" />
+                  <span>
+                    {patient.primaryDiagnosis.includes('.') 
+                      ? t(patient.primaryDiagnosis) 
+                      : patient.primaryDiagnosis}
+                  </span>
+                </div>
               </div>
 
-              <div className="text-xs text-gray-500">{t("mrn", { mrn: patient.mrn })}</div>
+              <div className="text-xs text-gray-500">
+                {t("mrn", { mrn: patient.mrn })}
+              </div>
             </div>
           </div>
 

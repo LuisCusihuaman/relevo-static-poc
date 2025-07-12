@@ -1928,6 +1928,11 @@ i18n
             unstable: "Unstable",
             critical: "Critical",
           },
+          diabetes: {
+            management: {
+              type2: "Type 2 Diabetes Management",
+            },
+          },
         },
       },
       es: {
@@ -3694,6 +3699,11 @@ i18n
             guarded: "Vigilado",
             unstable: "Inestable",
             critical: "Crítico",
+          },
+          diabetes: {
+            management: {
+              type2: "Manejo de Diabetes Tipo 2",
+            },
           },
         },
       },

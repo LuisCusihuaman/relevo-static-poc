@@ -3,6 +3,7 @@ import {
   currentlyPresent,
   patientData,
 } from "@/common/constants";
+import { patientDataES } from "@/common/constants.es";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -70,7 +71,11 @@ export function Header({
   getSessionDuration,
   onBack,
 }: HeaderProps) {
-  const { t } = useTranslation(["header", "handover"]);
+  const { t, i18n } = useTranslation(["header", "handover", "patientHeader"]);
+  
+  // Use Spanish data when language is Spanish
+  const currentPatientData = i18n.language === "es" ? patientDataES : patientData;
+  
   const activeUsers = activeCollaborators.filter(
     (user) => user.status === "active" || user.status === "viewing",
   );
@@ -110,13 +115,13 @@ export function Header({
             {/* Patient Name + Essential Info */}
             <div className="flex items-center space-x-3 min-w-0 flex-1">
               <h2 className="font-medium text-gray-900 truncate">
-                {patientData.name}
+                {currentPatientData.name}
               </h2>
               <Badge
                 variant="outline"
                 className="text-gray-700 border-gray-200 bg-gray-50 flex-shrink-0"
               >
-                {patientData.room}
+                {currentPatientData.room}
               </Badge>
 
               {/* Session duration - realistic medical tracking */}
@@ -353,19 +358,23 @@ export function Header({
           <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
             <div className="flex items-center space-x-1">
               <Calendar className="w-3 h-3" />
-              <span>Age {patientData.age}</span>
+              <span>{t("age", { age: currentPatientData.age, ns: "patientHeader" })}</span>
             </div>
             <div className="flex items-center space-x-1">
               <FileText className="w-3 h-3" />
-              <span className="font-mono text-xs">{patientData.mrn}</span>
+              <span className="font-mono text-xs">{t("mrn", { mrn: currentPatientData.mrn, ns: "patientHeader" })}</span>
             </div>
             <div className="flex items-center space-x-1">
               <MapPin className="w-3 h-3" />
-              <span>{patientData.unit}</span>
+              <span>{currentPatientData.unit}</span>
             </div>
             <div className="flex items-center space-x-1">
               <Activity className="w-3 h-3" />
-              <span>{patientData.primaryDiagnosis}</span>
+              <span>
+                {currentPatientData.primaryDiagnosis.includes('.') 
+                  ? t(currentPatientData.primaryDiagnosis, { ns: 'patientHeader' }) 
+                  : currentPatientData.primaryDiagnosis}
+              </span>
             </div>
           </div>
           <div className="flex items-center space-x-3 text-sm">
@@ -375,9 +384,9 @@ export function Header({
                 <TooltipTrigger asChild>
                   <Avatar className="w-5 h-5 cursor-pointer hover:ring-2 hover:ring-blue-200">
                     <AvatarFallback
-                      className={`${patientData.assignedPhysician.color} text-white text-xs`}
+                      className={`${currentPatientData.assignedPhysician.color} text-white text-xs`}
                     >
-                      {patientData.assignedPhysician.initials}
+                      {currentPatientData.assignedPhysician.initials}
                     </AvatarFallback>
                   </Avatar>
                 </TooltipTrigger>
@@ -387,10 +396,10 @@ export function Header({
                 >
                   <div className="text-center">
                     <div className="font-medium">
-                      {patientData.assignedPhysician.name}
+                      {currentPatientData.assignedPhysician.name}
                     </div>
                     <div className="text-gray-300">
-                      {patientData.assignedPhysician.role}
+                      {currentPatientData.assignedPhysician.role}
                     </div>
                   </div>
                 </TooltipContent>
@@ -400,9 +409,9 @@ export function Header({
                 <TooltipTrigger asChild>
                   <Avatar className="w-5 h-5 cursor-pointer hover:ring-2 hover:ring-purple-200">
                     <AvatarFallback
-                      className={`${patientData.receivingPhysician.color} text-white text-xs`}
+                      className={`${currentPatientData.receivingPhysician.color} text-white text-xs`}
                     >
-                      {patientData.receivingPhysician.initials}
+                      {currentPatientData.receivingPhysician.initials}
                     </AvatarFallback>
                   </Avatar>
                 </TooltipTrigger>
@@ -412,10 +421,10 @@ export function Header({
                 >
                   <div className="text-center">
                     <div className="font-medium">
-                      {patientData.receivingPhysician.name}
+                      {currentPatientData.receivingPhysician.name}
                     </div>
                     <div className="text-gray-300">
-                      {patientData.receivingPhysician.role}
+                      {currentPatientData.receivingPhysician.role}
                     </div>
                   </div>
                 </TooltipContent>
