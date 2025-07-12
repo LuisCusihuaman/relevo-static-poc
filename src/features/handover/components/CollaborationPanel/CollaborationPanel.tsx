@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Activity, Bell, MessageSquare, Send, Users, X } from "lucide-react";
 import { useState } from "react";
+import { ActivityFeed, type ActivityItem } from "../ActivityFeed";
 
 interface CollaborationPanelProps {
   onClose: () => void;
@@ -120,6 +121,14 @@ export function CollaborationPanel({
       handleSendMessage();
     }
   };
+
+  const activityItems = recentActivity.map((activity) => ({
+    id: activity.id,
+    type: activity.action,
+    author: activity.user,
+    details: `in ${activity.section}`,
+    timestamp: activity.time,
+  }));
 
   return (
     <div className="h-full flex flex-col bg-white">
@@ -280,66 +289,10 @@ export function CollaborationPanel({
               </div>
             </div>
           </div>
-
-          <ScrollArea className="flex-1">
-            <div className="p-4 space-y-3">
-              {recentActivity.map((activity, index) => (
-                <div key={activity.id}>
-                  <div className="flex items-start space-x-3">
-                    <Avatar className="w-7 h-7 flex-shrink-0">
-                      <AvatarFallback
-                        className={`${activity.userColor} text-white text-xs`}
-                      >
-                        {activity.userInitials}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center space-x-2">
-                        <span className="text-sm font-medium text-gray-900">
-                          {activity.user}
-                        </span>
-                        <span className="text-xs text-gray-500">
-                          {activity.time}
-                        </span>
-                      </div>
-                      <div className="text-sm text-gray-600">
-                        {activity.action}
-                        {activity.section !== "General" && (
-                          <button
-                            onClick={() =>
-                              onNavigateToSection(
-                                activity.section.toLowerCase().replace(" ", ""),
-                              )
-                            }
-                            className="text-blue-600 hover:text-blue-700 ml-1 hover:underline"
-                          >
-                            in {activity.section}
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex-shrink-0">
-                      {activity.type === "content_updated" && (
-                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                      )}
-                      {activity.type === "content_added" && (
-                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                      )}
-                      {activity.type === "user_joined" && (
-                        <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                      )}
-                      {activity.type === "content_viewed" && (
-                        <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
-                      )}
-                    </div>
-                  </div>
-                  {index < recentActivity.length - 1 && (
-                    <div className="ml-10 mt-3 border-b border-gray-100"></div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </ScrollArea>
+          <ActivityFeed
+            items={recentActivity as ActivityItem[]}
+            onNavigateToSection={onNavigateToSection}
+          />
         </TabsContent>
       </Tabs>
     </div>
