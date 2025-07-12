@@ -23,62 +23,6 @@ interface FigmaDesktopLayoutProps {
   onPatientHandover: (patientId: number) => void;
 }
 
-// Simplified Action Items - More realistic
-const actionItems = [
-  {
-    id: 1,
-    patient: "Maria Rodriguez",
-    room: "PICU-01",
-    title: "Respiratory therapy consultation",
-    description: "Evaluate O2 requirements and weaning potential",
-    priority: "high",
-    status: "pending",
-    timeframe: "Within 2 hours",
-    assignedTo: "Dr. Martinez",
-    assignedInitials: "DM",
-    completed: false,
-  },
-  {
-    id: 2,
-    patient: "Carlos Gonzalez",
-    room: "PICU-03",
-    title: "Monitor O2 saturation",
-    description: "Check q2h, maintain SpO2 >92%",
-    priority: "high",
-    status: "active",
-    timeframe: "Every 2 hours",
-    assignedTo: "Nursing Team",
-    assignedInitials: "NT",
-    completed: false,
-  },
-  {
-    id: 3,
-    patient: "Ana Silva",
-    room: "PICU-05",
-    title: "Family meeting - discharge planning",
-    description: "Discuss timeline and home care needs",
-    priority: "medium",
-    status: "scheduled",
-    timeframe: "Tomorrow 2 PM",
-    assignedTo: "Dr. Wilson",
-    assignedInitials: "DW",
-    completed: false,
-  },
-  {
-    id: 4,
-    patient: "David Kim",
-    room: "PICU-07",
-    title: "Social work consultation",
-    description: "Assess discharge needs and home safety",
-    priority: "medium",
-    status: "completed",
-    timeframe: "Completed 1h ago",
-    assignedTo: "Social Worker",
-    assignedInitials: "SW",
-    completed: true,
-  },
-];
-
 // Recent Activity - For right sidebar
 const recentUpdates = [
   {
@@ -139,9 +83,7 @@ export function FigmaDesktopLayout({
   const [selectedPatient, setSelectedPatient] = useState<DesktopPatient | null>(
     safePatients.length > 0 ? safePatients[0] : null,
   );
-  const [actionItemsState, setActionItemsState] = useState(actionItems);
   const [syncStatus, setSyncStatus] = useState<SyncStatus>("synced");
-  const [handoverComplete, setHandoverComplete] = useState(false);
 
   const currentUser: User = {
     name: currentDoctor,
@@ -234,20 +176,6 @@ export function FigmaDesktopLayout({
     }
   };
 
-  const handleActionToggle = (actionId: number) => {
-    setActionItemsState((prev) =>
-      prev.map((action) =>
-        action.id === actionId
-          ? {
-              ...action,
-              completed: !action.completed,
-              status: !action.completed ? "completed" : "pending",
-            }
-          : action,
-      ),
-    );
-  };
-
   // Calculate severity counts
   const severityCounts = safePatients.reduce(
     (acc, patient) => {
@@ -301,10 +229,6 @@ export function FigmaDesktopLayout({
   }
 
   const criticalInfo = getCriticalInfo(selectedPatient);
-  const pendingActions = actionItemsState.filter((a) => !a.completed).length;
-  const highPriorityActions = actionItemsState.filter(
-    (a) => !a.completed && a.priority === "high",
-  ).length;
 
   return (
     <div className="h-full bg-background">
@@ -510,7 +434,7 @@ export function FigmaDesktopLayout({
             handleOpenFullscreenEdit={() => {}}
             syncStatus={syncStatus}
             setSyncStatus={setSyncStatus}
-            setHandoverComplete={setHandoverComplete}
+            setHandoverComplete={() => {}}
             getSessionDuration={() => "00:00"}
             currentUser={currentUser}
           />

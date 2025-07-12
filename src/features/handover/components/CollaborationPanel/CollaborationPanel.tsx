@@ -122,14 +122,6 @@ export function CollaborationPanel({
     }
   };
 
-  const activityItems = recentActivity.map((activity) => ({
-    id: activity.id,
-    type: activity.action,
-    author: activity.user,
-    details: `in ${activity.section}`,
-    timestamp: activity.time,
-  }));
-
   return (
     <div className="h-full flex flex-col bg-white">
       {/* Header - Only show if not hidden */}
