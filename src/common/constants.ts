@@ -1,4 +1,5 @@
 import type { TFunction } from "i18next";
+import type { Collaborator } from "./types";
 
 // Mock current user
 export const currentUser = {
@@ -95,7 +96,7 @@ export const getIpassGuidelines = (t: TFunction<"handover", undefined>) => ({
 });
 
 // CURRENT SHIFT HANDOVER PARTICIPANTS - Who is present RIGHT NOW
-export const currentlyPresent = [
+export const currentlyPresent: Collaborator[] = [
   // Currently assigned physician
   {
     id: 1,
@@ -177,7 +178,7 @@ export const currentlyPresent = [
     role: "Day Attending",
     presenceType: "participating",
   },
-] as const;
+];
 
 // Filter active participants for main interface
 export const activeCollaborators = currentlyPresent.filter(

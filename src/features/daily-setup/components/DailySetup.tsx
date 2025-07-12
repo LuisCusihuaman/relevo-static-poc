@@ -25,6 +25,7 @@ import { useTranslation } from "react-i18next";
 import {
   type DailySetupData,
   dailySetupPatients,
+  formatDiagnosis,
 } from "../../../common/mockData";
 import {
   shiftsConfig,
@@ -34,7 +35,6 @@ import {
   shiftsConfigES,
   unitsConfigES,
 } from "../../../store/config.store.es";
-import { formatDiagnosis } from "../../../store/patients.store";
 import { patientsES } from "../../../store/patients.store.es";
 import { PatientSelectionCard } from "./PatientSelectionCard";
 
@@ -49,15 +49,15 @@ export function DailySetup({
   existingSetup,
   isEditing = false,
 }: DailySetupProps) {
-  const { t, i18n } = useTranslation("dailySetup");
+  const { i18n, t } = useTranslation(["daily-setup", "handover"]);
   const [currentStep, setCurrentStep] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
 
-  // Setup data - NEW: Initialize with existing data if editing
+  // Use state initialized from props for editing
   const [doctorName, setDoctorName] = useState(existingSetup?.doctorName || "");
   const [unit, setUnit] = useState(existingSetup?.unit || "");
   const [shift, setShift] = useState(existingSetup?.shift || "");
-  const [selectedPatients, setSelectedPatients] = useState<number[]>(
+  const [selectedPatients, setSelectedPatients] = useState(
     existingSetup?.selectedPatients || [],
   );
   const [showValidationError, setShowValidationError] = useState(false);
@@ -69,14 +69,16 @@ export function DailySetup({
   const currentPatientsSource =
     i18n.language === "es" ? patientsES : dailySetupPatients;
 
-  const currentPatients = currentPatientsSource.map((p: any) => ({
+  type SetupPatient = (typeof currentPatientsSource)[number];
+
+  const currentPatients = currentPatientsSource.map((p: SetupPatient) => ({
     id: p.id,
     name: p.name,
     age: p.age,
     room: p.room,
     diagnosis: formatDiagnosis(p.diagnosis),
     status: p.status,
-    severity: p.illnessSeverity,
+    severity: "illnessSeverity" in p ? p.illnessSeverity : p.severity,
   }));
 
   // Helper function to get medical icons for different units

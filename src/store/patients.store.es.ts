@@ -1,8 +1,8 @@
 // RELEVO - Patient Data Store with Composable Patient Entity System (Spanish)
-import { type Patient } from "../common/types";
+import { type Alert, type Patient } from "../common/types";
 
 // Helper function to get alerts for a patient
-const getPatientAlerts = (patientId: number): any[] => {
+const getPatientAlerts = (_patientId: number): Alert[] => {
   // This is a placeholder as alerts are not translated in this example
   return [];
 };
