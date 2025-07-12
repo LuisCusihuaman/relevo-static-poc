@@ -12,6 +12,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Plus, Save, X } from "lucide-react";
 import { useEffect, useState } from "react";
+    import { useTranslation } from "react-i18next";
 
 interface Patient {
   id: number;
@@ -42,6 +43,7 @@ export function QuickNoteEntry({
   patients,
   doctorName,
 }: QuickNoteEntryProps) {
+  const { t } = useTranslation();
   const [selectedPatient, setSelectedPatient] = useState<string>("");
   const [noteType, setNoteType] = useState<string>("");
   const [noteContent, setNoteContent] = useState("");
@@ -51,44 +53,42 @@ export function QuickNoteEntry({
   const noteTypes = [
     {
       id: "assessment",
-      label: "📋 Assessment",
+      label: t("quickNote.noteTypes.assessment"),
       color: "bg-blue-50 text-blue-700",
     },
     {
       id: "plan",
-      label: "🎯 Plan Update",
+      label: t("quickNote.noteTypes.plan"),
       color: "bg-green-50 text-green-700",
     },
     {
       id: "observation",
-      label: "👁️ Observation",
+      label: t("quickNote.noteTypes.observation"),
       color: "bg-purple-50 text-purple-700",
     },
     {
       id: "concern",
-      label: "⚠️ Concern",
+      label: t("quickNote.noteTypes.concern"),
       color: "bg-yellow-50 text-yellow-700",
     },
     {
       id: "improvement",
-      label: "📈 Improvement",
+      label: t("quickNote.noteTypes.improvement"),
       color: "bg-emerald-50 text-emerald-700",
     },
     {
       id: "family",
-      label: "👨‍👩‍👧‍👦 Family Note",
+      label: t("quickNote.noteTypes.family"),
       color: "bg-pink-50 text-pink-700",
     },
   ];
 
-  const quickTemplates = [
-    "Stable overnight, no acute concerns",
-    "Pain well controlled with current regimen",
-    "Family meeting scheduled for tomorrow",
-    "Consider step-down if continues current trajectory",
-    "Awaiting results from morning labs",
-    "Discussed discharge planning with team",
-  ];
+  const quickTemplates = Object.values(
+    t("quickNote.quickTemplates", { returnObjects: true }) as Record<
+      string,
+      string
+    >,
+  );
 
   useEffect(() => {
     if (isOpen && patients.length > 0) {
@@ -146,7 +146,7 @@ export function QuickNoteEntry({
                 <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
                   <Plus className="w-4 h-4 text-primary" />
                 </div>
-                <CardTitle className="text-lg">Quick Note</CardTitle>
+                <CardTitle className="text-lg">{t("quickNote.title")}</CardTitle>
               </div>
               <Button variant="ghost" size="sm" onClick={onClose}>
                 <X className="w-4 h-4" />
@@ -181,14 +181,14 @@ export function QuickNoteEntry({
                 htmlFor="patient-select"
                 className="text-sm font-medium mb-2 block"
               >
-                Patient
+                {t("quickNote.patientLabel")}
               </label>
               <Select
                 value={selectedPatient}
                 onValueChange={setSelectedPatient}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select patient" />
+                  <SelectValue placeholder={t("quickNote.selectPatientPlaceholder")} />
                 </SelectTrigger>
                 <SelectContent>
                   {patients.map((patient) => (
@@ -213,7 +213,9 @@ export function QuickNoteEntry({
 
             {/* Note Type */}
             <div>
-              <h4 className="text-sm font-medium mb-2 block">Note Type</h4>
+              <h4 className="text-sm font-medium mb-2 block">
+                {t("quickNote.noteTypeLabel")}
+              </h4>
               <div className="grid grid-cols-2 gap-2">
                 {noteTypes.map((type) => (
                   <button
@@ -235,7 +237,7 @@ export function QuickNoteEntry({
             {noteType && (
               <div>
                 <h4 className="text-sm font-medium mb-2 block">
-                  Quick Templates
+                  {t("quickNote.quickTemplatesLabel")}
                 </h4>
                 <div className="space-y-1">
                   {quickTemplates.slice(0, 3).map((template, index) => (
@@ -257,22 +259,25 @@ export function QuickNoteEntry({
                 htmlFor="note-content"
                 className="text-sm font-medium mb-2 block"
               >
-                Your Note
+                {t("quickNote.yourNoteLabel")}
               </label>
               <Textarea
                 id="note-content"
                 value={noteContent}
                 onChange={(e) => setNoteContent(e.target.value)}
-                placeholder={`Add your ${selectedNoteType?.label.toLowerCase() || "note"} here...`}
+                placeholder={t("quickNote.yourNotePlaceholder", {
+                  noteType:
+                    selectedNoteType?.label.toLowerCase() || t("quickNote.note"),
+                })}
                 className="min-h-[120px] resize-none"
               />
               <div className="flex items-center justify-between mt-2">
                 <span className="text-xs text-muted-foreground">
-                  {noteContent.length} characters
+                  {t("quickNote.characters", { count: noteContent.length })}
                 </span>
                 {noteContent.length > 500 && (
                   <span className="text-xs text-yellow-600">
-                    Consider breaking into multiple notes
+                    {t("quickNote.suggestion")}
                   </span>
                 )}
               </div>
@@ -281,7 +286,9 @@ export function QuickNoteEntry({
             {/* Recent Notes Preview */}
             {recentNotes.length > 0 && (
               <div>
-                <h4 className="text-sm font-medium mb-2 block">Recent Notes</h4>
+                <h4 className="text-sm font-medium mb-2 block">
+                  {t("quickNote.recentNotesLabel")}
+                </h4>
                 <div className="space-y-2">
                   {recentNotes.slice(0, 2).map((note) => (
                     <div key={note.id} className="p-2 bg-muted/30 rounded-lg">
@@ -317,19 +324,19 @@ export function QuickNoteEntry({
               {isSaving ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
-                  Saving...
+                  {t("quickNote.saving")}
                 </>
               ) : (
                 <>
                   <Save className="w-4 h-4 mr-2" />
-                  Save Note
+                  {t("quickNote.saveNote")}
                 </>
               )}
             </Button>
 
             <div className="flex gap-2">
               <Button variant="outline" onClick={onClose} className="flex-1">
-                Cancel
+                {t("quickNote.cancel")}
               </Button>
               <Button
                 variant="outline"
@@ -340,7 +347,7 @@ export function QuickNoteEntry({
                 className="flex-1"
                 disabled={!noteContent && !noteType}
               >
-                Clear
+                {t("quickNote.clear")}
               </Button>
             </div>
           </div>

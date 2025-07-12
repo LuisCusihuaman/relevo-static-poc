@@ -25,6 +25,7 @@ import {
   User,
 } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 // Import patient data types
 import { type Patient } from "../../../common/types";
@@ -211,6 +212,7 @@ export function PatientDetailView({
   onStartHandover,
   onOpenDocumentation,
 }: PatientDetailViewProps) {
+  const { t } = useTranslation("patientDetailView");
   const [expandedSections, setExpandedSections] = useState<Set<string>>(
     new Set(["clinical-summary"]),
   );
@@ -227,7 +229,7 @@ export function PatientDetailView({
           bgColor: "bg-red-50",
           borderColor: "border-red-200",
           icon: AlertTriangle,
-          label: "Unstable",
+          label: t("severity.unstable"),
         };
       case "watcher":
         return {
@@ -235,7 +237,7 @@ export function PatientDetailView({
           bgColor: "bg-yellow-50",
           borderColor: "border-yellow-200",
           icon: Eye,
-          label: "Watcher",
+          label: t("severity.watcher"),
         };
       case "stable":
         return {
@@ -243,7 +245,7 @@ export function PatientDetailView({
           bgColor: "bg-green-50",
           borderColor: "border-green-200",
           icon: CheckCircle,
-          label: "Stable",
+          label: t("severity.stable"),
         };
       default:
         return {
@@ -251,7 +253,7 @@ export function PatientDetailView({
           bgColor: "bg-gray-50",
           borderColor: "border-gray-200",
           icon: Activity,
-          label: "Unknown",
+          label: t("severity.unknown"),
         };
     }
   };
@@ -305,11 +307,11 @@ export function PatientDetailView({
           <div className="flex items-center gap-3">
             <Button variant="ghost" size="sm" onClick={onBack}>
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Back
+              {t("header.back")}
             </Button>
             <div className="h-4 w-px bg-border/50" />
             <h1 className="font-semibold text-foreground">
-              Patient Information
+              {t("header.title")}
             </h1>
           </div>
           <div className="flex items-center gap-2">
@@ -320,7 +322,7 @@ export function PatientDetailView({
               className="gap-2"
             >
               <Edit3 className="w-4 h-4" />
-              I-PASS
+              {t("header.ipass")}
             </Button>
             <Button
               onClick={() => onStartHandover(patient.id)}
@@ -328,7 +330,7 @@ export function PatientDetailView({
               className="gap-2"
             >
               <Play className="w-4 h-4" />
-              Start Handover
+              {t("header.startHandover")}
             </Button>
           </div>
         </div>
@@ -356,7 +358,7 @@ export function PatientDetailView({
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                     <div className="flex items-center gap-2 text-muted-foreground">
                       <User className="w-4 h-4" />
-                      <span>{patient.age} years old</span>
+                      <span>{t("patientHeader.age", { age: patient.age })}</span>
                     </div>
                     <div className="flex items-center gap-2 text-muted-foreground">
                       <MapPin className="w-4 h-4" />
@@ -364,7 +366,9 @@ export function PatientDetailView({
                     </div>
                     <div className="flex items-center gap-2 text-muted-foreground">
                       <FileText className="w-4 h-4" />
-                      <span>MRN: {patient.mrn}</span>
+                      <span>
+                        {t("patientHeader.mrn")} {patient.mrn}
+                      </span>
                     </div>
                     <div className="flex items-center gap-2 text-muted-foreground">
                       <Stethoscope className="w-4 h-4" />
@@ -377,9 +381,11 @@ export function PatientDetailView({
             <CardContent className="pt-0">
               <div className="bg-muted/20 rounded-lg p-4 border border-border/30">
                 <div className="flex items-start justify-between mb-2">
-                  <h3 className="font-medium text-foreground">Diagnosis:</h3>
+                  <h3 className="font-medium text-foreground">
+                    {t("patientHeader.diagnosis")}:
+                  </h3>
                   <span className="text-xs text-muted-foreground">
-                    Next: Check in 2h (2 hours)
+                    {t("patientHeader.nextCheck")}
                   </span>
                 </div>
                 <p className="text-sm text-foreground leading-relaxed">
@@ -403,20 +409,22 @@ export function PatientDetailView({
                       <div className="flex items-center gap-3">
                         <FileText className="w-5 h-5 text-primary" />
                         <CardTitle className="text-lg">
-                          Clinical Summary
+                          {t("sections.clinicalSummary.title")}
                         </CardTitle>
                         <Badge
                           variant="outline"
                           className="text-xs bg-primary/10 text-primary border-primary/30"
                         >
-                          I-PASS: P
+                          {t("sections.clinicalSummary.ipass")}
                         </Badge>
                         <Badge variant="outline" className="text-xs">
-                          Read-Only
+                          {t("sections.readOnly")}
                         </Badge>
                         {ipassData.clinicalSummary && (
                           <span className="text-xs text-muted-foreground">
-                            Last updated {ipassData.clinicalSummary.lastUpdated}
+                            {t("sections.lastUpdated", {
+                              time: ipassData.clinicalSummary.lastUpdated,
+                            })}
                           </span>
                         )}
                       </div>
@@ -431,16 +439,16 @@ export function PatientDetailView({
                 <CollapsibleContent>
                   <CardContent className="pt-0">
                     <div className="text-xs text-muted-foreground mb-3">
-                      To edit this summary, use{" "}
+                      {t("sections.clinicalSummary.editNote.start")}{" "}
                       <button
                         onClick={() =>
                           onOpenDocumentation(patient.id, "patient_summary")
                         }
                         className="text-primary hover:underline"
                       >
-                        Start Handover
+                        {t("header.startHandover")}
                       </button>{" "}
-                      or mobile I-PASS documentation
+                      {t("sections.clinicalSummary.editNote.end")}
                     </div>
                     {ipassData.clinicalSummary ? (
                       <div className="prose prose-sm max-w-none">
@@ -450,7 +458,7 @@ export function PatientDetailView({
                       </div>
                     ) : (
                       <div className="text-sm text-muted-foreground italic">
-                        No clinical summary documented yet.
+                        {t("sections.clinicalSummary.noData")}
                       </div>
                     )}
                   </CardContent>
@@ -470,13 +478,13 @@ export function PatientDetailView({
                       <div className="flex items-center gap-3">
                         <AlertTriangle className="w-5 h-5 text-orange-600" />
                         <CardTitle className="text-lg">
-                          Current Situation
+                          {t("sections.currentSituation.title")}
                         </CardTitle>
                         <Badge
                           variant="outline"
                           className="text-xs bg-orange-50 text-orange-700 border-orange-200"
                         >
-                          I-PASS: I
+                          {t("sections.currentSituation.ipass")}
                         </Badge>
                       </div>
                       {expandedSections.has("current-situation") ? (
@@ -516,7 +524,7 @@ export function PatientDetailView({
                       </div>
                     ) : (
                       <div className="text-sm text-muted-foreground italic">
-                        No current situation documented yet.
+                        {t("sections.currentSituation.noData")}
                       </div>
                     )}
                   </CardContent>
@@ -535,12 +543,14 @@ export function PatientDetailView({
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <Eye className="w-5 h-5 text-blue-600" />
-                        <CardTitle className="text-lg">I-PASS Plans</CardTitle>
+                        <CardTitle className="text-lg">
+                          {t("sections.ipassPlans.title")}
+                        </CardTitle>
                         <Badge
                           variant="outline"
                           className="text-xs bg-blue-50 text-blue-700 border-blue-200"
                         >
-                          I-PASS: S
+                          {t("sections.ipassPlans.ipass")}
                         </Badge>
                       </div>
                       {expandedSections.has("ipass-plans") ? (
@@ -555,12 +565,11 @@ export function PatientDetailView({
                   <CardContent className="pt-0">
                     {ipassData.ipassPlans ? (
                       <div className="text-sm text-muted-foreground">
-                        Contingency plans for respiratory distress, discharge
-                        planning in progress...
+                        {ipassData.ipassPlans.content}
                       </div>
                     ) : (
                       <div className="text-sm text-muted-foreground italic">
-                        No plans documented yet.
+                        {t("sections.ipassPlans.noData")}
                       </div>
                     )}
                   </CardContent>
@@ -579,12 +588,14 @@ export function PatientDetailView({
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <Target className="w-5 h-5 text-green-600" />
-                        <CardTitle className="text-lg">Action List</CardTitle>
+                        <CardTitle className="text-lg">
+                          {t("sections.actionList.title")}
+                        </CardTitle>
                         <Badge
                           variant="outline"
                           className="text-xs bg-green-50 text-green-700 border-green-200"
                         >
-                          I-PASS: A
+                          {t("sections.actionList.ipass")}
                         </Badge>
                         {ipassData.actionList && (
                           <>
@@ -592,13 +603,17 @@ export function PatientDetailView({
                               variant="outline"
                               className="text-xs bg-red-50 text-red-700 border-red-200"
                             >
-                              {ipassData.actionList.urgent} urgent
+                              {t("sections.actionList.urgent", {
+                                count: ipassData.actionList.urgent,
+                              })}
                             </Badge>
                             <Badge
                               variant="outline"
                               className="text-xs bg-orange-50 text-orange-700 border-orange-200"
                             >
-                              {ipassData.actionList.pending} pending
+                              {t("sections.actionList.pending", {
+                                count: ipassData.actionList.pending,
+                              })}
                             </Badge>
                           </>
                         )}
@@ -608,7 +623,7 @@ export function PatientDetailView({
                           className="h-6 px-2 text-xs ml-auto mr-4"
                         >
                           <Plus className="w-3 h-3 mr-1" />
-                          Add Action
+                          {t("sections.actionList.addAction")}
                         </Button>
                       </div>
                       {expandedSections.has("action-list") ? (
@@ -663,8 +678,8 @@ export function PatientDetailView({
                         </div>
                         <div className="text-xs text-muted-foreground">
                           {action.status === "completed"
-                            ? `Completed: ${action.completedTime}`
-                            : `Due: ${action.timeframe}`}
+                            ? `${t("sections.actionList.completed")}: ${action.completedTime}`
+                            : `${t("sections.actionList.due")}: ${action.timeframe}`}
                         </div>
                       </div>
                     ))}

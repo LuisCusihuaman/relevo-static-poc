@@ -2,17 +2,18 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  Activity,
-  AlertTriangle,
-  Bug,
-  Calendar,
-  FileText,
-  Heart,
-  Info,
-  Shield,
-  Zap,
+    Activity,
+    AlertTriangle,
+    Bug,
+    Calendar,
+    FileText,
+    Heart,
+    Info,
+    Shield,
+    Zap,
 } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export type Alert = {
   id: string;
@@ -47,6 +48,7 @@ interface PatientAlertsProps {
 }
 
 export function PatientAlerts({ alerts, compact = false }: PatientAlertsProps) {
+  const { t } = useTranslation("patientAlerts");
   const [showInactive, setShowInactive] = useState(false);
 
   // Use proper Lucide React icons instead of emojis
@@ -127,8 +129,7 @@ export function PatientAlerts({ alerts, compact = false }: PatientAlertsProps) {
             <div className="flex items-center gap-2 mb-2">
               <AlertTriangle className="w-4 h-4 text-red-600" />
               <span className="font-semibold text-red-700 text-sm">
-                {criticalAlerts.length} Critical Alert
-                {criticalAlerts.length > 1 ? "s" : ""}
+                {t("criticalAlerts", { count: criticalAlerts.length })}
               </span>
             </div>
             <div className="space-y-1">
@@ -147,7 +148,9 @@ export function PatientAlerts({ alerts, compact = false }: PatientAlertsProps) {
               ))}
               {criticalAlerts.length > 2 && (
                 <div className="text-sm text-red-600">
-                  + {criticalAlerts.length - 2} more critical alerts
+                  {t("moreCriticalAlerts", {
+                    count: criticalAlerts.length - 2,
+                  })}
                 </div>
               )}
             </div>
@@ -174,7 +177,7 @@ export function PatientAlerts({ alerts, compact = false }: PatientAlertsProps) {
                 variant="outline"
                 className="text-xs bg-yellow-50 text-yellow-700 border-yellow-200"
               >
-                +{importantAlerts.length - 2} more
+                {t("more", { count: importantAlerts.length - 2 })}
               </Badge>
             )}
           </div>
@@ -192,7 +195,7 @@ export function PatientAlerts({ alerts, compact = false }: PatientAlertsProps) {
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
             <Shield className="w-5 h-5" />
-            Patient Alerts ({activeAlerts.length} Active)
+            {t("title", { count: activeAlerts.length })}
           </CardTitle>
           {inactiveAlerts.length > 0 && (
             <Button
@@ -200,8 +203,8 @@ export function PatientAlerts({ alerts, compact = false }: PatientAlertsProps) {
               size="sm"
               onClick={() => setShowInactive(!showInactive)}
             >
-              {showInactive ? "Hide" : "Show"} Inactive ({inactiveAlerts.length}
-              )
+              {showInactive ? t("hide") : t("show")}{" "}
+              {t("inactive", { count: inactiveAlerts.length })}
             </Button>
           )}
         </div>
@@ -227,11 +230,11 @@ export function PatientAlerts({ alerts, compact = false }: PatientAlertsProps) {
                         {alert.alertCatalogItem.description}
                       </span>
                       <Badge variant="outline" className="text-xs">
-                        {alert.level}
+                        {t(alert.level)}
                       </Badge>
                       {alert.status === "INACTIVE" && (
                         <Badge variant="secondary" className="text-xs">
-                          INACTIVE
+                          {t("INACTIVE")}
                         </Badge>
                       )}
                     </div>
@@ -247,31 +250,35 @@ export function PatientAlerts({ alerts, compact = false }: PatientAlertsProps) {
 
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
-                      <span className="font-medium">Code:</span>{" "}
+                      <span className="font-medium">{t("code")}:</span>{" "}
                       {alert.alertCatalogItem.code}
                     </div>
                     <div>
-                      <span className="font-medium">Type:</span>{" "}
+                      <span className="font-medium">{t("type")}:</span>{" "}
                       {alert.type.replace(/_/g, " ")}
                     </div>
                     <div className="flex items-center gap-1">
                       <Calendar className="w-4 h-4" />
-                      <span className="font-medium">Since:</span>{" "}
+                      <span className="font-medium">{t("since")}:</span>{" "}
                       {new Date(alert.startDate).toLocaleDateString()}
                     </div>
                     {alert.endDate && (
                       <div className="flex items-center gap-1">
                         <Calendar className="w-4 h-4" />
-                        <span className="font-medium">Until:</span>{" "}
+                        <span className="font-medium">{t("until")}:</span>{" "}
                         {new Date(alert.endDate).toLocaleDateString()}
                       </div>
                     )}
                   </div>
 
                   <div className="mt-2 text-xs text-gray-600">
-                    Created by {alert.creationDetails.author} •{" "}
-                    {alert.creationDetails.source} •{" "}
-                    {new Date(alert.creationDetails.timestamp).toLocaleString()}
+                    {t("createdBy", {
+                      author: alert.creationDetails.author,
+                      source: alert.creationDetails.source,
+                      timestamp: new Date(
+                        alert.creationDetails.timestamp,
+                      ).toLocaleString(),
+                    })}
                   </div>
                 </div>
               </div>
@@ -282,7 +289,7 @@ export function PatientAlerts({ alerts, compact = false }: PatientAlertsProps) {
         {sortedAlerts.length === 0 && (
           <div className="text-center text-gray-500 py-8">
             <Shield className="w-8 h-8 mx-auto mb-2 opacity-50" />
-            <p>No alerts for this patient</p>
+            <p>{t("noAlerts")}</p>
           </div>
         )}
       </CardContent>

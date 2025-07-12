@@ -4,36 +4,38 @@ interface StatusSummaryProps {
     status: "all" | "pending" | "in-progress" | "complete",
   ) => void;
 }
+import { useTranslation } from "react-i18next";
 
 export function StatusSummary({
   selectedStatus,
   onStatusChange,
 }: StatusSummaryProps) {
+  const { t } = useTranslation();
   const statuses = [
     {
       key: "all" as const,
-      label: "All",
+      label: t("statusSummary.all"),
       count: 9,
       color: "bg-secondary",
       textColor: "text-secondary-foreground",
     },
     {
       key: "pending" as const,
-      label: "Pending",
+      label: t("statusSummary.pending"),
       count: 3,
       color: "bg-orange-50 border border-orange-200/50",
       textColor: "text-orange-700",
     },
     {
       key: "in-progress" as const,
-      label: "In Handover",
+      label: t("statusSummary.inHandover"),
       count: 3,
       color: "bg-blue-50 border border-blue-200/50",
       textColor: "text-blue-700",
     },
     {
       key: "complete" as const,
-      label: "Complete",
+      label: t("statusSummary.complete"),
       count: 3,
       color: "bg-green-50 border border-green-200/50",
       textColor: "text-green-700",

@@ -4,32 +4,33 @@ import { Card, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/components/ui/select";
 import {
-  AlertTriangle,
-  Calendar,
-  CheckCircle,
-  Clock,
-  Edit3,
-  Eye,
-  Search,
-  Users,
+    AlertTriangle,
+    Calendar,
+    CheckCircle,
+    Clock,
+    Edit3,
+    Eye,
+    Search,
+    Users,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import HandoverApp from "../../handover/handover";
 import { SimplePatientCard } from "./SimplePatientCard";
 
 // Import consolidated data and utilities from patients store
 import {
-  formatDiagnosis,
-  getPatientStats,
-  mockPatients,
-  sortPatients,
+    formatDiagnosis,
+    getPatientStats,
+    mockPatients,
+    sortPatients,
 } from "../../../store/patients.store";
 
 interface PatientListViewProps {
@@ -37,6 +38,7 @@ interface PatientListViewProps {
 }
 
 export function PatientListView({ onPatientSelect }: PatientListViewProps) {
+  const { t } = useTranslation("patientListView");
   const [isMobile, setIsMobile] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("severity");
@@ -96,18 +98,22 @@ export function PatientListView({ onPatientSelect }: PatientListViewProps) {
                   <div className="flex items-center justify-between">
                     <div>
                       <h1 className="text-xl font-semibold text-foreground">
-                        Your Patients
+                        {t("header.title")}
                       </h1>
                       <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
-                        <span>{stats.totalPatients} assigned to you</span>
+                        <span>
+                          {t("header.assigned", {
+                            count: stats.totalPatients,
+                          })}
+                        </span>
                         <span>•</span>
-                        <span>Morning Shift</span>
+                        <span>{t("header.shift")}</span>
                         {/* NEW: Add tap hint for mobile users */}
                         {onPatientSelect && (
                           <>
                             <span>•</span>
                             <span className="text-primary">
-                              Tap to view details
+                              {t("header.tapHint")}
                             </span>
                           </>
                         )}
@@ -117,7 +123,7 @@ export function PatientListView({ onPatientSelect }: PatientListViewProps) {
                       variant="outline"
                       className="border-primary/30 bg-primary/10 text-sm text-primary"
                     >
-                      PICU Unit
+                      {t("header.unit")}
                     </Badge>
                   </div>
                 </div>
@@ -130,38 +136,40 @@ export function PatientListView({ onPatientSelect }: PatientListViewProps) {
                     <div className="min-w-0 flex-1">
                       <div className="mb-2 flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:gap-3">
                         <h1 className="text-2xl font-semibold text-foreground lg:text-3xl">
-                          Your Patients
+                          {t("header.title")}
                         </h1>
                         <Badge
                           variant="outline"
                           className="self-start border-primary/30 bg-primary/10 text-sm text-primary sm:self-auto"
                         >
-                          PICU Unit
+                          {t("header.unit")}
                         </Badge>
                       </div>
 
                       <p className="mb-3 text-sm text-muted-foreground">
-                        Patients assigned to you for this shift
+                        {t("header.description")}
                         {/* NEW: Desktop hint for clickable cards */}
                         {onPatientSelect && (
                           <span className="text-primary">
                             {" "}
-                            • Click cards to view detailed information
+                            • {t("header.clickHint")}
                           </span>
                         )}
                       </p>
                       <div className="flex flex-col gap-2 text-sm text-muted-foreground sm:flex-row sm:items-center sm:gap-4">
                         <div className="flex items-center gap-2">
                           <Calendar className="h-4 w-4" />
-                          <span>January 23, 2025</span>
+                          <span>{t("header.date")}</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <Clock className="h-4 w-4" />
-                          <span>Morning Shift (08:00-16:00)</span>
+                          <span>{t("header.shiftTime")}</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <Edit3 className="h-4 w-4" />
-                          <span>{stats.totalNotes} documentation entries</span>
+                          <span>
+                            {t("header.entries", { count: stats.totalNotes })}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -174,7 +182,7 @@ export function PatientListView({ onPatientSelect }: PatientListViewProps) {
                         {stats.totalPatients}
                       </div>
                       <div className="text-sm text-muted-foreground">
-                        Your Patients
+                        {t("stats.yourPatients")}
                       </div>
                     </div>
 
@@ -184,7 +192,7 @@ export function PatientListView({ onPatientSelect }: PatientListViewProps) {
                         {stats.unstable}
                       </div>
                       <div className="text-sm font-medium text-red-600">
-                        Unstable
+                        {t("stats.unstable")}
                       </div>
                     </div>
 
@@ -194,7 +202,7 @@ export function PatientListView({ onPatientSelect }: PatientListViewProps) {
                         {stats.watcher}
                       </div>
                       <div className="text-sm font-medium text-yellow-600">
-                        Watcher
+                        {t("stats.watcher")}
                       </div>
                     </div>
 
@@ -204,7 +212,7 @@ export function PatientListView({ onPatientSelect }: PatientListViewProps) {
                         {stats.totalPatients - stats.unstable - stats.watcher}
                       </div>
                       <div className="text-sm font-medium text-green-600">
-                        Stable
+                        {t("stats.stable")}
                       </div>
                     </div>
                   </div>
@@ -224,7 +232,7 @@ export function PatientListView({ onPatientSelect }: PatientListViewProps) {
                       {stats.unstable}
                     </div>
                     <div className="text-xs font-medium text-red-600">
-                      Unstable
+                      {t("stats.unstable")}
                     </div>
                   </div>
                   <div className="space-y-1">
@@ -233,7 +241,7 @@ export function PatientListView({ onPatientSelect }: PatientListViewProps) {
                       {stats.watcher}
                     </div>
                     <div className="text-xs font-medium text-yellow-600">
-                      Watcher
+                      {t("stats.watcher")}
                     </div>
                   </div>
                   <div className="space-y-1">
@@ -242,7 +250,7 @@ export function PatientListView({ onPatientSelect }: PatientListViewProps) {
                       {stats.totalPatients - stats.unstable - stats.watcher}
                     </div>
                     <div className="text-xs font-medium text-green-600">
-                      Stable
+                      {t("stats.stable")}
                     </div>
                   </div>
                 </div>
@@ -257,7 +265,7 @@ export function PatientListView({ onPatientSelect }: PatientListViewProps) {
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
                   <Input
-                    placeholder="Search your patients..."
+                    placeholder={t("search.placeholder")}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="w-full border-border/50 bg-background pl-10 focus:border-primary/50"
@@ -266,13 +274,15 @@ export function PatientListView({ onPatientSelect }: PatientListViewProps) {
               </div>
               <Select value={sortBy} onValueChange={setSortBy}>
                 <SelectTrigger className="w-full border-border/50 bg-background sm:w-56">
-                  <SelectValue placeholder="Sort by" />
+                  <SelectValue placeholder={t("sort.placeholder")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="severity">Medical Priority</SelectItem>
-                  <SelectItem value="alerts">Critical Alerts</SelectItem>
-                  <SelectItem value="name">Patient Name</SelectItem>
-                  <SelectItem value="collaboration">Recent Activity</SelectItem>
+                  <SelectItem value="severity">{t("sort.options.one")}</SelectItem>
+                  <SelectItem value="alerts">{t("sort.options.two")}</SelectItem>
+                  <SelectItem value="name">{t("sort.options.three")}</SelectItem>
+                  <SelectItem value="collaboration">
+                    {t("sort.options.four")}
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -314,18 +324,17 @@ export function PatientListView({ onPatientSelect }: PatientListViewProps) {
                 <div>
                   <Users className="mx-auto h-12 w-12 text-muted-foreground" />
                   <h3 className="mt-4 text-lg font-medium text-foreground">
-                    No patients found
+                    {t("noPatients.title")}
                   </h3>
                   <p className="mt-2 text-sm text-muted-foreground">
-                    Your search for &quot;{searchTerm}&quot; did not match any
-                    patients.
+                    {t("noPatients.description", { searchTerm })}
                   </p>
                   <Button
                     variant="ghost"
                     className="mt-4"
                     onClick={() => setSearchTerm("")}
                   >
-                    Clear Search
+                    {t("noPatients.clearSearch")}
                   </Button>
                 </div>
               </div>

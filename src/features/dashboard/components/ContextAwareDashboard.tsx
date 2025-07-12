@@ -12,6 +12,7 @@ import {
   Users,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface DoctorContext {
   id: string;
@@ -32,6 +33,7 @@ interface UnitStatus {
 }
 
 export function ContextAwareDashboard() {
+  const { t } = useTranslation("contextAwareDashboard");
   const [currentDoctor] = useState<DoctorContext>({
     id: "dr_chen_001",
     name: "Dr. Sarah Chen",
@@ -105,7 +107,7 @@ export function ContextAwareDashboard() {
           <div className="flex items-center justify-between">
             <div>
               <CardTitle className="text-2xl mb-2">
-                Welcome back, {currentDoctor.name}
+                {t("welcome", { name: currentDoctor.name })}
               </CardTitle>
               <div className="flex items-center gap-4 text-sm text-muted-foreground">
                 <div className="flex items-center gap-1">
@@ -127,7 +129,7 @@ export function ContextAwareDashboard() {
                 {currentTime.toLocaleTimeString()}
               </div>
               <div className="text-sm text-muted-foreground">
-                {unitStatus.name} Unit
+                {t("unit", { name: unitStatus.name })}
               </div>
             </div>
           </div>
@@ -141,7 +143,7 @@ export function ContextAwareDashboard() {
                 {currentDoctor.assignedPatients.length}
               </div>
               <div className="text-sm text-muted-foreground">
-                Assigned Patients
+                {t("assignedPatients")}
               </div>
             </div>
 
@@ -150,7 +152,9 @@ export function ContextAwareDashboard() {
               <div className="text-2xl font-semibold text-foreground mb-1">
                 {unitStatus.occupied}/{unitStatus.capacity}
               </div>
-              <div className="text-sm text-muted-foreground">Unit Capacity</div>
+              <div className="text-sm text-muted-foreground">
+                {t("unitCapacity")}
+              </div>
             </div>
 
             {/* Critical Patients */}
@@ -159,7 +163,7 @@ export function ContextAwareDashboard() {
                 {unitStatus.critical}
               </div>
               <div className="text-sm text-muted-foreground">
-                Critical Status
+                {t("criticalStatus")}
               </div>
             </div>
 
@@ -168,7 +172,9 @@ export function ContextAwareDashboard() {
               <div className="text-2xl font-semibold text-chart-2 mb-1">
                 {unitStatus.staffOnDuty}
               </div>
-              <div className="text-sm text-muted-foreground">Staff on Duty</div>
+              <div className="text-sm text-muted-foreground">
+                {t("staffOnDuty")}
+              </div>
             </div>
           </div>
         </CardContent>
@@ -180,7 +186,7 @@ export function ContextAwareDashboard() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Clock className="w-5 h-5" />
-              Today&apos;s Schedule
+              {t("todaysSchedule")}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -208,7 +214,9 @@ export function ContextAwareDashboard() {
                     }
                     className="text-xs"
                   >
-                    {task.priority}
+                    {t(
+                      `priorities.${task.priority}`
+                    )}
                   </Badge>
                 </div>
               ))}
@@ -216,7 +224,7 @@ export function ContextAwareDashboard() {
 
             <Button className="w-full mt-4" variant="outline" size="sm">
               <Calendar className="w-4 h-4 mr-2" />
-              View Full Schedule
+              {t("viewFullSchedule")}
             </Button>
           </CardContent>
         </Card>
@@ -226,7 +234,7 @@ export function ContextAwareDashboard() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Activity className="w-5 h-5" />
-              Recent Activity
+              {t("recentActivity")}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -253,7 +261,7 @@ export function ContextAwareDashboard() {
 
             <Button className="w-full mt-4" variant="outline" size="sm">
               <FileText className="w-4 h-4 mr-2" />
-              View All Activity
+              {t("viewAllActivity")}
             </Button>
           </CardContent>
         </Card>
@@ -264,55 +272,67 @@ export function ContextAwareDashboard() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Users className="w-5 h-5" />
-            {unitStatus.name} Overview
+            {t("overview", { name: unitStatus.name })}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="space-y-3">
-              <h4 className="font-medium text-foreground">Unit Status</h4>
+              <h4 className="font-medium text-foreground">{t("unitStatus")}</h4>
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">
-                    Current Patients:
+                    {t("currentPatients")}
                   </span>
                   <span className="font-medium">{unitStatus.occupied}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Available Beds:</span>
+                  <span className="text-muted-foreground">
+                    {t("availableBeds")}
+                  </span>
                   <span className="font-medium">
                     {unitStatus.capacity - unitStatus.occupied}
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Staff Members:</span>
+                  <span className="text-muted-foreground">
+                    {t("staffMembers")}
+                  </span>
                   <span className="font-medium">{unitStatus.staffOnDuty}</span>
                 </div>
               </div>
             </div>
 
             <div className="space-y-3">
-              <h4 className="font-medium text-foreground">Handover Schedule</h4>
+              <h4 className="font-medium text-foreground">
+                {t("handoverSchedule")}
+              </h4>
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Last Handover:</span>
+                  <span className="text-muted-foreground">
+                    {t("lastHandover")}
+                  </span>
                   <span className="font-medium">{unitStatus.lastHandover}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Next Handover:</span>
+                  <span className="text-muted-foreground">
+                    {t("nextHandover")}
+                  </span>
                   <span className="font-medium">16:00 PM Today</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Status:</span>
+                  <span className="text-muted-foreground">{t("status")}</span>
                   <Badge variant="default" className="text-xs">
-                    Normal Operations
+                    {t("normalOperations")}
                   </Badge>
                 </div>
               </div>
             </div>
 
             <div className="space-y-3">
-              <h4 className="font-medium text-foreground">Quick Actions</h4>
+              <h4 className="font-medium text-foreground">
+                {t("quickActions")}
+              </h4>
               <div className="space-y-2">
                 <Button
                   variant="outline"
@@ -320,7 +340,7 @@ export function ContextAwareDashboard() {
                   className="w-full justify-start"
                 >
                   <Users className="w-4 h-4 mr-2" />
-                  Start Handover
+                  {t("startHandover")}
                 </Button>
                 <Button
                   variant="outline"
@@ -328,7 +348,7 @@ export function ContextAwareDashboard() {
                   className="w-full justify-start"
                 >
                   <MessageSquare className="w-4 h-4 mr-2" />
-                  Team Chat
+                  {t("teamChat")}
                 </Button>
                 <Button
                   variant="outline"
@@ -336,7 +356,7 @@ export function ContextAwareDashboard() {
                   className="w-full justify-start"
                 >
                   <AlertTriangle className="w-4 h-4 mr-2" />
-                  Report Issue
+                  {t("reportIssue")}
                 </Button>
               </div>
             </div>

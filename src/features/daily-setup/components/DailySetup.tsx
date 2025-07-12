@@ -21,6 +21,7 @@ import {
   User,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   type DailySetupData,
   dailySetupPatients,
@@ -40,6 +41,7 @@ export function DailySetup({
   existingSetup,
   isEditing = false,
 }: DailySetupProps) {
+  const { t } = useTranslation("dailySetup");
   const [currentStep, setCurrentStep] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -159,18 +161,18 @@ export function DailySetup({
 
               <div className="space-y-2">
                 <h1 className="text-2xl font-semibold text-foreground">
-                  {isEditing ? "Update Your Setup" : "Welcome to RELEVO"}
+                  {isEditing ? t("updateYourSetup") : t("welcome")}
                 </h1>
                 <p className="text-muted-foreground">
                   {isEditing
-                    ? "Modify your shift and patient assignments"
-                    : "Digital medical handover platform for Hospital Garrahan"}
+                    ? t("modifyAssignments")
+                    : t("platformDescription")}
                 </p>
                 {!isEditing && (
                   <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground pt-1">
-                    <span>I-PASS Protocol</span>
+                    <span>{t("ipassProtocol")}</span>
                     <span>•</span>
-                    <span>Secure Documentation</span>
+                    <span>{t("secureDocumentation")}</span>
                   </div>
                 )}
               </div>
@@ -184,20 +186,20 @@ export function DailySetup({
                   className="text-base font-medium flex items-center gap-2"
                 >
                   <User className="w-4 h-4 text-primary" />
-                  Your Name
+                  {t("yourNameLabel")}
                 </Label>
                 <Input
                   id="doctorName"
                   type="text"
-                  placeholder="Dr. Maria Gonzalez"
+                  placeholder={t("namePlaceholder")}
                   value={doctorName}
                   onChange={(e) => setDoctorName(e.target.value)}
                   className="h-12 text-base border-border focus:border-primary bg-white"
                 />
                 <p className="text-sm text-muted-foreground">
                   {isEditing
-                    ? "Update your name if needed"
-                    : "This will be used to identify your documentation and handover sessions"}
+                    ? t("updateNameHelp")
+                    : t("nameHelp")}
                 </p>
               </div>
             </div>
@@ -210,12 +212,12 @@ export function DailySetup({
             {/* Clean Step Header */}
             <div className="text-center space-y-2">
               <h2 className="text-xl font-semibold text-foreground">
-                Hello, {doctorName}!
+                {t("greeting", { doctorName })}
               </h2>
               <p className="text-muted-foreground">
                 {isEditing
-                  ? "Update your unit assignment"
-                  : "Let's configure your shift details"}
+                  ? t("updateUnitAssignment")
+                  : t("configureShiftDetails")}
               </p>
             </div>
 
@@ -225,7 +227,7 @@ export function DailySetup({
                   <MapPin className="w-5 h-5 text-primary" />
                 </div>
                 <h3 className="font-medium text-foreground">
-                  {isEditing ? "Change your unit" : "Select your unit"}
+                  {isEditing ? t("changeYourUnit") : t("selectYourUnit")}
                 </h3>
               </div>
 
@@ -280,12 +282,12 @@ export function DailySetup({
           <div className="space-y-6">
             <div className="text-center space-y-2">
               <h3 className="text-xl font-semibold text-foreground">
-                {isEditing ? "Update your shift" : "Select your shift"}
+                {isEditing ? t("updateYourShift") : t("selectYourShift")}
               </h3>
               <p className="text-muted-foreground">
                 {isEditing
-                  ? "Change your shift assignment if needed"
-                  : "When will you be providing care?"}
+                  ? t("changeShiftAssignment")
+                  : t("whenProvidingCare")}
               </p>
             </div>
 
@@ -295,7 +297,7 @@ export function DailySetup({
                   <Clock className="w-5 h-5 text-primary" />
                 </div>
                 <h3 className="font-medium text-foreground">
-                  Available shifts
+                  {t("availableShifts")}
                 </h3>
               </div>
 
@@ -349,7 +351,7 @@ export function DailySetup({
             <div className="flex-shrink-0 space-y-6">
               <div className="text-center space-y-3">
                 <h3 className="text-xl font-semibold text-foreground">
-                  {isEditing ? "Update your patients" : "Select your patients"}
+                  {isEditing ? t("updateYourPatients") : t("selectYourPatients")}
                 </h3>
 
                 {/* PROMINENT COUNTER */}
@@ -361,15 +363,18 @@ export function DailySetup({
                       : "bg-muted/30 border-border/50 text-muted-foreground"
                   }`}
                 >
-                  {selectedPatients.length} of {dailySetupPatients.length}{" "}
-                  patients selected
+                  {t("patientsSelected", {
+                    count: selectedPatients.length,
+                    total: dailySetupPatients.length,
+                  })}
                 </Badge>
 
                 {/* NEW: Show current selection status for editing */}
                 {isEditing && existingSetup && (
                   <p className="text-sm text-muted-foreground">
-                    Previously had {existingSetup.selectedPatients.length}{" "}
-                    patients assigned
+                    {t("previouslyAssigned", {
+                      count: existingSetup.selectedPatients.length,
+                    })}
                   </p>
                 )}
               </div>
@@ -385,12 +390,12 @@ export function DailySetup({
                   {selectedPatients.length === dailySetupPatients.length ? (
                     <>
                       <Circle className="w-4 h-4" />
-                      Deselect All
+                      {t("deselectAll")}
                     </>
                   ) : (
                     <>
                       <CheckCircle className="w-4 h-4" />
-                      Select All
+                      {t("selectAll")}
                     </>
                   )}
                 </Button>
@@ -402,10 +407,10 @@ export function DailySetup({
                   <AlertCircle className="w-5 h-5 flex-shrink-0" />
                   <div>
                     <p className="font-medium text-sm">
-                      Please select at least one patient
+                      {t("validationErrorTitle")}
                     </p>
                     <p className="text-sm">
-                      You need to assign yourself to patients to continue
+                      {t("validationErrorBody")}
                     </p>
                   </div>
                 </div>
@@ -450,15 +455,17 @@ export function DailySetup({
   const getStepTitle = () => {
     switch (currentStep) {
       case 0:
-        return isEditing ? "Update Information" : "Your Information";
+        return isEditing ? t("stepTitle.updateInfo") : t("stepTitle.yourInfo");
       case 1:
-        return isEditing ? "Update Unit" : "Unit Selection";
+        return isEditing ? t("stepTitle.updateUnit") : t("stepTitle.unitSelection");
       case 2:
-        return isEditing ? "Update Shift" : "Shift Selection";
+        return isEditing ? t("stepTitle.updateShift") : t("stepTitle.shiftSelection");
       case 3:
-        return isEditing ? "Update Patients" : "Patient Selection";
+        return isEditing
+          ? t("stepTitle.updatePatients")
+          : t("stepTitle.patientSelection");
       default:
-        return "Setup";
+        return t("stepTitle.setup");
     }
   };
 
@@ -482,11 +489,11 @@ export function DailySetup({
             <div>
               <h1 className="font-semibold text-primary">RELEVO</h1>
               <p className="text-xs text-muted-foreground">
-                {isEditing ? "Update Setup" : "Medical Handover Setup"}
+                {isEditing ? t("mobileHeader.update") : t("mobileHeader.new")}
               </p>
             </div>
             <div className="text-sm text-muted-foreground">
-              Step {currentStep + 1} of 4
+              {t("mobileHeader.step", { current: currentStep + 1, total: 4 })}
             </div>
           </div>
 
@@ -528,7 +535,7 @@ export function DailySetup({
                   size="lg"
                 >
                   <ChevronLeft className="w-4 h-4" />
-                  Back
+                  {t("back")}
                 </Button>
               )}
 
@@ -541,9 +548,9 @@ export function DailySetup({
               >
                 {currentStep === 3
                   ? isEditing
-                    ? "Save Changes"
-                    : "Start Using RELEVO"
-                  : "Continue"}
+                    ? t("saveChanges")
+                    : t("startUsingRelevo")
+                  : t("continue")}
                 <ChevronRight className="w-4 h-4" />
               </Button>
             </div>
@@ -560,7 +567,7 @@ export function DailySetup({
             }}
           >
             <p className="text-xs text-red-700 text-center">
-              Select at least one patient to continue
+              {t("mobileValidation")}
             </p>
           </div>
         )}
@@ -581,14 +588,17 @@ export function DailySetup({
             </div>
             <div>
               <CardTitle className="text-2xl text-foreground">
-                {isEditing ? "Update RELEVO Setup" : "RELEVO Setup"}
+                {isEditing ? t("desktopHeader.update") : t("desktopHeader.new")}
               </CardTitle>
               <p className="text-muted-foreground">
                 {currentStep === 0
                   ? isEditing
-                    ? "Modify your configuration"
-                    : "Configure your handover session"
-                  : `${isEditing ? "Update" : "Configure"} your handover session, ${doctorName}`}
+                    ? t("desktopSubheader.update")
+                    : t("desktopSubheader.new")
+                  : t("desktopSubheader.progress", {
+                      action: isEditing ? t("update") : t("configure"),
+                      name: doctorName,
+                    })}
               </p>
             </div>
           </div>
@@ -598,7 +608,7 @@ export function DailySetup({
               {getStepTitle()}
             </Badge>
             <div className="text-sm text-muted-foreground">
-              Step {currentStep + 1} of 4
+              {t("mobileHeader.step", { current: currentStep + 1, total: 4 })}
             </div>
           </div>
 
@@ -621,12 +631,12 @@ export function DailySetup({
             <div className="space-y-6">
               <div className="text-center space-y-2">
                 <h2 className="text-xl font-semibold text-foreground">
-                  Hello, {doctorName}!
+                  {t("greeting", { doctorName })}
                 </h2>
                 <p className="text-muted-foreground">
                   {isEditing
-                    ? "Update your unit assignment"
-                    : "Let's configure your shift details"}
+                    ? t("updateUnitAssignment")
+                    : t("configureShiftDetails")}
                 </p>
               </div>
 
@@ -636,7 +646,7 @@ export function DailySetup({
                     <MapPin className="w-5 h-5 text-primary" />
                   </div>
                   <h3 className="font-medium text-foreground">
-                    {isEditing ? "Change your unit" : "Select your unit"}
+                    {isEditing ? t("changeYourUnit") : t("selectYourUnit")}
                   </h3>
                 </div>
 
@@ -688,12 +698,12 @@ export function DailySetup({
             <div className="space-y-6">
               <div className="text-center space-y-2">
                 <h3 className="text-xl font-semibold text-foreground">
-                  {isEditing ? "Update your shift" : "Select your shift"}
+                  {isEditing ? t("updateYourShift") : t("selectYourShift")}
                 </h3>
                 <p className="text-muted-foreground">
                   {isEditing
-                    ? "Change your shift assignment if needed"
-                    : "When will you be providing care?"}
+                    ? t("changeShiftAssignment")
+                    : t("whenProvidingCare")}
                 </p>
               </div>
 
@@ -703,7 +713,7 @@ export function DailySetup({
                     <Clock className="w-5 h-5 text-primary" />
                   </div>
                   <h3 className="font-medium text-foreground">
-                    Available shifts
+                    {t("availableShifts")}
                   </h3>
                 </div>
 
@@ -753,7 +763,7 @@ export function DailySetup({
             <div className="space-y-6">
               <div className="text-center space-y-3">
                 <h3 className="text-xl font-semibold text-foreground">
-                  {isEditing ? "Update your patients" : "Select your patients"}
+                  {isEditing ? t("updateYourPatients") : t("selectYourPatients")}
                 </h3>
 
                 {/* PROMINENT COUNTER - DESKTOP */}
@@ -765,15 +775,18 @@ export function DailySetup({
                       : "bg-muted/30 border-border/50 text-muted-foreground"
                   }`}
                 >
-                  {selectedPatients.length} of {dailySetupPatients.length}{" "}
-                  patients selected
+                  {t("patientsSelected", {
+                    count: selectedPatients.length,
+                    total: dailySetupPatients.length,
+                  })}
                 </Badge>
 
                 {/* NEW: Show current selection status for editing */}
                 {isEditing && existingSetup && (
                   <p className="text-sm text-muted-foreground">
-                    Previously had {existingSetup.selectedPatients.length}{" "}
-                    patients assigned
+                    {t("previouslyAssigned", {
+                      count: existingSetup.selectedPatients.length,
+                    })}
                   </p>
                 )}
               </div>
@@ -788,12 +801,12 @@ export function DailySetup({
                   {selectedPatients.length === dailySetupPatients.length ? (
                     <>
                       <Circle className="w-4 h-4" />
-                      Deselect All
+                      {t("deselectAll")}
                     </>
                   ) : (
                     <>
                       <CheckCircle className="w-4 h-4" />
-                      Select All
+                      {t("selectAll")}
                     </>
                   )}
                 </Button>
@@ -805,10 +818,10 @@ export function DailySetup({
                   <AlertCircle className="w-5 h-5 flex-shrink-0" />
                   <div>
                     <p className="font-medium text-sm">
-                      Please select at least one patient
+                      {t("validationErrorTitle")}
                     </p>
                     <p className="text-sm">
-                      You need to assign yourself to patients to continue
+                      {t("validationErrorBody")}
                     </p>
                   </div>
                 </div>
@@ -857,7 +870,7 @@ export function DailySetup({
                 className="gap-2"
               >
                 <ChevronLeft className="w-4 h-4" />
-                Back
+                {t("back")}
               </Button>
             ) : (
               <div></div>
@@ -870,9 +883,9 @@ export function DailySetup({
             >
               {currentStep === 3
                 ? isEditing
-                  ? "Save Changes"
-                  : "Complete Setup"
-                : "Continue"}
+                  ? t("saveChanges")
+                  : t("completeSetup")
+                : t("continue")}
               <ChevronRight className="w-4 h-4" />
             </Button>
           </div>

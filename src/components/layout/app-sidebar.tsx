@@ -1,37 +1,23 @@
 "use client";
 
-import * as React from "react";
 import {
-  Calendar,
-  Users,
-  FileText,
-  Settings,
-  User,
-  Stethoscope,
   Activity,
   Bell,
+  Calendar,
+  ChevronRight,
+  Clock,
+  FileText,
   HelpCircle,
   LogOut,
-  ChevronRight,
   Search,
-  Clock,
+  Settings,
   Shield,
+  Stethoscope,
+  User,
+  Users,
 } from "lucide-react";
+import * as React from "react";
 
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarGroupContent,
-  SidebarRail,
-  useSidebar,
-} from "@/components/ui/sidebar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -41,6 +27,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarRail,
+  useSidebar,
+} from "@/components/ui/sidebar";
 import { useTranslation } from "react-i18next";
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
@@ -64,7 +64,7 @@ export function AppSidebar({
   ...props
 }: AppSidebarProps) {
   const { isMobile } = useSidebar();
-  const { t } = useTranslation();
+  const { t } = useTranslation('appSidebar');
 
   // Get doctor initials for avatar
   const getDoctorInitials = (name: string) => {
@@ -83,55 +83,55 @@ export function AppSidebar({
 
   const mainNavigationItems = [
     {
-      title: t("appSidebar.schedule"),
+      title: t("schedule"),
       id: "schedule",
       icon: Calendar,
       isActive: activeTab === "schedule",
-      description: t("appSidebar.scheduleDescription"),
+      description: t("scheduleDescription"),
     },
     {
-      title: t("appSidebar.patients"),
+      title: t("patients"),
       id: "patients",
       icon: Users,
       isActive: activeTab === "patients",
-      description: t("appSidebar.patientsDescription"),
+      description: t("patientsDescription"),
     },
   ];
 
   const toolsItems = [
     {
-      title: t("appSidebar.searchPatients"),
+      title: t("searchPatients"),
       icon: Search,
       action: () => onOpenCommandPalette?.(),
-      description: t("appSidebar.searchPatientsDescription"),
+      description: t("searchPatientsDescription"),
       shortcut: "⌘K",
     },
     {
-      title: t("appSidebar.ipassDocumentation"),
+      title: t("ipassDocumentation"),
       icon: FileText,
       action: () => handleNavigation("documentation"),
-      description: t("appSidebar.ipassDocumentationDescription"),
+      description: t("ipassDocumentationDescription"),
     },
   ];
 
   const settingsItems = [
     {
-      title: t("appSidebar.profileSettings"),
+      title: t("profileSettings"),
       icon: Settings,
       action: () => handleNavigation("profile"),
-      description: t("appSidebar.profileSettingsDescription"),
+      description: t("profileSettingsDescription"),
     },
     {
-      title: t("appSidebar.notifications"),
+      title: t("notifications"),
       icon: Bell,
       action: () => handleNavigation("notifications"),
-      description: t("appSidebar.notificationsDescription"),
+      description: t("notificationsDescription"),
     },
     {
-      title: t("appSidebar.helpSupport"),
+      title: t("helpSupport"),
       icon: HelpCircle,
       action: () => handleNavigation("help"),
-      description: t("appSidebar.helpSupportDescription"),
+      description: t("helpSupportDescription"),
     },
   ];
 
@@ -148,9 +148,9 @@ export function AppSidebar({
                 <Stethoscope className="size-4" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{t("appSidebar.title")}</span>
+                <span className="truncate font-semibold">{t("title")}</span>
                 <span className="truncate text-xs">
-                  {t("appSidebar.subtitle")}
+                  {t("subtitle")}
                 </span>
               </div>
             </SidebarMenuButton>
@@ -161,7 +161,7 @@ export function AppSidebar({
       <SidebarContent>
         {/* Main Navigation */}
         <SidebarGroup>
-          <SidebarGroupLabel>{t("appSidebar.navigation")}</SidebarGroupLabel>
+          <SidebarGroupLabel>{t("navigation")}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {mainNavigationItems.map((item) => (
@@ -182,16 +182,16 @@ export function AppSidebar({
 
         {/* Current Context */}
         <SidebarGroup>
-          <SidebarGroupLabel>{t("appSidebar.currentContext")}</SidebarGroupLabel>
+          <SidebarGroupLabel>{t("currentContext")}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton className="pointer-events-none">
                   <Shield className="size-4 text-primary" />
                   <div className="flex flex-col">
-                    <span className="text-xs font-medium">{unit} {t("appSidebar.unit")}</span>
+                    <span className="text-xs font-medium">{unit} {t("unit")}</span>
                     <span className="text-xs text-muted-foreground">
-                      {shift} {t("appSidebar.shift")}
+                      {shift} {t("shift")}
                     </span>
                   </div>
                 </SidebarMenuButton>
@@ -201,10 +201,10 @@ export function AppSidebar({
                   <Clock className="size-4 text-green-600" />
                   <div className="flex flex-col">
                     <span className="text-xs font-medium">
-                      {t("appSidebar.patientsAssigned", { count: patientCount })}
+                      {t("patientsAssigned", { count: patientCount })}
                     </span>
                     <span className="text-xs text-muted-foreground">
-                      {t("appSidebar.urgentItems", { count: 2 })}
+                      {t("urgentItems", { count: 2 })}
                     </span>
                   </div>
                 </SidebarMenuButton>
@@ -215,7 +215,7 @@ export function AppSidebar({
 
         {/* Tools & Actions */}
         <SidebarGroup>
-          <SidebarGroupLabel>{t("appSidebar.tools")}</SidebarGroupLabel>
+          <SidebarGroupLabel>{t("tools")}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {toolsItems.map((item, index) => (
@@ -247,7 +247,7 @@ export function AppSidebar({
 
         {/* Settings */}
         <SidebarGroup>
-          <SidebarGroupLabel>{t("appSidebar.settings")}</SidebarGroupLabel>
+          <SidebarGroupLabel>{t("settings")}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {settingsItems.map((item, index) => (
@@ -285,7 +285,7 @@ export function AppSidebar({
                       {currentDoctor}
                     </span>
                     <span className="truncate text-xs">
-                      {t("appSidebar.seniorPractitioner")}
+                      {t("seniorPractitioner")}
                     </span>
                   </div>
                   <ChevronRight className="ml-auto size-4" />
@@ -309,7 +309,7 @@ export function AppSidebar({
                         {currentDoctor}
                       </span>
                       <span className="truncate text-xs">
-                        {t("appSidebar.seniorPractitioner")}
+                        {t("seniorPractitioner")}
                       </span>
                     </div>
                   </div>
@@ -318,28 +318,28 @@ export function AppSidebar({
                 <DropdownMenuGroup>
                   <DropdownMenuItem onClick={() => handleNavigation("profile")}>
                     <User className="size-4" />
-                    {t("appSidebar.profileSettings")}
+                    {t("profileSettings")}
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => handleNavigation("notifications")}
                   >
                     <Bell className="size-4" />
-                    {t("appSidebar.notifications")}
+                    {t("notifications")}
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <Activity className="size-4" />
-                    {t("appSidebar.activityLog")}
+                    {t("activityLog")}
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
                   <HelpCircle className="size-4" />
-                  {t("appSidebar.helpSupport")}
+                  {t("helpSupport")}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className="text-destructive">
                   <LogOut className="size-4" />
-                  {t("appSidebar.signOut")}
+                  {t("signOut")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

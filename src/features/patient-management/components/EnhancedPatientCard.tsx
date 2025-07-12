@@ -3,25 +3,26 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import {
-  Activity,
-  AlertCircle,
-  AlertTriangle,
-  CheckCircle,
-  ChevronRight,
-  FileText,
-  Heart,
-  History,
-  Pill,
-  Play,
-  Shield,
-  User
+    Activity,
+    AlertCircle,
+    AlertTriangle,
+    CheckCircle,
+    ChevronRight,
+    FileText,
+    Heart,
+    History,
+    Pill,
+    Play,
+    Shield,
+    User
 } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 // Import centralized types
 import {
-  type Alert,
-  type EnhancedPatientCardData,
+    type Alert,
+    type EnhancedPatientCardData,
 } from "../../../common/types";
 
 interface EnhancedPatientCardProps {
@@ -35,6 +36,7 @@ export function EnhancedPatientCard({
   viewMode: _viewMode = "compact",
   onStartHandover,
 }: EnhancedPatientCardProps) {
+  const { t } = useTranslation("enhancedPatientCard");
   const [showIPass, setShowIPass] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
 
@@ -45,7 +47,7 @@ export function EnhancedPatientCard({
           color: "bg-chart-1",
           textColor: "text-chart-1",
           bgColor: "bg-chart-1/10",
-          label: "Pending Review",
+          label: t("status.pending"),
           icon: <AlertTriangle className="w-4 h-4" />,
         };
       case "in-progress":
@@ -53,7 +55,7 @@ export function EnhancedPatientCard({
           color: "bg-primary",
           textColor: "text-primary",
           bgColor: "bg-primary/10",
-          label: "Active Care",
+          label: t("status.inProgress"),
           icon: <Play className="w-4 h-4" />,
         };
       case "complete":
@@ -61,7 +63,7 @@ export function EnhancedPatientCard({
           color: "bg-chart-2",
           textColor: "text-chart-2",
           bgColor: "bg-chart-2/10",
-          label: "Stable",
+          label: t("status.stable"),
           icon: <CheckCircle className="w-4 h-4" />,
         };
     }
@@ -158,7 +160,7 @@ export function EnhancedPatientCard({
             <div className="flex items-center gap-2 mb-2">
               <AlertTriangle className="w-5 h-5 text-destructive animate-pulse" />
               <span className="font-semibold text-destructive">
-                Critical Alerts ({criticalAlerts.length})
+                {t("criticalAlerts", { count: criticalAlerts.length })}
               </span>
             </div>
             <div className="space-y-2">
@@ -172,7 +174,7 @@ export function EnhancedPatientCard({
               ))}
               {criticalAlerts.length > 2 && (
                 <div className="text-sm text-destructive">
-                  + {criticalAlerts.length - 2} more alerts
+                  {t("moreAlerts", { count: criticalAlerts.length - 2 })}
                 </div>
               )}
             </div>
@@ -187,7 +189,7 @@ export function EnhancedPatientCard({
                 {patient.name}
               </h3>
               <Badge variant="secondary" className="text-sm">
-                {patient.age}y
+                {t("age", { age: patient.age })}
               </Badge>
               <Badge
                 variant={
@@ -199,22 +201,24 @@ export function EnhancedPatientCard({
                 }
                 className="text-sm capitalize"
               >
-                {patient.priority} Priority
+                {patient.priority && t(patient.priority)} {patient.priority && t("priority")}
               </Badge>
               {patient.integrationData?.monitoringActive && (
                 <Badge variant="outline" className="text-sm">
                   <Activity className="w-3 h-3 mr-1" />
-                  Live Monitoring
+                  {t("liveMonitoring")}
                 </Badge>
               )}
             </div>
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
               <span className="font-medium">{patient.room}</span>
               <span>•</span>
-              <span>MRN: {patient.id.toString().padStart(6, "0")}</span>
+              <span>
+                {t("mrn")} {patient.id.toString().padStart(6, "0")}
+              </span>
               <span>•</span>
               <span>
-                Admitted:{" "}
+                {t("admitted")}:{" "}
                 {new Date(patient.admissionDate || "").toLocaleDateString()}
               </span>
             </div>
@@ -247,7 +251,7 @@ export function EnhancedPatientCard({
               className="text-xs"
             >
               <FileText className="w-3 h-3 mr-1" />
-              I-PASS
+              {t("ipass.button")}
             </Button>
           </div>
           <p className="text-sm text-muted-foreground leading-relaxed">
@@ -259,32 +263,32 @@ export function EnhancedPatientCard({
         {showIPass && patient.iPassData && (
           <div className="mt-4 p-4 bg-muted/50 rounded-xl space-y-4">
             <h4 className="font-semibold text-foreground">
-              I-PASS Handover Summary
+              {t("ipass.title")}
             </h4>
             {[
               {
-                letter: 'I',
-                title: 'Illness Severity',
+                letter: "I",
+                title: t("ipass.illnessSeverity"),
                 content: patient.iPassData?.illness,
               },
               {
-                letter: 'P',
-                title: 'Patient Summary',
+                letter: "P",
+                title: t("ipass.patientSummary"),
                 content: patient.iPassData?.patientSummary,
               },
               {
-                letter: 'A',
-                title: 'Action List',
+                letter: "A",
+                title: t("ipass.actionList"),
                 content: patient.iPassData?.actionList,
               },
               {
-                letter: 'S',
-                title: 'Situation Awareness',
-                content: patient.iPassData?.situationAwareness.join(', '),
+                letter: "S",
+                title: t("ipass.situationAwareness"),
+                content: patient.iPassData?.situationAwareness.join(", "),
               },
               {
-                letter: 'S',
-                title: 'Synthesis by Receiver',
+                letter: "S",
+                title: t("ipass.synthesisByReceiver"),
                 content: patient.iPassData?.synthesis,
               },
             ].map((item, index: number) => (
@@ -295,7 +299,7 @@ export function EnhancedPatientCard({
                 <div>
                   <h5 className="font-medium text-foreground">{item.title}</h5>
                   <p className="text-sm text-muted-foreground">
-                    {item.content || 'Not specified'}
+                    {item.content || t("ipass.notSpecified")}
                   </p>
                 </div>
               </div>
@@ -308,9 +312,11 @@ export function EnhancedPatientCard({
           <div className="mb-4 p-4 bg-secondary/20 rounded-xl">
             <h5 className="font-medium text-foreground mb-3 flex items-center gap-2">
               <Activity className="w-4 h-4" />
-              Real-time Vitals
+              {t("vitals.title")}
               <Badge variant="outline" className="text-xs">
-                Updated {patient.integrationData?.labLastSync}
+                {t("vitals.updated", {
+                  time: patient.integrationData?.labLastSync,
+                })}
               </Badge>
             </h5>
             <div className="grid grid-cols-5 gap-3">
@@ -322,11 +328,11 @@ export function EnhancedPatientCard({
                     className={`p-3 rounded-lg text-center ${vitalStatus.class}`}
                   >
                     <div className="text-sm capitalize text-muted-foreground">
-                      {key.replace(/([A-Z])/g, " $1")}
+                      {t(`vitals.types.${key}`)}
                     </div>
                     <div className="font-semibold text-lg">{String(value)}</div>
                     <div className="text-xs opacity-80">
-                      {vitalStatus.status}
+                      {t(`vitals.status.${vitalStatus.status}`)}
                     </div>
                   </div>
                 );
@@ -339,7 +345,7 @@ export function EnhancedPatientCard({
         {patient.medications && patient.medications.length > 0 && (
           <div className="mb-4">
             <h5 className="font-medium text-foreground mb-2 flex items-center gap-2">
-              <Pill className="w-4 h-4" /> Medications
+              <Pill className="w-4 h-4" /> {t("medications")}
             </h5>
             <div className="flex flex-wrap gap-2">
               {patient.medications.map((med: { name: string; dosage: string }, index: number) => (
@@ -359,7 +365,7 @@ export function EnhancedPatientCard({
         {patient.allergies && patient.allergies.length > 0 && (
           <div className="mb-4">
             <h5 className="font-medium text-destructive mb-2 flex items-center gap-2">
-              <Shield className="w-4 h-4" /> Allergies
+              <Shield className="w-4 h-4" /> {t("allergies")}
             </h5>
             <div className="flex flex-wrap gap-2">
               {patient.allergies.map((allergy: { substance: string }, index: number) => (
@@ -380,7 +386,7 @@ export function EnhancedPatientCard({
           <div className="mb-4 p-4 bg-primary/5 border border-primary/20 rounded-xl">
             <h5 className="font-medium text-primary mb-3 flex items-center gap-2">
               <History className="w-4 h-4" />
-              Handover History
+              {t("handoverHistory.title")}
             </h5>
             <ul className="space-y-2 text-sm">
               {patient.handoverHistory
@@ -390,7 +396,10 @@ export function EnhancedPatientCard({
                     <div className="flex items-center gap-2">
                       <User className="w-4 h-4 text-muted-foreground" />
                       <span className="font-medium text-foreground">
-                        {handover.from} to {handover.to}
+                        {t("handoverHistory.item", {
+                          from: handover.from,
+                          to: handover.to,
+                        })}
                       </span>
                     </div>
                     <span className="text-muted-foreground">
@@ -406,7 +415,7 @@ export function EnhancedPatientCard({
         <div className="mt-4">
           <div className="flex justify-between items-center mb-1">
             <span className="text-sm font-medium text-foreground">
-              Care Plan Progress
+              {t("carePlanProgress")}
             </span>
             <span className="text-sm font-semibold text-foreground">
               {patient.completionPercentage || 0}%
@@ -420,7 +429,9 @@ export function EnhancedPatientCard({
 
         {/* Key Team Members */}
         <div className="mt-4 space-y-2">
-          <h4 className="font-semibold text-foreground">Key Team Members</h4>
+          <h4 className="font-semibold text-foreground">
+            {t("keyTeamMembers")}
+          </h4>
           {(patient.medications || []).map(
             (
               member: { name: string; route: string },
@@ -445,13 +456,13 @@ export function EnhancedPatientCard({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <User className="w-4 h-4" />
-              <span>{patient.doctor?.replace('Dr. ', '')}</span>
+              <span>{patient.doctor?.replace("Dr. ", "")}</span>
             </div>
             <Button
               onClick={() => onStartHandover && onStartHandover(patient.id)}
               size="sm"
             >
-              Start Handover <ChevronRight className="w-4 h-4 ml-1" />
+              {t("startHandover")} <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
           </div>
         </div>

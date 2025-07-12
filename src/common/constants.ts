@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+
 // Mock current user
 export const currentUser = {
   name: "Dr. Johnson",
@@ -44,53 +46,53 @@ export const patientData = {
 };
 
 // I-PASS Guidelines for each section
-export const ipassGuidelines = {
+export const getIpassGuidelines = (t: TFunction<"handover", undefined>) => ({
   illness: {
-    title: "I-PASS Illness Severity Guidelines",
+    title: t("ipassGuidelines.illness.title"),
     points: [
-      "Consider patient's overall clinical trajectory",
-      "Factor in response to current interventions",
-      "Assess need for escalation or de-escalation of care",
-      "Document any concerning trends or improvements",
+      t("ipassGuidelines.illness.points.0"),
+      t("ipassGuidelines.illness.points.1"),
+      t("ipassGuidelines.illness.points.2"),
+      t("ipassGuidelines.illness.points.3"),
     ],
   },
   patient: {
-    title: "I-PASS Patient Summary Guidelines",
+    title: t("ipassGuidelines.patient.title"),
     points: [
-      "Include relevant past medical history",
-      "Document current medications and allergies",
-      "Note social history and support systems",
-      "Include code status and advance directives",
+      t("ipassGuidelines.patient.points.0"),
+      t("ipassGuidelines.patient.points.1"),
+      t("ipassGuidelines.patient.points.2"),
+      t("ipassGuidelines.patient.points.3"),
     ],
   },
   actions: {
-    title: "I-PASS Action List Guidelines",
+    title: t("ipassGuidelines.actions.title"),
     points: [
-      "List all pending tasks with clear timelines",
-      "Include follow-up actions and appointments",
-      "Note any urgent or time-sensitive items",
-      "Specify responsible team members when applicable",
+      t("ipassGuidelines.actions.points.0"),
+      t("ipassGuidelines.actions.points.1"),
+      t("ipassGuidelines.actions.points.2"),
+      t("ipassGuidelines.actions.points.3"),
     ],
   },
   awareness: {
-    title: "I-PASS Situation Awareness Guidelines",
+    title: t("ipassGuidelines.awareness.title"),
     points: [
-      "Document current patient status and trends",
-      "Include monitoring requirements and frequencies",
-      "Note any concerning symptoms or changes",
-      "Plan for potential complications with if-then scenarios",
+      t("ipassGuidelines.awareness.points.0"),
+      t("ipassGuidelines.awareness.points.1"),
+      t("ipassGuidelines.awareness.points.2"),
+      t("ipassGuidelines.awareness.points.3"),
     ],
   },
   synthesis: {
-    title: "I-PASS Synthesis Guidelines",
+    title: t("ipassGuidelines.synthesis.title"),
     points: [
-      "Receiving physician confirms understanding",
-      "All questions and concerns are addressed",
-      "Clear acceptance of clinical responsibility",
-      "Documentation of formal handover completion",
+      t("ipassGuidelines.synthesis.points.0"),
+      t("ipassGuidelines.synthesis.points.1"),
+      t("ipassGuidelines.synthesis.points.2"),
+      t("ipassGuidelines.synthesis.points.3"),
     ],
   },
-};
+});
 
 // CURRENT SHIFT HANDOVER PARTICIPANTS - Who is present RIGHT NOW
 export const currentlyPresent = [

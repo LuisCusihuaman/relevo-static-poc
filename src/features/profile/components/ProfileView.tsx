@@ -18,6 +18,7 @@ import {
   User,
 } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface ProfileViewProps {
   doctorName: string;
@@ -40,6 +41,7 @@ export function ProfileView({
   shift,
   isMobile = false,
 }: ProfileViewProps) {
+  const { t } = useTranslation("profileView");
   const [activeSection, setActiveSection] = useState<ProfileSection>("profile");
   const [displayName, setDisplayName] = useState(doctorName);
   const [bio, setBio] = useState("");
@@ -56,33 +58,33 @@ export function ProfileView({
   const sidebarItems = [
     {
       id: "profile" as ProfileSection,
-      label: "My Profile",
+      label: t("sidebar.profile"),
       icon: User,
-      description: "Personal information and preferences",
+      description: t("sidebar.profileDescription"),
     },
     {
       id: "settings" as ProfileSection,
-      label: "Application Settings",
+      label: t("sidebar.settings"),
       icon: Settings,
-      description: "App preferences and configuration",
+      description: t("sidebar.settingsDescription"),
     },
     {
       id: "notifications" as ProfileSection,
-      label: "Notifications & Alerts",
+      label: t("sidebar.notifications"),
       icon: Bell,
-      description: "Alert preferences and notification settings",
+      description: t("sidebar.notificationsDescription"),
     },
     {
       id: "security" as ProfileSection,
-      label: "Security & Privacy",
+      label: t("sidebar.security"),
       icon: Shield,
-      description: "Account security and privacy settings",
+      description: t("sidebar.securityDescription"),
     },
     {
       id: "account" as ProfileSection,
-      label: "Account Settings",
+      label: t("sidebar.account"),
       icon: KeyRound,
-      description: "Account management and preferences",
+      description: t("sidebar.accountDescription"),
     },
   ];
 
@@ -102,7 +104,7 @@ export function ProfileView({
                 <h2 className="text-xl font-semibold text-foreground">
                   {doctorName}
                 </h2>
-                <p className="text-muted-foreground">Senior Practitioner</p>
+                <p className="text-muted-foreground">{t("profile.role")}</p>
                 <div className="flex items-center justify-center gap-2 mt-3">
                   <Badge
                     variant="outline"
@@ -123,7 +125,7 @@ export function ProfileView({
                     className="bg-green-50 border-green-200 text-green-700"
                   >
                     <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                    Active • On Duty
+                    {t("profile.status")}
                   </Badge>
                 </div>
               </div>
@@ -135,10 +137,10 @@ export function ProfileView({
                 <div className="flex items-center gap-2">
                   <Building2 className="w-4 h-4 text-muted-foreground" />
                   <CardTitle className="text-sm">
-                    Hospital Information
+                    {t("profile.hospitalInfo")}
                   </CardTitle>
                   <Badge variant="outline" className="ml-auto text-xs">
-                    Provided by Hospital System
+                    {t("profile.hospitalInfoProvider")}
                   </Badge>
                 </div>
               </CardHeader>
@@ -146,29 +148,31 @@ export function ProfileView({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <Label className="text-xs text-muted-foreground">
-                      Specialty
+                      {t("profile.specialty")}
                     </Label>
                     <div className="medical-input-readonly">
-                      Pediatric Critical Care
+                      {t("profile.specialtyValue")}
                     </div>
                   </div>
                   <div>
                     <Label className="text-xs text-muted-foreground">
-                      Experience
-                    </Label>
-                    <div className="medical-input-readonly">5 years</div>
-                  </div>
-                  <div>
-                    <Label className="text-xs text-muted-foreground">
-                      Department
+                      {t("profile.experience")}
                     </Label>
                     <div className="medical-input-readonly">
-                      Pediatric Intensive Care Unit (PICU)
+                      {t("profile.experienceValue", { count: 5 })}
                     </div>
                   </div>
                   <div>
                     <Label className="text-xs text-muted-foreground">
-                      Employee ID
+                      {t("profile.department")}
+                    </Label>
+                    <div className="medical-input-readonly">
+                      {t("profile.departmentValue")}
+                    </div>
+                  </div>
+                  <div>
+                    <Label className="text-xs text-muted-foreground">
+                      {t("profile.employeeId")}
                     </Label>
                     <div className="medical-input-readonly">HG-2024-1157</div>
                   </div>
@@ -179,35 +183,37 @@ export function ProfileView({
             {/* Personal Preferences */}
             <Card className="medical-card">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm">Personal Preferences</CardTitle>
+                <CardTitle className="text-sm">
+                  {t("profile.preferences")}
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="display-name">Display Name</Label>
+                  <Label htmlFor="display-name">{t("profile.displayName")}</Label>
                   <Input
                     id="display-name"
                     value={displayName}
                     onChange={(e) => setDisplayName(e.target.value)}
                     className="medical-input"
-                    placeholder="How you'd like to be addressed"
+                    placeholder={t("profile.displayNamePlaceholder")}
                   />
                   <p className="text-xs text-muted-foreground">
-                    This is how your name appears to other staff members
+                    {t("profile.displayNameDescription")}
                   </p>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="bio">Professional Bio</Label>
+                  <Label htmlFor="bio">{t("profile.bio")}</Label>
                   <Textarea
                     id="bio"
                     value={bio}
                     onChange={(e) => setBio(e.target.value)}
                     className="medical-textarea"
-                    placeholder="Brief professional summary (optional)"
+                    placeholder={t("profile.bioPlaceholder")}
                     rows={3}
                   />
                   <p className="text-xs text-muted-foreground">
-                    Optional bio visible to other healthcare providers
+                    {t("profile.bioDescription")}
                   </p>
                 </div>
               </CardContent>
@@ -220,25 +226,29 @@ export function ProfileView({
           <div className="space-y-6">
             <div>
               <h2 className="text-lg font-semibold text-foreground mb-1">
-                Application Settings
+                {t("settings.title")}
               </h2>
               <p className="text-sm text-muted-foreground">
-                Configure your RELEVO experience
+                {t("settings.subtitle")}
               </p>
             </div>
 
             {/* Interface Preferences */}
             <Card className="medical-card">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm">Interface Preferences</CardTitle>
+                <CardTitle className="text-sm">
+                  {t("settings.interface")}
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="medical-setting-row">
                   <div className="medical-setting-info">
                     <div>
-                      <div className="medical-setting-label">Dark Mode</div>
+                      <div className="medical-setting-label">
+                        {t("settings.darkMode")}
+                      </div>
                       <div className="medical-setting-description">
-                        Use dark theme for reduced eye strain
+                        {t("settings.darkModeDescription")}
                       </div>
                     </div>
                   </div>
@@ -248,9 +258,11 @@ export function ProfileView({
                 <div className="medical-setting-row">
                   <div className="medical-setting-info">
                     <div>
-                      <div className="medical-setting-label">Compact Mode</div>
+                      <div className="medical-setting-label">
+                        {t("settings.compactMode")}
+                      </div>
                       <div className="medical-setting-description">
-                        Show more information in less space
+                        {t("settings.compactModeDescription")}
                       </div>
                     </div>
                   </div>
@@ -260,9 +272,11 @@ export function ProfileView({
                 <div className="medical-setting-row">
                   <div className="medical-setting-info">
                     <div>
-                      <div className="medical-setting-label">High Contrast</div>
+                      <div className="medical-setting-label">
+                        {t("settings.highContrast")}
+                      </div>
                       <div className="medical-setting-description">
-                        Increase contrast for better visibility
+                        {t("settings.highContrastDescription")}
                       </div>
                     </div>
                   </div>
@@ -274,17 +288,19 @@ export function ProfileView({
             {/* Handover Preferences */}
             <Card className="medical-card">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm">Handover Preferences</CardTitle>
+                <CardTitle className="text-sm">
+                  {t("settings.handover")}
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="medical-setting-row">
                   <div className="medical-setting-info">
                     <div>
                       <div className="medical-setting-label">
-                        Auto-save Drafts
+                        {t("settings.autosave")}
                       </div>
                       <div className="medical-setting-description">
-                        Automatically save handover drafts every 30 seconds
+                        {t("settings.autosaveDescription")}
                       </div>
                     </div>
                   </div>
@@ -295,10 +311,10 @@ export function ProfileView({
                   <div className="medical-setting-info">
                     <div>
                       <div className="medical-setting-label">
-                        I-PASS Template
+                        {t("settings.ipassTemplate")}
                       </div>
                       <div className="medical-setting-description">
-                        Use structured I-PASS template for all handovers
+                        {t("settings.ipassTemplateDescription")}
                       </div>
                     </div>
                   </div>
@@ -308,9 +324,11 @@ export function ProfileView({
                 <div className="medical-setting-row">
                   <div className="medical-setting-info">
                     <div>
-                      <div className="medical-setting-label">Quick Actions</div>
+                      <div className="medical-setting-label">
+                        {t("settings.quickActions")}
+                      </div>
                       <div className="medical-setting-description">
-                        Show quick action buttons for common tasks
+                        {t("settings.quickActionsDescription")}
                       </div>
                     </div>
                   </div>
@@ -326,27 +344,29 @@ export function ProfileView({
           <div className="space-y-6">
             <div>
               <h2 className="text-lg font-semibold text-foreground mb-1">
-                Notifications & Alerts
+                {t("notifications.title")}
               </h2>
               <p className="text-sm text-muted-foreground">
-                Manage your notification preferences
+                {t("notifications.subtitle")}
               </p>
             </div>
 
             {/* Critical Alerts */}
             <Card className="medical-card">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm">Critical Alerts</CardTitle>
+                <CardTitle className="text-sm">
+                  {t("notifications.critical")}
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="medical-setting-row">
                   <div className="medical-setting-info">
                     <div>
                       <div className="medical-setting-label">
-                        High Priority Alerts
+                        {t("notifications.highPriority")}
                       </div>
                       <div className="medical-setting-description">
-                        Immediate notifications for critical patient changes
+                        {t("notifications.highPriorityDescription")}
                       </div>
                     </div>
                   </div>
@@ -357,10 +377,10 @@ export function ProfileView({
                   <div className="medical-setting-info">
                     <div>
                       <div className="medical-setting-label">
-                        Handover Reminders
+                        {t("notifications.handoverReminders")}
                       </div>
                       <div className="medical-setting-description">
-                        Notifications for upcoming handover sessions
+                        {t("notifications.handoverRemindersDescription")}
                       </div>
                     </div>
                   </div>
@@ -370,9 +390,11 @@ export function ProfileView({
                 <div className="medical-setting-row">
                   <div className="medical-setting-info">
                     <div>
-                      <div className="medical-setting-label">Sound Alerts</div>
+                      <div className="medical-setting-label">
+                        {t("notifications.sound")}
+                      </div>
                       <div className="medical-setting-description">
-                        Play sound for critical notifications
+                        {t("notifications.soundDescription")}
                       </div>
                     </div>
                   </div>
@@ -385,16 +407,18 @@ export function ProfileView({
             <Card className="medical-card">
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm">
-                  Communication Preferences
+                  {t("notifications.communication")}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="medical-setting-row">
                   <div className="medical-setting-info">
                     <div>
-                      <div className="medical-setting-label">Team Updates</div>
+                      <div className="medical-setting-label">
+                        {t("notifications.teamUpdates")}
+                      </div>
                       <div className="medical-setting-description">
-                        Notifications when team members make updates
+                        {t("notifications.teamUpdatesDescription")}
                       </div>
                     </div>
                   </div>
@@ -405,10 +429,10 @@ export function ProfileView({
                   <div className="medical-setting-info">
                     <div>
                       <div className="medical-setting-label">
-                        System Announcements
+                        {t("notifications.systemAnnouncements")}
                       </div>
                       <div className="medical-setting-description">
-                        Important system updates and maintenance notices
+                        {t("notifications.systemAnnouncementsDescription")}
                       </div>
                     </div>
                   </div>
@@ -424,27 +448,27 @@ export function ProfileView({
           <div className="space-y-6">
             <div>
               <h2 className="text-lg font-semibold text-foreground mb-1">
-                Security & Privacy
+                {t("security.title")}
               </h2>
               <p className="text-sm text-muted-foreground">
-                Manage your account security settings
+                {t("security.subtitle")}
               </p>
             </div>
 
             {/* Account Security */}
             <Card className="medical-card">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm">Account Security</CardTitle>
+                <CardTitle className="text-sm">{t("security.account")}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="medical-setting-row">
                   <div className="medical-setting-info">
                     <div>
                       <div className="medical-setting-label">
-                        Two-Factor Authentication
+                        {t("security.twoFactor")}
                       </div>
                       <div className="medical-setting-description">
-                        Additional security layer for your account
+                        {t("security.twoFactorDescription")}
                       </div>
                     </div>
                   </div>
@@ -455,10 +479,10 @@ export function ProfileView({
                   <div className="medical-setting-info">
                     <div>
                       <div className="medical-setting-label">
-                        Session Timeout
+                        {t("security.sessionTimeout")}
                       </div>
                       <div className="medical-setting-description">
-                        Automatically log out after 4 hours of inactivity
+                        {t("security.sessionTimeoutDescription")}
                       </div>
                     </div>
                   </div>
@@ -469,10 +493,10 @@ export function ProfileView({
                   <div className="medical-setting-info">
                     <div>
                       <div className="medical-setting-label">
-                        Activity Logging
+                        {t("security.activityLogging")}
                       </div>
                       <div className="medical-setting-description">
-                        Track login attempts and security events
+                        {t("security.activityLoggingDescription")}
                       </div>
                     </div>
                   </div>
@@ -484,17 +508,17 @@ export function ProfileView({
             {/* Privacy Settings */}
             <Card className="medical-card">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm">Privacy Settings</CardTitle>
+                <CardTitle className="text-sm">{t("security.privacy")}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="medical-setting-row">
                   <div className="medical-setting-info">
                     <div>
                       <div className="medical-setting-label">
-                        Data Analytics
+                        {t("security.dataAnalytics")}
                       </div>
                       <div className="medical-setting-description">
-                        Help improve RELEVO by sharing usage analytics
+                        {t("security.dataAnalyticsDescription")}
                       </div>
                     </div>
                   </div>
@@ -505,10 +529,10 @@ export function ProfileView({
                   <div className="medical-setting-info">
                     <div>
                       <div className="medical-setting-label">
-                        Error Reporting
+                        {t("security.errorReporting")}
                       </div>
                       <div className="medical-setting-description">
-                        Automatically send error reports to help fix issues
+                        {t("security.errorReportingDescription")}
                       </div>
                     </div>
                   </div>
@@ -524,21 +548,23 @@ export function ProfileView({
           <div className="space-y-6">
             <div>
               <h2 className="text-lg font-semibold text-foreground mb-1">
-                Account Settings
+                {t("account.title")}
               </h2>
               <p className="text-sm text-muted-foreground">
-                Manage your account preferences
+                {t("account.subtitle")}
               </p>
             </div>
 
             {/* Account Management */}
             <Card className="medical-card">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm">Account Management</CardTitle>
+                <CardTitle className="text-sm">
+                  {t("account.management")}
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email Address</Label>
+                  <Label htmlFor="email">{t("account.email")}</Label>
                   <Input
                     id="email"
                     type="email"
@@ -547,7 +573,7 @@ export function ProfileView({
                     readOnly
                   />
                   <p className="text-xs text-muted-foreground">
-                    Your email address is managed by the hospital system
+                    {t("account.emailDescription")}
                   </p>
                 </div>
 
@@ -556,12 +582,12 @@ export function ProfileView({
                 <div className="space-y-3">
                   <Button variant="outline" className="w-full justify-start">
                     <KeyRound className="w-4 h-4 mr-2" />
-                    Change Password
+                    {t("account.changePassword")}
                   </Button>
 
                   <Button variant="outline" className="w-full justify-start">
                     <Settings className="w-4 h-4 mr-2" />
-                    Export My Data
+                    {t("account.exportData")}
                   </Button>
                 </div>
               </CardContent>
@@ -571,20 +597,19 @@ export function ProfileView({
             <Card className="medical-card border-red-200">
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm text-red-700">
-                  Danger Zone
+                  {t("account.dangerZone")}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="p-4 bg-red-50 rounded-lg border border-red-200">
                   <h4 className="font-medium text-red-800 mb-2">
-                    Clear All Data
+                    {t("account.clearDataTitle")}
                   </h4>
                   <p className="text-sm text-red-700 mb-3">
-                    This will permanently delete all your handover data, notes,
-                    and preferences. This action cannot be undone.
+                    {t("account.clearDataDescription")}
                   </p>
                   <Button variant="destructive" size="sm">
-                    Clear All Data
+                    {t("account.clearDataButton")}
                   </Button>
                 </div>
               </CardContent>
@@ -637,11 +662,9 @@ export function ProfileView({
         <div className="max-w-7xl mx-auto mb-6">
           <div>
             <h1 className="text-2xl font-semibold text-foreground mb-1">
-              Profile Settings
+              {t("header.title")}
             </h1>
-            <p className="text-muted-foreground">
-              Manage your RELEVO profile and preferences
-            </p>
+            <p className="text-muted-foreground">{t("header.subtitle")}</p>
           </div>
         </div>
       </div>

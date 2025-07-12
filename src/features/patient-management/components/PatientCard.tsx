@@ -2,19 +2,20 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import {
-  Activity,
-  AlertCircle,
-  AlertTriangle,
-  CheckCircle,
-  ChevronRight,
-  Clock,
-  Heart,
-  Pill,
-  Play,
-  Thermometer,
-  User,
+    Activity,
+    AlertCircle,
+    AlertTriangle,
+    CheckCircle,
+    ChevronRight,
+    Clock,
+    Heart,
+    Pill,
+    Play,
+    Thermometer,
+    User,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 // Define PatientCardData interface locally since it needs additional fields
 interface PatientCardData {
@@ -45,6 +46,7 @@ interface PatientCardProps {
 }
 
 export function PatientCard({ patient }: PatientCardProps) {
+  const { t } = useTranslation("patientCard");
   const [isMobile, setIsMobile] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
 
@@ -62,7 +64,7 @@ export function PatientCard({ patient }: PatientCardProps) {
           color: "bg-chart-1",
           textColor: "text-chart-1",
           bgColor: "bg-chart-1/10",
-          label: "Pending",
+          label: t("status.pending"),
           icon: <AlertTriangle className="w-4 h-4" />,
         };
       case "in-progress":
@@ -70,7 +72,7 @@ export function PatientCard({ patient }: PatientCardProps) {
           color: "bg-primary",
           textColor: "text-primary",
           bgColor: "bg-primary/10",
-          label: "In Progress",
+          label: t("status.inProgress"),
           icon: <Play className="w-4 h-4" />,
         };
       case "complete":
@@ -78,7 +80,7 @@ export function PatientCard({ patient }: PatientCardProps) {
           color: "bg-chart-2",
           textColor: "text-chart-2",
           bgColor: "bg-chart-2/10",
-          label: "Complete",
+          label: t("status.complete"),
           icon: <CheckCircle className="w-4 h-4" />,
         };
       default:
@@ -86,7 +88,7 @@ export function PatientCard({ patient }: PatientCardProps) {
           color: "bg-muted",
           textColor: "text-muted-foreground",
           bgColor: "bg-muted",
-          label: "Unknown",
+          label: t("status.unknown"),
           icon: <Clock className="w-4 h-4" />,
         };
     }
@@ -144,7 +146,7 @@ export function PatientCard({ patient }: PatientCardProps) {
                 {patient.name}
               </h3>
               <Badge variant="secondary" className="text-xs">
-                {patient.age}y
+                {t("age", { age: patient.age })}
               </Badge>
               <Badge
                 variant={
@@ -156,16 +158,19 @@ export function PatientCard({ patient }: PatientCardProps) {
                 }
                 className="text-xs capitalize"
               >
-                {patient.priority}
+                {t(patient.priority)}
               </Badge>
             </div>
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
               <span className="font-medium">{patient.room}</span>
               <span>•</span>
-              <span>ID: {patient.id.toString().padStart(4, "0")}</span>
+              <span>
+                {t("id")} {patient.id.toString().padStart(4, "0")}
+              </span>
               <span>•</span>
               <span>
-                Admitted: {new Date(patient.admissionDate).toLocaleDateString()}
+                {t("admitted")}:{" "}
+                {new Date(patient.admissionDate).toLocaleDateString()}
               </span>
             </div>
           </div>
@@ -190,54 +195,90 @@ export function PatientCard({ patient }: PatientCardProps) {
           <div className="mb-4 p-3 bg-secondary/30 rounded-xl">
             <h5 className="font-medium text-foreground mb-2 flex items-center gap-2">
               <Activity className="w-4 h-4" />
-              Vital Signs
+              {t("vitals.title")}
             </h5>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <div className="text-center">
                 <div className="flex items-center justify-center gap-1 mb-1">
                   <Heart
-                    className={`w-4 h-4 ${getVitalStatus("heartRate", patient.vitals.heartRate) === "warning" ? "text-chart-1" : "text-chart-2"}`}
+                    className={`w-4 h-4 ${
+                      getVitalStatus("heartRate", patient.vitals.heartRate) ===
+                      "warning"
+                        ? "text-chart-1"
+                        : "text-chart-2"
+                    }`}
                   />
-                  <span className="text-xs text-muted-foreground">HR</span>
+                  <span className="text-xs text-muted-foreground">
+                    {t("vitals.hr")}
+                  </span>
                 </div>
                 <div className="font-semibold text-foreground">
                   {patient.vitals.heartRate}
                 </div>
-                <div className="text-xs text-muted-foreground">bpm</div>
+                <div className="text-xs text-muted-foreground">
+                  {t("vitals.bpm")}
+                </div>
               </div>
               <div className="text-center">
                 <div className="flex items-center justify-center gap-1 mb-1">
                   <Activity className="w-4 h-4 text-primary" />
-                  <span className="text-xs text-muted-foreground">BP</span>
+                  <span className="text-xs text-muted-foreground">
+                    {t("vitals.bp")}
+                  </span>
                 </div>
                 <div className="font-semibold text-foreground">
                   {patient.vitals.bloodPressure}
                 </div>
-                <div className="text-xs text-muted-foreground">mmHg</div>
+                <div className="text-xs text-muted-foreground">
+                  {t("vitals.mmHg")}
+                </div>
               </div>
               <div className="text-center">
                 <div className="flex items-center justify-center gap-1 mb-1">
                   <Thermometer
-                    className={`w-4 h-4 ${getVitalStatus("temperature", patient.vitals.temperature) === "warning" ? "text-chart-1" : "text-chart-2"}`}
+                    className={`w-4 h-4 ${
+                      getVitalStatus(
+                        "temperature",
+                        patient.vitals.temperature,
+                      ) === "warning"
+                        ? "text-chart-1"
+                        : "text-chart-2"
+                    }`}
                   />
-                  <span className="text-xs text-muted-foreground">Temp</span>
+                  <span className="text-xs text-muted-foreground">
+                    {t("vitals.temp")}
+                  </span>
                 </div>
                 <div className="font-semibold text-foreground">
                   {patient.vitals.temperature}°C
                 </div>
-                <div className="text-xs text-muted-foreground">celsius</div>
+                <div className="text-xs text-muted-foreground">
+                  {t("vitals.celsius")}
+                </div>
               </div>
               <div className="text-center">
                 <div className="flex items-center justify-center gap-1 mb-1">
                   <Activity
-                    className={`w-4 h-4 ${getVitalStatus("oxygen", patient.vitals.oxygen) === "critical" ? "text-destructive" : getVitalStatus("oxygen", patient.vitals.oxygen) === "warning" ? "text-chart-1" : "text-chart-2"}`}
+                    className={`w-4 h-4 ${
+                      getVitalStatus("oxygen", patient.vitals.oxygen) ===
+                      "critical"
+                        ? "text-destructive"
+                        : getVitalStatus("oxygen", patient.vitals.oxygen) ===
+                            "warning"
+                          ? "text-chart-1"
+                          : "text-chart-2"
+                    }`}
                   />
-                  <span className="text-xs text-muted-foreground">O₂</span>
+                  <span className="text-xs text-muted-foreground">
+                    {t("vitals.o2")}
+                  </span>
                 </div>
                 <div className="font-semibold text-foreground">
                   {patient.vitals.oxygen}%
                 </div>
-                <div className="text-xs text-muted-foreground">saturation</div>
+                <div className="text-xs text-muted-foreground">
+                  {t("vitals.saturation")}
+                </div>
               </div>
             </div>
           </div>
@@ -249,7 +290,7 @@ export function PatientCard({ patient }: PatientCardProps) {
             <div>
               <h5 className="font-medium text-foreground mb-2 flex items-center gap-2">
                 <Pill className="w-4 h-4" />
-                Current Medications
+                {t("medications")}
               </h5>
               <div className="flex flex-wrap gap-1">
                 {patient.medications.map((med, index) => (
@@ -263,7 +304,7 @@ export function PatientCard({ patient }: PatientCardProps) {
               <div>
                 <h5 className="font-medium text-foreground mb-2 flex items-center gap-2">
                   <AlertCircle className="w-4 h-4 text-destructive" />
-                  Allergies
+                  {t("allergies")}
                 </h5>
                 <div className="flex flex-wrap gap-1">
                   {patient.allergies.map((allergy, index) => (
@@ -286,7 +327,7 @@ export function PatientCard({ patient }: PatientCardProps) {
           <div className="mb-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium text-muted-foreground">
-                Treatment Progress
+                {t("treatmentProgress")}
               </span>
               <span className="text-sm font-medium text-primary">
                 {patient.completionPercentage}%
@@ -321,15 +362,11 @@ export function PatientCard({ patient }: PatientCardProps) {
                 onClick={() => setShowDetails(!showDetails)}
                 className="text-xs"
               >
-                {showDetails ? "Less" : "More"}
+                {showDetails ? t("less") : t("more")}
               </Button>
             )}
             <Button size="sm" className="flex items-center gap-2">
-              {patient.status === "complete"
-                ? "View"
-                : patient.status === "in-progress"
-                  ? "Continue"
-                  : "Start"}
+              {t(`action.${patient.status}`)}
               <ChevronRight className="w-4 h-4" />
             </Button>
           </div>

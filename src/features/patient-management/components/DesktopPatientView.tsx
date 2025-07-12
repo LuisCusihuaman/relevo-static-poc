@@ -29,6 +29,7 @@ import {
   Users,
 } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { PatientAlerts } from "./PatientAlerts";
 
 // Import consolidated data and types from patients store
@@ -47,6 +48,7 @@ export function DesktopPatientView({
   onClinicalEntry,
   onPatientSelect: _onPatientSelect,
 }: DesktopPatientViewProps) {
+  const { t } = useTranslation("desktopPatientView");
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -128,7 +130,7 @@ export function DesktopPatientView({
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
-              placeholder="Search patients..."
+              placeholder={t("searchPlaceholder")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10"
@@ -141,10 +143,10 @@ export function DesktopPatientView({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="in-progress">Active</SelectItem>
-                <SelectItem value="complete">Complete</SelectItem>
+                <SelectItem value="all">{t("filter.all")}</SelectItem>
+                <SelectItem value="pending">{t("filter.pending")}</SelectItem>
+                <SelectItem value="in-progress">{t("filter.active")}</SelectItem>
+                <SelectItem value="complete">{t("filter.complete")}</SelectItem>
               </SelectContent>
             </Select>
 
@@ -153,10 +155,12 @@ export function DesktopPatientView({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="priority">Priority</SelectItem>
-                <SelectItem value="room">Room</SelectItem>
-                <SelectItem value="name">Name</SelectItem>
-                <SelectItem value="recent">Recent Activity</SelectItem>
+                <SelectItem value="priority">{t("sort.priority")}</SelectItem>
+                <SelectItem value="room">{t("sort.room")}</SelectItem>
+                <SelectItem value="name">{t("sort.name")}</SelectItem>
+                <SelectItem value="recent">
+                  {t("sort.recentActivity")}
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -181,14 +185,18 @@ export function DesktopPatientView({
                     <div>
                       <h4 className="font-medium">{patient.name}</h4>
                       <p className="text-sm text-muted-foreground">
-                        {patient.age}y • {patient.room}-{patient.bed}
+                        {t("patientInfo", {
+                          age: patient.age,
+                          room: patient.room,
+                          bed: patient.bed,
+                        })}
                       </p>
                     </div>
                     <div className="flex gap-1">
                       {patient.handoverStatus === "incoming" && (
                         <Badge variant="outline" className="text-xs">
                           <ChevronRight className="w-3 h-3 mr-1" />
-                          Incoming
+                          {t("incoming")}
                         </Badge>
                       )}
                       {patient.alerts.length > 0 && (
@@ -235,10 +243,13 @@ export function DesktopPatientView({
                       <div className="flex items-center gap-2 text-xs">
                         <FileText className="w-3 h-3 text-muted-foreground" />
                         <span className="text-muted-foreground">
-                          {patient.clinicalEntries.length} clinical entries
+                          {t("clinicalEntries", {
+                            count: patient.clinicalEntries.length,
+                          })}
                         </span>
                         <span className="text-muted-foreground">
-                          • Last: {patient.clinicalEntries[0]?.author.name}
+                          • {t("lastEntry")}:{" "}
+                          {patient.clinicalEntries[0]?.author.name}
                         </span>
                       </div>
                     )}
@@ -262,7 +273,7 @@ export function DesktopPatientView({
                       {selectedPatient.name}
                     </h1>
                     <Badge variant="outline">
-                      {selectedPatient.age} years old
+                      {t("yearsOld", { age: selectedPatient.age })}
                     </Badge>
                     <Badge
                       variant={
@@ -272,34 +283,40 @@ export function DesktopPatientView({
                       }
                       className="capitalize"
                     >
-                      {selectedPatient.priority} Priority
+                      {selectedPatient.priority && t(selectedPatient.priority)}{" "}
+                      {selectedPatient.priority &&
+                        t("priority", {
+                          context: selectedPatient.priority,
+                        })}
                     </Badge>
                   </div>
 
                   <div className="grid grid-cols-4 gap-4 text-sm">
                     <div>
-                      <span className="text-muted-foreground">Room:</span>
+                      <span className="text-muted-foreground">{t("room")}:</span>
                       <p className="font-medium">
                         {selectedPatient.room}-{selectedPatient.bed}
                       </p>
                     </div>
                     <div>
-                      <span className="text-muted-foreground">MRN:</span>
+                      <span className="text-muted-foreground">{t("mrn")}:</span>
                       <p className="font-medium">{selectedPatient.mrn}</p>
                     </div>
                     <div>
-                      <span className="text-muted-foreground">Admitted:</span>
+                      <span className="text-muted-foreground">
+                        {t("admitted")}:
+                      </span>
                       <p className="font-medium">
                         {selectedPatient.admission?.date}
                       </p>
                     </div>
                     <div>
                       <span className="text-muted-foreground">
-                        Est. Discharge:
+                        {t("estDischarge")}:
                       </span>
                       <p className="font-medium">
                         {selectedPatient.milestones?.estimatedDischarge ||
-                          "TBD"}
+                          t("tbd")}
                       </p>
                     </div>
                   </div>
@@ -313,7 +330,7 @@ export function DesktopPatientView({
                     }
                   >
                     <Stethoscope className="w-4 h-4 mr-2" />
-                    Assessment
+                    {t("assessment")}
                   </Button>
                   <Button
                     variant="outline"
@@ -322,7 +339,7 @@ export function DesktopPatientView({
                     }
                   >
                     <Activity className="w-4 h-4 mr-2" />
-                    Progress Note
+                    {t("progressNote")}
                   </Button>
                   <Button
                     onClick={() =>
@@ -330,7 +347,7 @@ export function DesktopPatientView({
                     }
                   >
                     <Plus className="w-4 h-4 mr-2" />
-                    Clinical Entry
+                    {t("clinicalEntry")}
                   </Button>
                 </div>
               </div>
@@ -356,11 +373,15 @@ export function DesktopPatientView({
                 <div className="border-b px-6">
                   <TabsList>
                     <TabsTrigger value="clinical">
-                      Clinical Documentation
+                      {t("tabs.clinicalDocumentation")}
                     </TabsTrigger>
-                    <TabsTrigger value="team">Care Team</TabsTrigger>
-                    <TabsTrigger value="alerts">Alerts & Protocols</TabsTrigger>
-                    <TabsTrigger value="family">Family & Discharge</TabsTrigger>
+                    <TabsTrigger value="team">{t("tabs.careTeam")}</TabsTrigger>
+                    <TabsTrigger value="alerts">
+                      {t("tabs.alertsAndProtocols")}
+                    </TabsTrigger>
+                    <TabsTrigger value="family">
+                      {t("tabs.familyAndDischarge")}
+                    </TabsTrigger>
                   </TabsList>
                 </div>
 
@@ -403,8 +424,9 @@ export function DesktopPatientView({
                                         className="text-xs"
                                       >
                                         <Users className="w-3 h-3 mr-1" />
-                                        {entry.collaborators.length}{" "}
-                                        collaborators
+                                        {t("collaborators", {
+                                          count: entry.collaborators.length,
+                                        })}
                                       </Badge>
                                     )}
                                   <Button variant="ghost" size="sm">
@@ -433,7 +455,7 @@ export function DesktopPatientView({
                                 {entry.author.name !== currentDoctor && (
                                   <Button variant="outline" size="sm">
                                     <MessageSquare className="w-4 h-4 mr-2" />
-                                    Add Response
+                                    {t("addResponse")}
                                   </Button>
                                 )}
                               </div>
@@ -445,11 +467,10 @@ export function DesktopPatientView({
                       <div className="text-center py-12">
                         <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                         <h3 className="font-medium mb-2">
-                          No Clinical Documentation Yet
+                          {t("noClinicalDocumentation.title")}
                         </h3>
                         <p className="text-muted-foreground mb-4">
-                          Start documenting this patient&apos;s clinical
-                          information
+                          {t("noClinicalDocumentation.description")}
                         </p>
                         <Button
                           onClick={() =>
@@ -457,7 +478,7 @@ export function DesktopPatientView({
                           }
                         >
                           <Plus className="w-4 h-4 mr-2" />
-                          Create First Entry
+                          {t("noClinicalDocumentation.button")}
                         </Button>
                       </div>
                     )}
@@ -469,13 +490,13 @@ export function DesktopPatientView({
                         <CardHeader>
                           <CardTitle className="flex items-center gap-2">
                             <UserCheck className="w-5 h-5" />
-                            Primary Team
+                            {t("team.primaryTeam")}
                           </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-3">
                           <div>
                             <span className="text-sm text-muted-foreground">
-                              Attending Physician
+                              {t("team.attendingPhysician")}
                             </span>
                             <p className="font-medium">
                               {selectedPatient.team?.attending}
@@ -484,7 +505,7 @@ export function DesktopPatientView({
                           <Separator />
                           <div>
                             <span className="text-sm text-muted-foreground">
-                              Residents
+                              {t("team.residents")}
                             </span>
                             <div className="space-y-1 mt-1">
                               {selectedPatient.team?.residents?.map(
@@ -499,7 +520,7 @@ export function DesktopPatientView({
                           <Separator />
                           <div>
                             <span className="text-sm text-muted-foreground">
-                              Nursing
+                              {t("team.nursing")}
                             </span>
                             <div className="space-y-1 mt-1">
                               {selectedPatient.team?.nurses?.map(
@@ -518,7 +539,7 @@ export function DesktopPatientView({
                         <CardHeader>
                           <CardTitle className="flex items-center gap-2">
                             <Users className="w-5 h-5" />
-                            Specialists
+                            {t("team.specialists")}
                           </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-2">
@@ -552,13 +573,13 @@ export function DesktopPatientView({
                         <CardHeader>
                           <CardTitle className="flex items-center gap-2">
                             <Users className="w-5 h-5" />
-                            Family Information
+                            {t("familyInfo.title")}
                           </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-3">
                           <div>
                             <span className="text-sm text-muted-foreground">
-                              Primary Contact
+                              {t("familyInfo.primaryContact")}
                             </span>
                             <p className="font-medium">
                               {selectedPatient.familyInfo?.contactPerson}
@@ -570,7 +591,7 @@ export function DesktopPatientView({
                           <Separator />
                           <div>
                             <span className="text-sm text-muted-foreground">
-                              Last Contact
+                              {t("familyInfo.lastContact")}
                             </span>
                             <p className="text-sm">
                               {selectedPatient.familyInfo?.lastContact}
@@ -579,7 +600,7 @@ export function DesktopPatientView({
                           <Separator />
                           <div>
                             <span className="text-sm text-muted-foreground">
-                              Current Concerns
+                              {t("familyInfo.currentConcerns")}
                             </span>
                             <div className="space-y-1 mt-1">
                               {selectedPatient.familyInfo?.concerns?.map(
@@ -598,13 +619,13 @@ export function DesktopPatientView({
                         <CardHeader>
                           <CardTitle className="flex items-center gap-2">
                             <Calendar className="w-5 h-5" />
-                            Care Milestones
+                            {t("careMilestones.title")}
                           </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-3">
                           <div>
                             <span className="text-sm text-muted-foreground">
-                              Admission
+                              {t("careMilestones.admission")}
                             </span>
                             <p className="text-sm">
                               {selectedPatient.milestones?.admission}
@@ -613,7 +634,7 @@ export function DesktopPatientView({
                           <Separator />
                           <div>
                             <span className="text-sm text-muted-foreground">
-                              Last Assessment
+                              {t("careMilestones.lastAssessment")}
                             </span>
                             <p className="text-sm">
                               {selectedPatient.milestones?.lastAssessment}
@@ -622,7 +643,7 @@ export function DesktopPatientView({
                           <Separator />
                           <div>
                             <span className="text-sm text-muted-foreground">
-                              Next Planned
+                              {t("careMilestones.nextPlanned")}
                             </span>
                             <p className="text-sm">
                               {selectedPatient.milestones?.nextPlanned}
@@ -633,7 +654,7 @@ export function DesktopPatientView({
                               <Separator />
                               <div>
                                 <span className="text-sm text-muted-foreground">
-                                  Estimated Discharge
+                                  {t("careMilestones.estimatedDischarge")}
                                 </span>
                                 <p className="text-sm font-medium">
                                   {
@@ -656,10 +677,11 @@ export function DesktopPatientView({
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center">
               <Users className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-medium mb-2">Select a Patient</h3>
+              <h3 className="text-lg font-medium mb-2">
+                {t("selectPatient.title")}
+              </h3>
               <p className="text-muted-foreground">
-                Choose a patient from the list to view detailed information and
-                clinical documentation.
+                {t("selectPatient.description")}
               </p>
             </div>
           </div>

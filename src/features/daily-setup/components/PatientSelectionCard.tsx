@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Activity, AlertTriangle, CheckCircle, Eye } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 // Simplified patient type for setup
 interface SetupPatient {
@@ -24,6 +25,7 @@ export function PatientSelectionCard({
   isSelected,
   onToggle: _onToggle,
 }: PatientSelectionCardProps) {
+  const { t } = useTranslation("patientSelectionCard");
   const getSeverityConfig = (severity: string) => {
     switch (severity) {
       case "unstable":
@@ -61,25 +63,25 @@ export function PatientSelectionCard({
     switch (status) {
       case "pending":
         return {
-          label: "Pending",
+          label: t("status.pending"),
           color: "text-orange-700",
           bgColor: "bg-orange-50",
         };
       case "in-progress":
         return {
-          label: "In Progress",
+          label: t("status.inProgress"),
           color: "text-blue-700",
           bgColor: "bg-blue-50",
         };
       case "complete":
         return {
-          label: "Complete",
+          label: t("status.complete"),
           color: "text-green-700",
           bgColor: "bg-green-50",
         };
       default:
         return {
-          label: "Unknown",
+          label: t("status.unknown"),
           color: "text-gray-700",
           bgColor: "bg-gray-50",
         };
@@ -112,7 +114,11 @@ export function PatientSelectionCard({
                 )}
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-                <span>Age {patient.age ?? "N/A"}</span>
+                <span>
+                  {patient.age
+                    ? t("age", { age: patient.age })
+                    : t("ageNotAvailable")}
+                </span>
                 <span>•</span>
                 <span className="font-medium">{patient.room}</span>
               </div>
@@ -125,8 +131,7 @@ export function PatientSelectionCard({
                 className={`text-xs ${severityConfig.color} ${severityConfig.bgColor} ${severityConfig.borderColor} border`}
               >
                 <SeverityIcon className="w-3 h-3 mr-1" />
-                {patient.severity.charAt(0).toUpperCase() +
-                  patient.severity.slice(1)}
+                {t(`severity.${patient.severity}`)}
               </Badge>
 
               {/* Status Badge */}
@@ -148,12 +153,14 @@ export function PatientSelectionCard({
           {/* Selection Indicator */}
           <div className="flex items-center justify-between pt-2 border-t border-border/20">
             <div className="text-xs text-muted-foreground">
-              Click to {isSelected ? "remove from" : "add to"} assignment
+              {isSelected
+                ? t("toggleAssignment.remove")
+                : t("toggleAssignment.add")}
             </div>
             {isSelected && (
               <div className="flex items-center gap-1 text-primary text-xs font-medium">
                 <CheckCircle className="w-3 h-3" />
-                Selected
+                {t("selected")}
               </div>
             )}
           </div>

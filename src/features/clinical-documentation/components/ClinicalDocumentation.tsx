@@ -27,6 +27,7 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 // Import centralized composable types
 import { type ClinicalPatient, type IPassBlock } from "../../../common/types";
@@ -53,80 +54,91 @@ const getIconComponent = (iconName: string) => {
   return iconMap[iconName] || Eye; // Fallback to Eye icon
 };
 
-// Severity Assessment Options
-const severityOptions = [
+const severityOptions = (t: (key: string) => string) => [
   {
     id: "stable",
-    name: "Stable",
-    description: "Patient condition is stable with minimal intervention needed",
+    name: t("clinicalDocumentation.stable"),
+    description: t("clinicalDocumentation.stableDescription"),
     color: "bg-green-50 border-green-200 text-green-700",
     icon: CheckCircle,
   },
   {
     id: "guarded",
-    name: "Guarded",
-    description: "Patient requires close monitoring with potential for change",
+    name: t("clinicalDocumentation.guarded"),
+    description: t("clinicalDocumentation.guardedDescription"),
     color: "bg-yellow-50 border-yellow-200 text-yellow-700",
     icon: AlertTriangle,
   },
   {
     id: "unstable",
-    name: "Unstable",
-    description:
-      "Patient condition is unstable requiring immediate intervention",
+    name: t("clinicalDocumentation.unstable"),
+    description: t("clinicalDocumentation.unstableDescription"),
     color: "bg-red-50 border-red-200 text-red-700",
     icon: AlertTriangle,
   },
   {
     id: "critical",
-    name: "Critical",
-    description: "Patient in critical condition requiring urgent care",
+    name: t("clinicalDocumentation.critical"),
+    description: t("clinicalDocumentation.criticalDescription"),
     color: "bg-red-100 border-red-300 text-red-800",
     icon: AlertTriangle,
   },
 ];
 
-// Task priorities
-const taskPriorities = [
-  { id: "high", name: "HIGH", color: "bg-red-50 border-red-200 text-red-700" },
+const taskPriorities = (t: (key: string) => string) => [
+  {
+    id: "high",
+    name: t("clinicalDocumentation.high"),
+    color: "bg-red-50 border-red-200 text-red-700",
+  },
   {
     id: "medium",
-    name: "MEDIUM",
+    name: t("clinicalDocumentation.medium"),
     color: "bg-yellow-50 border-yellow-200 text-yellow-700",
   },
-  { id: "low", name: "LOW", color: "bg-blue-50 border-blue-200 text-blue-700" },
+  {
+    id: "low",
+    name: t("clinicalDocumentation.low"),
+    color: "bg-blue-50 border-blue-200 text-blue-700",
+  },
 ] as const;
 
-// Contingency plan priorities and statuses
-const contingencyPriorities = [
-  { id: "high", name: "HIGH", color: "bg-red-50 border-red-200 text-red-700" },
+const contingencyPriorities = (t: (key: string) => string) => [
+  {
+    id: "high",
+    name: t("clinicalDocumentation.high"),
+    color: "bg-red-50 border-red-200 text-red-700",
+  },
   {
     id: "medium",
-    name: "MEDIUM",
+    name: t("clinicalDocumentation.medium"),
     color: "bg-yellow-50 border-yellow-200 text-yellow-700",
   },
-  { id: "low", name: "LOW", color: "bg-blue-50 border-blue-200 text-blue-700" },
-];
-
-const contingencyStatuses = [
   {
-    id: "active",
-    name: "Active",
-    color: "bg-green-50 border-green-200 text-green-700",
-  },
-  {
-    id: "planned",
-    name: "Planned",
+    id: "low",
+    name: t("clinicalDocumentation.low"),
     color: "bg-blue-50 border-blue-200 text-blue-700",
   },
 ];
 
-// I-PASS blocks - Updated with Contingency Planning
-const ipassBlocks: IPassBlock[] = [
+const contingencyStatuses = (t: (key: string) => string) => [
+  {
+    id: "active",
+    name: t("clinicalDocumentation.active"),
+    color: "bg-green-50 border-green-200 text-green-700",
+  },
+  {
+    id: "planned",
+    name: t("clinicalDocumentation.planned"),
+    color: "bg-blue-50 border-blue-200 text-blue-700",
+  },
+];
+
+const ipassBlocks = (t: (key: string) => string): IPassBlock[] => [
   {
     id: "illness_severity",
-    name: "Illness Severity",
-    shortName: "Severity",
+    name: t("clinicalDocumentation.dialogTitle"),
+    shortName: t("clinicalDocumentation.severity"),
     icon: "AlertTriangle",
     color: "bg-red-50 border-red-200 text-red-700",
     placeholder: "",
@@ -134,8 +146,8 @@ const ipassBlocks: IPassBlock[] = [
   },
   {
     id: "contingency_planning",
-    name: "Contingency Planning",
-    shortName: "Planning",
+    name: t("clinicalDocumentation.planning"),
+    shortName: t("clinicalDocumentation.planning"),
     icon: "Eye",
     color: "bg-blue-50 border-blue-200 text-blue-700",
     placeholder: "",
@@ -143,8 +155,8 @@ const ipassBlocks: IPassBlock[] = [
   },
   {
     id: "action_list",
-    name: "Action List",
-    shortName: "Actions",
+    name: t("clinicalDocumentation.actions"),
+    shortName: t("clinicalDocumentation.actions"),
     icon: "Target",
     color: "bg-green-50 border-green-200 text-green-700",
     placeholder: "",
@@ -182,6 +194,7 @@ export function ClinicalDocumentation({
   selectedPatientId,
   defaultType = "action_list", // Changed default to action_list
 }: ClinicalDocumentationProps) {
+  const { t } = useTranslation();
   const [selectedPatient, setSelectedPatient] = useState<number | null>(
     selectedPatientId || (patients.length > 0 ? patients[0].id : null),
   );
@@ -306,7 +319,8 @@ export function ClinicalDocumentation({
     // No auto-focus needed for structured interfaces
   }, [isOpen, activeBlock]);
 
-  const currentBlock = ipassBlocks.find((b) => b.id === activeBlock);
+  const currentIpassBlocks = ipassBlocks(t);
+  const currentBlock = currentIpassBlocks.find((b) => b.id === activeBlock);
   const currentPatient = patients.find((p) => p.id === selectedPatient);
 
   const handleSave = () => {
@@ -411,13 +425,13 @@ export function ClinicalDocumentation({
   const getSeverityText = (severity: string) => {
     switch (severity) {
       case "unstable":
-        return "Unstable";
+        return t("clinicalDocumentation.unstable");
       case "watcher":
-        return "Watcher";
+        return t("clinicalDocumentation.watcher");
       case "stable":
-        return "Stable";
+        return t("clinicalDocumentation.stable");
       default:
-        return "Unknown";
+        return t("clinicalDocumentation.unknown");
     }
   };
 
@@ -457,15 +471,14 @@ export function ClinicalDocumentation({
                   <div>
                     <div className="flex items-center gap-2 mb-1">
                       <h3 className="text-sm font-semibold text-green-800">
-                        Current Assessment: Stable
+                        {t("clinicalDocumentation.currentAssessment")}
                       </h3>
                       <span className="text-xs text-green-600">
-                        Set by DJ • Just now
+                        {t("clinicalDocumentation.setBy")}
                       </span>
                     </div>
                     <p className="text-sm text-green-700">
-                      Patient condition is stable with minimal intervention
-                      needed
+                      {t("clinicalDocumentation.stableDescription")}
                     </p>
                   </div>
                 </div>
@@ -479,10 +492,10 @@ export function ClinicalDocumentation({
             <div className="flex-shrink-0 p-3 md:p-6 pt-0">
               <div className="space-y-4">
                 <h3 className="text-base font-semibold text-foreground">
-                  Update Severity Assessment
+                  {t("clinicalDocumentation.updateAssessment")}
                 </h3>
                 <div className="grid gap-3 md:grid-cols-2">
-                  {severityOptions.map((option) => {
+                  {severityOptions(t).map((option) => {
                     const IconComponent = option.icon;
                     return (
                       <button
@@ -522,7 +535,7 @@ export function ClinicalDocumentation({
               <div className="p-3 md:p-6 pb-0">
                 <div className="mb-8 bg-background py-2">
                   <h3 className="text-base font-semibold text-foreground">
-                    Active Contingency Plans
+                    {t("clinicalDocumentation.activeContingency")}
                   </h3>
                 </div>
               </div>
@@ -536,10 +549,10 @@ export function ClinicalDocumentation({
                   {activeContingencyPlans.length > 0 && (
                     <div className="space-y-3">
                       {activeContingencyPlans.map((plan) => {
-                        const priority = contingencyPriorities.find(
+                        const priority = contingencyPriorities(t).find(
                           (p) => p.id === plan.priority,
                         );
-                        const status = contingencyStatuses.find(
+                        const status = contingencyStatuses(t).find(
                           (s) => s.id === plan.status,
                         );
                         return (
@@ -581,7 +594,7 @@ export function ClinicalDocumentation({
                             <div className="space-y-3">
                               <div>
                                 <h4 className="text-xs font-semibold text-muted-foreground mb-1">
-                                  IF:
+                                  {t("clinicalDocumentation.if")}
                                 </h4>
                                 <p className="text-sm text-foreground leading-relaxed">
                                   {plan.condition}
@@ -589,7 +602,7 @@ export function ClinicalDocumentation({
                               </div>
                               <div>
                                 <h4 className="text-xs font-semibold text-muted-foreground mb-1">
-                                  THEN:
+                                  {t("clinicalDocumentation.then")}
                                 </h4>
                                 <p className="text-sm text-foreground leading-relaxed">
                                   {plan.action}
@@ -599,11 +612,13 @@ export function ClinicalDocumentation({
 
                             <div className="flex items-center justify-between mt-3 pt-3 border-t border-border/30">
                               <span className="text-xs text-muted-foreground">
-                                Today
+                                {t("clinicalDocumentation.today")}
                               </span>
                               <span className="text-xs text-muted-foreground">
-                                Submitted by {plan.submittedBy} at{" "}
-                                {plan.timestamp}
+                                {t("clinicalDocumentation.submittedBy", {
+                                  name: plan.submittedBy,
+                                  time: plan.timestamp,
+                                })}
                               </span>
                             </div>
                           </div>
@@ -616,10 +631,10 @@ export function ClinicalDocumentation({
                   {plannedContingencyPlans.length > 0 && (
                     <div className="space-y-3">
                       {plannedContingencyPlans.map((plan) => {
-                        const priority = contingencyPriorities.find(
+                        const priority = contingencyPriorities(t).find(
                           (p) => p.id === plan.priority,
                         );
-                        const status = contingencyStatuses.find(
+                        const status = contingencyStatuses(t).find(
                           (s) => s.id === plan.status,
                         );
                         return (
@@ -661,7 +676,7 @@ export function ClinicalDocumentation({
                             <div className="space-y-3">
                               <div>
                                 <h4 className="text-xs font-semibold text-muted-foreground mb-1">
-                                  IF:
+                                  {t("clinicalDocumentation.if")}
                                 </h4>
                                 <p className="text-sm text-muted-foreground leading-relaxed">
                                   {plan.condition}
@@ -669,7 +684,7 @@ export function ClinicalDocumentation({
                               </div>
                               <div>
                                 <h4 className="text-xs font-semibold text-muted-foreground mb-1">
-                                  THEN:
+                                  {t("clinicalDocumentation.then")}
                                 </h4>
                                 <p className="text-sm text-muted-foreground leading-relaxed">
                                   {plan.action}
@@ -679,11 +694,13 @@ export function ClinicalDocumentation({
 
                             <div className="flex items-center justify-between mt-3 pt-3 border-t border-border/30">
                               <span className="text-xs text-muted-foreground">
-                                Today
+                                {t("clinicalDocumentation.today")}
                               </span>
                               <span className="text-xs text-muted-foreground">
-                                Submitted by {plan.submittedBy} at{" "}
-                                {plan.timestamp}
+                                {t("clinicalDocumentation.submittedBy", {
+                                  name: plan.submittedBy,
+                                  time: plan.timestamp,
+                                })}
                               </span>
                             </div>
                           </div>
@@ -707,7 +724,7 @@ export function ClinicalDocumentation({
                     <div className="flex items-center justify-center gap-2">
                       <Plus className="w-4 h-4" />
                       <span className="text-sm font-medium">
-                        New Contingency Plan
+                        {t("clinicalDocumentation.newContingency")}
                       </span>
                     </div>
                   </button>
@@ -716,7 +733,7 @@ export function ClinicalDocumentation({
                     {/* Header with properly positioned close button */}
                     <div className="flex items-start justify-between gap-6 pb-2 border-b border-border/30">
                       <h4 className="text-sm font-semibold text-foreground">
-                        New Contingency Plan
+                        {t("clinicalDocumentation.newContingency")}
                       </h4>
                       <button
                         onClick={() => {
@@ -726,7 +743,7 @@ export function ClinicalDocumentation({
                         }}
                         className="text-muted-foreground hover:text-foreground touch-target p-2 -m-2 rounded-md"
                         style={{ minHeight: "44px", minWidth: "44px" }}
-                        title="Close form"
+                        title={t("clinicalDocumentation.closeForm")}
                       >
                         <X className="w-4 h-4" />
                       </button>
@@ -738,7 +755,7 @@ export function ClinicalDocumentation({
                           htmlFor="contingency-condition"
                           className="text-xs font-medium text-muted-foreground mb-1 block"
                         >
-                          IF (Condition):
+                          {t("clinicalDocumentation.conditionLabel")}
                         </label>
                         <Textarea
                           id="contingency-condition"
@@ -746,7 +763,9 @@ export function ClinicalDocumentation({
                           onChange={(e) =>
                             setNewContingencyCondition(e.target.value)
                           }
-                          placeholder="e.g., If patient temperature rises above 38.5°C..."
+                          placeholder={t(
+                            "clinicalDocumentation.conditionPlaceholder",
+                          )}
                           className="text-sm resize-none"
                           style={{ fontSize: "16px", minHeight: "60px" }}
                           rows={2}
@@ -758,7 +777,7 @@ export function ClinicalDocumentation({
                           htmlFor="contingency-action"
                           className="text-xs font-medium text-muted-foreground mb-1 block"
                         >
-                          THEN (Action):
+                          {t("clinicalDocumentation.actionLabel")}
                         </label>
                         <Textarea
                           id="contingency-action"
@@ -766,7 +785,7 @@ export function ClinicalDocumentation({
                           onChange={(e) =>
                             setNewContingencyAction(e.target.value)
                           }
-                          placeholder="e.g., Obtain blood cultures, notify physician immediately..."
+                          placeholder={t("clinicalDocumentation.actionPlaceholder")}
                           className="text-sm resize-none"
                           style={{ fontSize: "16px", minHeight: "60px" }}
                           rows={2}
@@ -777,9 +796,9 @@ export function ClinicalDocumentation({
                         <div className="flex items-center gap-3">
                           <div className="flex items-center gap-1">
                             <span className="text-xs font-medium text-muted-foreground">
-                              Priority:
+                              {t("clinicalDocumentation.priority")}
                             </span>
-                            {contingencyPriorities.map((priority) => (
+                            {contingencyPriorities(t).map((priority) => (
                               <button
                                 key={priority.id}
                                 onClick={() =>
@@ -801,9 +820,9 @@ export function ClinicalDocumentation({
 
                           <div className="flex items-center gap-1">
                             <span className="text-xs font-medium text-muted-foreground">
-                              Status:
+                              {t("clinicalDocumentation.status")}
                             </span>
-                            {contingencyStatuses.map((status) => (
+                            {contingencyStatuses(t).map((status) => (
                               <button
                                 key={status.id}
                                 onClick={() =>
@@ -835,7 +854,7 @@ export function ClinicalDocumentation({
                           style={{ minHeight: "44px" }}
                         >
                           <Plus className="w-3 h-3 mr-1" />
-                          Add Plan
+                          {t("clinicalDocumentation.addPlan")}
                         </Button>
                       </div>
                     </div>
@@ -853,14 +872,16 @@ export function ClinicalDocumentation({
             <div className="flex-shrink-0 p-3 md:p-6 pb-0">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-base font-semibold text-foreground">
-                  Action List
+                  {t("clinicalDocumentation.actionList")}
                 </h3>
                 <div className="flex items-center gap-3 text-sm">
                   <span className="text-blue-600 font-medium">
-                    {pendingTasks.length} pending
+                    {t("clinicalDocumentation.pending", {
+                      count: pendingTasks.length,
+                    })}
                   </span>
                   <span className="text-green-600 font-medium">
-                    {doneTasks.length} done
+                    {t("clinicalDocumentation.done", { count: doneTasks.length })}
                   </span>
                 </div>
               </div>
@@ -870,12 +891,11 @@ export function ClinicalDocumentation({
                 <div className="flex items-center gap-2">
                   <Clock className="w-4 h-4 text-blue-600" />
                   <span className="text-sm font-medium text-blue-800">
-                    Tasks persist across shifts - Read-only view of existing
-                    tasks
+                    {t("clinicalDocumentation.tasksPersist")}
                   </span>
                 </div>
                 <p className="text-xs text-blue-700 mt-1">
-                  You can add new tasks and delete only those you create
+                  {t("clinicalDocumentation.tasksPersistDetail")}
                 </p>
               </div>
             </div>
@@ -890,15 +910,17 @@ export function ClinicalDocumentation({
                       <div className="flex items-center justify-between mb-3">
                         <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
                           <Circle className="w-4 h-4" />
-                          Pending
+                          {t("clinicalDocumentation.pendingHeader")}
                         </h4>
                         <span className="text-xs text-muted-foreground">
-                          {pendingTasks.length} active
+                          {t("clinicalDocumentation.activeCount", {
+                            count: pendingTasks.length,
+                          })}
                         </span>
                       </div>
                       <div className="space-y-2">
                         {pendingTasks.map((task) => {
-                          const priority = taskPriorities.find(
+                          const priority = taskPriorities(t).find(
                             (p) => p.id === task.priority,
                           );
                           return (
@@ -959,7 +981,10 @@ export function ClinicalDocumentation({
                                     </div>
                                   </div>
                                   <div className="flex items-center justify-between text-xs text-muted-foreground">
-                                    <span>{task.timing || "Today"}</span>
+                                    <span>
+                                      {task.timing ||
+                                        t("clinicalDocumentation.today")}
+                                    </span>
                                     <span>
                                       {task.assignedBy} • {task.timestamp}
                                     </span>
@@ -979,15 +1004,17 @@ export function ClinicalDocumentation({
                       <div className="flex items-center justify-between mb-3">
                         <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
                           <CheckCircle className="w-4 h-4" />
-                          Completed
+                          {t("clinicalDocumentation.completedHeader")}
                         </h4>
                         <span className="text-xs text-muted-foreground">
-                          {doneTasks.length} done
+                          {t("clinicalDocumentation.doneCount", {
+                            count: doneTasks.length,
+                          })}
                         </span>
                       </div>
                       <div className="space-y-2">
                         {doneTasks.map((task) => {
-                          const priority = taskPriorities.find(
+                          const priority = taskPriorities(t).find(
                             (p) => p.id === task.priority,
                           );
                           return (
@@ -1036,7 +1063,10 @@ export function ClinicalDocumentation({
                                     </div>
                                   </div>
                                   <div className="flex items-center justify-between text-xs text-muted-foreground">
-                                    <span>{task.timing || "Completed"}</span>
+                                    <span>
+                                      {task.timing ||
+                                        t("clinicalDocumentation.completed")}
+                                    </span>
                                     <span>
                                       {task.assignedBy} • {task.timestamp}
                                     </span>
@@ -1060,7 +1090,7 @@ export function ClinicalDocumentation({
                   <Input
                     value={newTaskText}
                     onChange={(e) => setNewTaskText(e.target.value)}
-                    placeholder="Add new task or action item..."
+                    placeholder={t("clinicalDocumentation.addTaskPlaceholder")}
                     className="text-sm touch-target"
                     style={{ fontSize: "16px", minHeight: "44px" }} // Prevent iOS zoom and ensure touch target
                     onKeyPress={(e) => e.key === "Enter" && handleAddTask()}
@@ -1068,9 +1098,9 @@ export function ClinicalDocumentation({
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-medium text-muted-foreground">
-                        Priority:
+                        {t("clinicalDocumentation.priority")}
                       </span>
-                      {taskPriorities.map((priority) => (
+                      {taskPriorities(t).map((priority) => (
                         <button
                           key={priority.id}
                           onClick={() => setNewTaskPriority(priority.id)}
@@ -1093,7 +1123,7 @@ export function ClinicalDocumentation({
                       style={{ minHeight: "44px" }} // Ensure primary action touch target
                     >
                       <Plus className="w-3 h-3 mr-1" />
-                      Add Task
+                      {t("clinicalDocumentation.addTask")}
                     </Button>
                   </div>
                 </div>
@@ -1121,10 +1151,9 @@ export function ClinicalDocumentation({
       >
         <VisuallyHidden>
           <DialogHeader>
-            <DialogTitle>I-PASS Clinical Documentation</DialogTitle>
+            <DialogTitle>{t("clinicalDocumentation.dialogTitle")}</DialogTitle>
             <DialogDescription id="clinical-doc-description">
-              Create and edit structured clinical documentation using the I-PASS
-              protocol for patient handover.
+              {t("clinicalDocumentation.dialogDescription")}
             </DialogDescription>
           </DialogHeader>
         </VisuallyHidden>
@@ -1190,7 +1219,7 @@ export function ClinicalDocumentation({
 
                 {/* I-PASS Blocks - Now 3 blocks with Planning */}
                 <div className="grid grid-cols-3 gap-1">
-                  {ipassBlocks.map((block) => {
+                  {currentIpassBlocks.map((block) => {
                     const IconComponent = getIconComponent(block.icon);
                     return (
                       <button
@@ -1226,15 +1255,16 @@ export function ClinicalDocumentation({
           <div className="hidden md:block border-r border-border/15 bg-muted/8 p-4 flex-shrink-0">
             <div className="mb-4">
               <h3 className="text-xs font-semibold text-foreground uppercase tracking-wider mb-1">
-                Interface
+                {t("clinicalDocumentation.interface")}
               </h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Structured medical documentation
+                {t("clinicalDocumentation.interfaceDescription")}
               </p>
             </div>
             <div className="text-xs text-muted-foreground">
-              {currentBlock?.name} uses a structured interface optimized for
-              medical workflows.
+              {t("clinicalDocumentation.workflowDescription", {
+                blockName: currentBlock?.name,
+              })}
             </div>
           </div>
 
@@ -1248,7 +1278,7 @@ export function ClinicalDocumentation({
             <div className="px-3 py-2">
               <ScrollArea className="w-full">
                 <div className="grid grid-cols-3 gap-2 pb-1">
-                  {ipassBlocks.map((block) => {
+                  {currentIpassBlocks.map((block) => {
                     const IconComponent = getIconComponent(block.icon);
                     return (
                       <button
@@ -1291,7 +1321,7 @@ export function ClinicalDocumentation({
                       <>
                         <div className="text-left">
                           <div className="text-xs font-medium text-muted-foreground">
-                            Room
+                            {t("clinicalDocumentation.room")}
                           </div>
                           <div className="text-sm font-semibold text-foreground">
                             {currentPatient.room}
@@ -1302,8 +1332,11 @@ export function ClinicalDocumentation({
                             {currentPatient.name}
                           </div>
                           <div className="text-xs text-muted-foreground leading-tight">
-                            {getSeverityText(currentPatient.illnessSeverity)}{" "}
-                            Patient
+                            {t("clinicalDocumentation.patientSeverity", {
+                              severity: getSeverityText(
+                                currentPatient.illnessSeverity,
+                              ),
+                            })}
                           </div>
                         </div>
                         <ChevronUp className="w-4 h-4 text-muted-foreground" />
@@ -1315,7 +1348,10 @@ export function ClinicalDocumentation({
                 {/* Save Row - Enhanced Touch */}
                 <div className="grid grid-cols-[1fr_auto] items-center gap-3">
                   <div className="text-xs text-muted-foreground font-medium">
-                    {currentBlock?.name} updated • {doctorName}
+                    {t("clinicalDocumentation.updatedBy", {
+                      blockName: currentBlock?.name,
+                      doctorName,
+                    })}
                   </div>
 
                   <Button
@@ -1324,7 +1360,7 @@ export function ClinicalDocumentation({
                     style={{ minHeight: "44px" }} // Ensure touch target size
                   >
                     <Save className="w-4 h-4 mr-2" />
-                    Save Documentation
+                    {t("clinicalDocumentation.saveDocumentation")}
                   </Button>
                 </div>
               </div>
@@ -1334,7 +1370,10 @@ export function ClinicalDocumentation({
             <div className="hidden md:block px-6 py-3">
               <div className="grid grid-cols-[1fr_auto] items-center gap-6">
                 <div className="text-xs text-muted-foreground font-medium">
-                  {currentBlock?.name} updated • {doctorName}
+                  {t("clinicalDocumentation.updatedBy", {
+                    blockName: currentBlock?.name,
+                    doctorName,
+                  })}
                 </div>
 
                 <Button
@@ -1342,7 +1381,7 @@ export function ClinicalDocumentation({
                   className="bg-green-600 hover:bg-green-700 text-white shadow-sm px-5 py-2 text-sm font-semibold"
                 >
                   <Save className="w-4 h-4 mr-2" />
-                  Save Documentation
+                  {t("clinicalDocumentation.saveDocumentation")}
                 </Button>
               </div>
             </div>
@@ -1358,7 +1397,7 @@ export function ClinicalDocumentation({
               onKeyDown={(e) => e.key === "Enter" && setShowPatientSheet(false)}
               role="button"
               tabIndex={0}
-              aria-label="Close patient selection"
+              aria-label={t("clinicalDocumentation.closePatientSelection")}
             />
 
             <div
@@ -1372,7 +1411,7 @@ export function ClinicalDocumentation({
             >
               <div className="p-4 border-b border-border/10 grid grid-cols-[1fr_auto] items-center gap-3">
                 <h3 className="text-sm font-semibold text-foreground">
-                  Select Patient
+                  {t("clinicalDocumentation.selectPatient")}
                 </h3>
                 <Button
                   variant="ghost"
@@ -1405,7 +1444,7 @@ export function ClinicalDocumentation({
                         {/* Professional Room Identification */}
                         <div className="text-center">
                           <div className="text-xs font-medium text-muted-foreground">
-                            Room
+                            {t("clinicalDocumentation.room")}
                           </div>
                           <div className="text-sm font-semibold text-foreground">
                             {patient.room}
@@ -1416,7 +1455,9 @@ export function ClinicalDocumentation({
                             {patient.name}
                           </div>
                           <div className="text-xs text-muted-foreground leading-tight">
-                            {getSeverityText(patient.illnessSeverity)} Patient
+                            {t("clinicalDocumentation.patientSeverity", {
+                              severity: getSeverityText(patient.illnessSeverity),
+                            })}
                           </div>
                         </div>
                       </div>

@@ -1,6 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { Clock, Mic, QrCode, Search } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const recentSearches = [
   { query: "Respiratory failure", type: "diagnosis" },
@@ -19,7 +20,10 @@ const suggestions = [
 ];
 
 export function SearchView() {
+  const { t } = useTranslation("searchView");
   const [searchQuery, setSearchQuery] = useState("");
+
+  const filters = Object.keys(t("filters", { returnObjects: true }));
 
   return (
     <div className="bg-background min-h-screen">
@@ -27,11 +31,9 @@ export function SearchView() {
       <div className="px-4 pt-4 pb-2">
         <div className="glass-card rounded-2xl p-5 mb-4">
           <h1 className="text-3xl font-semibold text-foreground mb-1">
-            Search
+            {t("title")}
           </h1>
-          <p className="text-muted-foreground">
-            Find patients, diagnoses, and medical records
-          </p>
+          <p className="text-muted-foreground">{t("subtitle")}</p>
         </div>
       </div>
 
@@ -45,7 +47,7 @@ export function SearchView() {
             <Input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search patients, diagnoses, rooms..."
+              placeholder={t("placeholder")}
               className="pl-12 pr-16 py-3 bg-transparent border-0 text-base placeholder:text-muted-foreground focus:ring-0"
             />
             <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
@@ -63,16 +65,14 @@ export function SearchView() {
       {/* Quick Filters */}
       <div className="px-4 mb-6">
         <div className="flex gap-2 overflow-x-auto">
-          {["All", "Critical", "Pending", "Complete", "My Patients"].map(
-            (filter) => (
-              <button
-                key={filter}
-                className="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium whitespace-nowrap transition-colors hover:bg-secondary/80"
-              >
-                {filter}
-              </button>
-            ),
-          )}
+          {filters.map((filter) => (
+            <button
+              key={filter}
+              className="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium whitespace-nowrap transition-colors hover:bg-secondary/80"
+            >
+              {t(`filters.${filter}`)}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -81,13 +81,13 @@ export function SearchView() {
           <div className="glass-card rounded-2xl p-8 text-center">
             <Search className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
             <h3 className="font-medium text-foreground mb-2">
-              No results found
+              {t("noResults.title")}
             </h3>
             <p className="text-muted-foreground mb-1">
-              No results found for &quot;{searchQuery}&quot;
+              {t("noResults.forQuery", { query: searchQuery })}
             </p>
             <p className="text-sm text-muted-foreground">
-              Try adjusting your search terms
+              {t("noResults.suggestion")}
             </p>
           </div>
         </div>
@@ -97,7 +97,9 @@ export function SearchView() {
           <div>
             <div className="flex items-center gap-2 mb-3">
               <Clock className="w-5 h-5 text-muted-foreground" />
-              <h3 className="font-medium text-foreground">Recent Searches</h3>
+              <h3 className="font-medium text-foreground">
+                {t("recentSearches")}
+              </h3>
             </div>
             <div className="space-y-2">
               {recentSearches.map((search, index) => (
@@ -116,7 +118,7 @@ export function SearchView() {
                           {search.query}
                         </span>
                         <div className="text-sm text-muted-foreground capitalize">
-                          {search.type}
+                          {t(`searchTypes.${search.type}`)}
                         </div>
                       </div>
                     </div>
@@ -129,7 +131,7 @@ export function SearchView() {
           {/* Suggestions */}
           <div>
             <h3 className="font-medium text-foreground mb-3">
-              Suggested Searches
+              {t("suggestedSearches")}
             </h3>
             <div className="space-y-2">
               {suggestions.map((suggestion, index) => (
@@ -147,7 +149,7 @@ export function SearchView() {
                         {suggestion.query}
                       </span>
                       <div className="text-sm text-muted-foreground capitalize">
-                        {suggestion.type}
+                        {t(`searchTypes.${suggestion.type}`)}
                       </div>
                     </div>
                   </div>

@@ -1,22 +1,23 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Activity,
-  AlertTriangle,
-  ArrowRight,
-  CheckCircle,
-  ChevronRight,
-  Eye,
-  FileText,
-  Play,
-  Users,
+    Activity,
+    AlertTriangle,
+    ArrowRight,
+    CheckCircle,
+    ChevronRight,
+    Eye,
+    FileText,
+    Play,
+    Users,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 // Import proper Patient type and alert utilities
 import {
-  type Patient,
-  getAlertCount,
-  getCriticalAlertCount,
+    type Patient,
+    getAlertCount,
+    getCriticalAlertCount,
 } from "../../../common/types";
 
 interface SimplePatientCardProps {
@@ -30,6 +31,7 @@ export function SimplePatientCard({
   onOpenHandover,
   onPatientSelect,
 }: SimplePatientCardProps) {
+  const { t } = useTranslation("simplePatientCard");
   // Get alert counts using proper Alert system
   const criticalAlerts = getCriticalAlertCount(patient.alerts);
   const totalAlerts = getAlertCount(patient.alerts);
@@ -72,24 +74,22 @@ export function SimplePatientCard({
 
   // Helper function to format section names for display
   const formatSectionName = (section: string) => {
-    const formatted = section
-      .replace("_", " ")
-      .split(" ")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-
     // Make it more clear what this means
     switch (section) {
       case "illness_severity":
-        return "Severity assessed";
+        return t("sections.illness_severity");
       case "patient_summary":
-        return "Summary updated";
+        return t("sections.patient_summary");
       case "action_list":
-        return "Actions documented";
+        return t("sections.action_list");
       case "situation_awareness":
-        return "Situation noted";
+        return t("sections.situation_awareness");
       default:
-        return formatted;
+        return section
+          .replace("_", " ")
+          .split(" ")
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" ");
     }
   };
 
@@ -132,7 +132,7 @@ export function SimplePatientCard({
                     className="text-xs bg-blue-50 text-blue-700 border-blue-200"
                   >
                     <ArrowRight className="w-3 h-3 mr-1" />
-                    Incoming
+                    {t("incoming")}
                   </Badge>
                 )}
               {/* NEW: Visual indicator when card is clickable */}
@@ -141,7 +141,7 @@ export function SimplePatientCard({
               )}
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <span className="font-medium">{patient.age}y</span>
+              <span className="font-medium">{t("age", { age: patient.age })}</span>
               <span>•</span>
               <span className="font-medium">{patient.room}</span>
               <span>•</span>
@@ -154,8 +154,9 @@ export function SimplePatientCard({
             className={`text-xs font-medium ${severityConfig.color} ${severityConfig.bgColor} ${severityConfig.borderColor} border-2`}
           >
             <SeverityIcon className="w-3 h-3 mr-1" />
-            {patient.illnessSeverity.charAt(0).toUpperCase() +
-              patient.illnessSeverity.slice(1)}
+            {t(
+              `severity.${patient.illnessSeverity.charAt(0).toUpperCase() + patient.illnessSeverity.slice(1)}`,
+            )}
           </Badge>
         </div>
 
@@ -171,7 +172,9 @@ export function SimplePatientCard({
             {criticalAlerts > 0 && (
               <div className="flex items-center gap-1 text-red-700">
                 <AlertTriangle className="w-4 h-4" />
-                <span className="font-medium">{criticalAlerts} Critical</span>
+                <span className="font-medium">
+                  {t("alerts.critical", { count: criticalAlerts })}
+                </span>
               </div>
             )}
 
@@ -179,7 +182,9 @@ export function SimplePatientCard({
             {criticalAlerts === 0 && totalAlerts > 2 && (
               <div className="flex items-center gap-1 text-yellow-700">
                 <AlertTriangle className="w-4 h-4" />
-                <span className="font-medium">{totalAlerts} Alerts</span>
+                <span className="font-medium">
+                  {t("alerts.multiple", { count: totalAlerts })}
+                </span>
               </div>
             )}
 
@@ -197,7 +202,9 @@ export function SimplePatientCard({
             {patient.collaborators > 1 && (
               <div className="flex items-center gap-1 text-muted-foreground">
                 <Users className="w-4 h-4" />
-                <span className="text-xs">{patient.collaborators} active</span>
+                <span className="text-xs">
+                  {t("active", { count: patient.collaborators })}
+                </span>
               </div>
             )}
 
@@ -218,7 +225,7 @@ export function SimplePatientCard({
             className="h-8 text-xs px-3 gap-2 border-border hover:border-primary/50 hover:bg-primary/5 hover:text-primary transition-colors"
           >
             <Play className="w-3 h-3" />
-            Start Handover
+            {t("startHandover")}
           </Button>
         </div>
       </div>
